@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import "./App.css";
 import moment from "moment";
 import faker from "faker";
+import Example from "./../Example";
+import Note from "./../Note";
 
 class App extends Component {
   constructor(props) {
@@ -50,7 +51,7 @@ class App extends Component {
   render() {
     return (
       <div className="momentum">
-        {this.renderHeader()}
+        {/* {this.renderHeader()}
         <div>{this.state.currentTime}</div>
         <div>Good evening, Amin</div>
         <div>What is your main focus for today?</div>
@@ -58,16 +59,18 @@ class App extends Component {
           value={this.state.value}
           onChange={this.handleOnChange.bind(this)}
         />
-        {this.renderFooter()}
+        {this.renderFooter()} */}
+        <Example />
+        <Note />
       </div>
     );
   }
 
   componentDidMount() {
-    const momentum = document.querySelector(".momentum");
-    momentum.style.backgroundImage = `url('${faker.image.image()}')`;
-    momentum.style.backgroundRepeat = "no-repeat";
-    momentum.style.backgroundSize = "cover";
+    // const momentum = document.querySelector(".momentum");
+    // momentum.style.backgroundImage = `url('${faker.image.image()}')`;
+    // momentum.style.backgroundRepeat = "no-repeat";
+    // momentum.style.backgroundSize = "cover";
     // setInterval(() => {
     this.setState({
       currentTime: moment().format("HH:mm")
