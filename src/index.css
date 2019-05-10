@@ -20,5 +20,19 @@ code {
 .note .noteItem {
   display: flex;
   justify-content: space-between;
-  background: lightyellow;
+  border-bottom: solid #f9a02c 1px;
+  margin-bottom: 1.6em;
+  padding-bottom: 0.6em;
+  width: 60%;
+}
+
+.note .noteItems {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.note .noteItem.strikethrough .content {
+  text-decoration: line-through;
 }
