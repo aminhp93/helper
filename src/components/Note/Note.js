@@ -103,5 +103,13 @@ export default class Note extends React.Component {
 
   componentDidMount() {
     this.getAllNotes();
+    axios
+      .get("https://svr3.fireant.vn/api/Data/Markets/TradingStatistic")
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 }
