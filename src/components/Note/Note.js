@@ -49,12 +49,20 @@ export default class Note extends React.Component {
     }
   }
 
+  handleOnKeyPress(e) {
+    if (e.key === "Enter") {
+      this.handleCreateNote();
+    }
+  }
+
   render() {
     return (
       <div className="note">
-        <div>List notes</div>
         <div className="noteInput">
-          <input ref={dom => (this.inputNoteDom = dom)} />
+          <input
+            onKeyPress={e => this.handleOnKeyPress(e)}
+            ref={dom => (this.inputNoteDom = dom)}
+          />
           <div onClick={() => this.handleCreateNote()}>Add note</div>
         </div>
         {this.state.notes && this.state.notes.length ? (
@@ -70,7 +78,7 @@ export default class Note extends React.Component {
             })}
           </div>
         ) : (
-          <div>Please add some notes</div>
+          <div className="noNote">Please add some notes</div>
         )}
         <div />
       </div>
@@ -103,13 +111,5 @@ export default class Note extends React.Component {
 
   componentDidMount() {
     this.getAllNotes();
-    axios
-      .get("https://svr3.fireant.vn/api/Data/Markets/TradingStatistic")
-      .then(response => {
-        console.log(response);
-      })
-      .catch(error => {
-        console.log(error);
-      });
   }
 }

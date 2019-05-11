@@ -1,6 +1,6 @@
 let domain = "https://project-2018-backend.herokuapp.com/";
 // if ()
-domain = "http://localhost:8000/";
+// domain = "http://localhost:8000/";
 
 export function getAllNotesUrl() {
   return domain + "posts/all";

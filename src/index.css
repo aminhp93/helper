@@ -13,8 +13,17 @@ code {
     monospace;
 }
 
+input:focus {
+  outline-width: 0;
+}
+input {
+  font-size: 14px;
+}
+
 .note .noteInput {
   display: flex;
+  justify-content: center;
+  margin-top: 1em;
 }
 
 .note .noteItem {
@@ -26,7 +35,8 @@ code {
   width: 60%;
 }
 
-.note .noteItems {
+.note .noteItems,
+.note .noNote {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -35,4 +45,11 @@ code {
 
 .note .noteItem.strikethrough .content {
   text-decoration: line-through;
+}
+
+.note .noteInput input {
+  border: none;
+  border-bottom: 1px solid #f9a02c;
+  margin-bottom: 1.6em;
+  padding-bottom: 0.6em;
 }
