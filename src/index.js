@@ -6,12 +6,14 @@ import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Note from "./components/Note";
 import Learning from "./components/Learning";
+import RealEstate from "./components/RealEstate";
 
 ReactDOM.render(
   <Router>
     <Route path="/" exact component={App} />
     <Route path="/note" exact component={Note} />
     <Route path="/learning" component={Learning} />
+    <Route path="/realestate" component={RealEstate} />
   </Router>,
   document.getElementById("root")
 );
