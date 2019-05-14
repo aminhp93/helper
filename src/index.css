@@ -53,3 +53,10 @@ input {
   margin-bottom: 1.6em;
   padding-bottom: 0.6em;
 }
+
+.learning {
+  display: flex;
+}
+.learning .menu {
+  background: lightblue;
+}

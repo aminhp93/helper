@@ -1,13 +1,20 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import Note from "./../Note";
+import { Link } from "react-router-dom";
 
 class App extends Component {
   render() {
     return (
-      <Router>
-        <Route path="/" exact component={Note} />
-      </Router>
+      <ul>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/note">Note</Link>
+        </li>
+        <li>
+          <Link to="/learning">Learning</Link>
+        </li>
+      </ul>
     );
   }
 }
