@@ -17,6 +17,9 @@ class App extends Component {
         <li>
           <Link to="/realestate">Real Estate</Link>
         </li>
+        <li>
+          <Link to="/stock">Stock</Link>
+        </li>
       </ul>
     );
   }

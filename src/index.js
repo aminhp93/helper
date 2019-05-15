@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Note from "./components/Note";
 import Learning from "./components/Learning";
 import RealEstate from "./components/RealEstate";
+import Stock from "./components/Stock";
 
 ReactDOM.render(
   <Router>
@@ -14,6 +15,7 @@ ReactDOM.render(
     <Route path="/note" exact component={Note} />
     <Route path="/learning" component={Learning} />
     <Route path="/realestate" component={RealEstate} />
+    <Route path="/stock" component={Stock} />
   </Router>,
   document.getElementById("root")
 );
