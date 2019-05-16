@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.9.3",
     "ag-grid-community": "^20.2.0",
     "ag-grid-react": "^20.2.0",
     "axios": "^0.18.0",
     "faker": "^4.1.0",
-    "material-ui": "^0.20.2",
     "moment": "^2.24.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
