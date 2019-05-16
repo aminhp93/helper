@@ -7,6 +7,7 @@ import "ag-grid-community/dist/styles/ag-theme-balham.css";
 import { PieChart, Pie, Legend, Tooltip } from "recharts";
 import CustomPieChart from "./../CustomPieChart";
 import { calculateClose } from "./../../helpers/functionUtils";
+import moment from "moment";
 
 class Stock extends Component {
   constructor(props) {
@@ -97,35 +98,72 @@ class Stock extends Component {
 
   componentDidMount() {
     // console.log(getData());
+    const array = [
+      "ROS",
+      "FLC",
+      "VRE",
+      "HQC",
+      "HBC",
+      "ITA",
+      "PVD",
+      "HAG",
+      "SCR",
+      "ASM"
+    ];
+    const endDay = moment()
+      .subtract(1, "days")
+      .format("YYYY-MM-DD");
+    // array.map(item => {
+    //   axios
+    //     .get(
+    //       `https://svr1.fireant.vn/api/Data/Markets/HistoricalQuotes?symbol=${item}&startDate=2012-1-1&endDate=${endDay}`
+    //     )
+    //     .then(response => {
+    //       console.log(response.data);
+    //       // axios
+    //       //   .post("https://project-2018-backend.herokuapp.com/note/update", {
+    //       //     note: JSON.stringify(response.data)
+    //       //   })
+    //       //   .then(response => {
+    //       //     console.log(response.data);
+    //       //   })
+    //       //   .catch(error => {
+    //       //     console.log(error);
+    //       //   });
+    //       axios
+    //         .post("http://localhost:8000/stock/create", {
+    //           symbol: item,
+    //           price_data: JSON.stringify(response.data)
+    //         })
+    //         .then(response => {
+    //           console.log(response);
+    //         })
+    //         .catch(error => {
+    //           console.log(error);
+    //         });
+    //     })
+    //     .catch(error => {
+    //       console.log(error);
+    //     });
+    // });
+
     // axios
-    //   .get(
-    //     "https://svr1.fireant.vn/api/Data/Markets/HistoricalQuotes?symbol=FPT&startDate=2012-1-1&endDate=2018-12-31"
-    //   )
+    //   .get("https://project-2018-backend.herokuapp.com/notes/all")
     //   .then(response => {
-    //     console.log(response.data);
-    //     axios
-    //       .post("https://project-2018-backend.herokuapp.com/note/update", {
-    //         note: JSON.stringify(response.data)
-    //       })
-    //       .then(response => {
-    //         console.log(response.data);
-    //       })
-    //       .catch(error => {
-    //         console.log(error);
-    //       });
+    //     const rowData = JSON.parse(response.data.note);
+    //     console.log(rowData);
+    //     this.setState({
+    //       rowData
+    //     });
     //   })
     //   .catch(error => {
     //     console.log(error);
     //   });
 
     axios
-      .get("https://project-2018-backend.herokuapp.com/notes/all")
+      .get("http://localhost:8000/stocks/all")
       .then(response => {
-        const rowData = JSON.parse(response.data.note);
-        console.log(rowData);
-        this.setState({
-          rowData
-        });
+        console.log(response);
       })
       .catch(error => {
         console.log(error);
