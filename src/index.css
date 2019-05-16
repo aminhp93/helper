@@ -60,3 +60,7 @@ input {
 .learning .menu {
   background: lightblue;
 }
+
+.stock .chartContainer {
+  display: flex;
+}
