@@ -6,7 +6,7 @@ import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-balham.css";
 import { PieChart, Pie, Legend, Tooltip } from "recharts";
 import CustomPieChart from "./../CustomPieChart";
-import { calculateClose } from "./../../helpers/functionUtils";
+import { calculateClose, mapData } from "./../../helpers/functionUtils";
 import moment from "moment";
 
 class Stock extends Component {
@@ -15,50 +15,16 @@ class Stock extends Component {
     this.state = {
       columnDefs: [
         {
-          headerName: "Date",
-          field: "Date"
+          headerName: "symbol",
+          field: "symbol"
         },
         {
-          headerName: "Open",
-          field: "Open",
-          cellRenderer: function (params) {
-            return params.data.Open.toFixed(0);
-          }
+          headerName: "price_data",
+          field: "price_data"
         },
         {
-          headerName: "Close",
-          field: "Close",
-          cellRenderer: function (params) {
-            return params.data.Close.toFixed(0);
-          }
-        },
-        {
-          headerName: "High",
-          field: "High",
-          cellRenderer: function (params) {
-            return params.data.High.toFixed(0);
-          }
-        },
-        {
-          headerName: "Low",
-          field: "Low",
-          cellRenderer: function (params) {
-            return params.data.Low.toFixed(0);
-          }
-        },
-        {
-          headerName: "Volume",
-          field: "Volume",
-          cellRenderer: function (params) {
-            return params.data.Volume.toFixed(0);
-          }
-        },
-        {
-          headerName: "Value",
-          field: "Value",
-          cellRenderer: function (params) {
-            return params.data.Value.toFixed(0);
-          }
+          headerName: 'Index 1',
+          field: 'price_gap_index'
         }
       ],
       rowData: []
@@ -164,9 +130,11 @@ class Stock extends Component {
       .then(response => {
         console.log(response);
         const rowData = response.data.stocks
+        const mappedData = mapData(rowData, 'price_gap_index')
         const minData = JSON.parse(rowData[2].price_data)
         this.setState({
-          minData
+          minData,
+          rowData: mappedData
         })
       })
       .catch(error => {

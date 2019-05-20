@@ -60,3 +60,11 @@ export function findMaxPercent(data, percentValue = 0) {
   }
   return returnedData;
 }
+
+export function mapData(data, key) {
+  for (let i = 0; i < data.length; i++) {
+    let item = JSON.parse(data[i].price_data)
+    data[i][key] = 'test'
+  }
+  return data
+}
