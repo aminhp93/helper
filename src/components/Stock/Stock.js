@@ -21,42 +21,42 @@ class Stock extends Component {
         {
           headerName: "Open",
           field: "Open",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             return params.data.Open.toFixed(0);
           }
         },
         {
           headerName: "Close",
           field: "Close",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             return params.data.Close.toFixed(0);
           }
         },
         {
           headerName: "High",
           field: "High",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             return params.data.High.toFixed(0);
           }
         },
         {
           headerName: "Low",
           field: "Low",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             return params.data.Low.toFixed(0);
           }
         },
         {
           headerName: "Volume",
           field: "Volume",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             return params.data.Volume.toFixed(0);
           }
         },
         {
           headerName: "Value",
           field: "Value",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             return params.data.Value.toFixed(0);
           }
         }
@@ -84,10 +84,10 @@ class Stock extends Component {
           />
         </div>
         <div className="chartContainer">
-          <CustomPieChart data={this.state.rowData} timeValue={251} />
-          <CustomPieChart data={this.state.rowData} timeValue={18} />
+          <CustomPieChart data={this.state.minData} timeValue={251} />
+          <CustomPieChart data={this.state.minData} timeValue={18} />
           <CustomPieChart
-            data={this.state.rowData}
+            data={this.state.minData}
             timeValue={251}
             percentValue={20}
           />
@@ -97,7 +97,6 @@ class Stock extends Component {
   }
 
   componentDidMount() {
-    // console.log(getData());
     const array = [
       "ROS",
       "FLC",
@@ -164,6 +163,11 @@ class Stock extends Component {
       .get("http://localhost:8000/stocks/all")
       .then(response => {
         console.log(response);
+        const rowData = response.data.stocks
+        const minData = JSON.parse(rowData[2].price_data)
+        this.setState({
+          minData
+        })
       })
       .catch(error => {
         console.log(error);

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { PieChart, Pie, Legend, Tooltip, Cell } from "recharts";
-import { calculateClose } from "./../../helpers/functionUtils";
+import { calculateClose, findMaxPercent } from "./../../helpers/functionUtils";
 import Input from "@material-ui/core/Input";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
@@ -77,12 +77,23 @@ class CustomPieChart extends Component {
     });
   }
 
+  handleOnClick(e) {
+    const result = findMaxPercent(this.state.rowData)
+    console.log(result)
+    this.setState({
+      timeValue: result.timeValue,
+      customedData: result.customedData
+    })
+
+  }
+
   render() {
     return (
       <div>
-        <div>Custom</div>
+        <div>{this.state.rowData && this.state.rowData.length && this.state.rowData[0].Symbol}</div>
+        <div onClick={e => this.handleOnClick(e)}>Find</div>
         <Input
-          defaultValue={this.state.timeValue}
+          value={this.state.timeValue}
           onChange={e => this.handleOnChangeTime(e)}
         />
         <Input
