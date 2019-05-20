@@ -8,6 +8,7 @@ import Note from "./components/Note";
 import Learning from "./components/Learning";
 import RealEstate from "./components/RealEstate";
 import Stock from "./components/Stock";
+import JobMarket from "./components/JobMarket";
 
 ReactDOM.render(
   <Router>
@@ -16,6 +17,7 @@ ReactDOM.render(
     <Route path="/learning" component={Learning} />
     <Route path="/realestate" component={RealEstate} />
     <Route path="/stock" component={Stock} />
+    <Route path="/job" component={JobMarket} />
   </Router>,
   document.getElementById("root")
 );
