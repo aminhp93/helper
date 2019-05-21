@@ -5,7 +5,7 @@ import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-balham.css";
 import CustomPieChart from "./../CustomPieChart";
 import { mapData } from "./../../helpers/functionUtils";
-import { updateAllStocksDatabase, getAllStocksUrl } from '../../helpers/requests'
+import { updateAllStocksDatabase, getAllStocksUrl, deleteAllStocks } from '../../helpers/requests'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
@@ -46,10 +46,25 @@ class Stock extends Component {
           nam
         </div>
         <Button variant="contained" color="secondary" onClick={() => {
-          updateAllStocksDatabase()
+          deleteAllStocks()
         }}>
-          Update data base
-      </Button>
+          Delete all stocks
+        </Button>
+        <Button variant="contained" color="secondary" onClick={() => {
+          updateAllStocksDatabase('HOSE_stocks')
+        }}>
+          Update HOSE_stocks
+        </Button>
+        <Button variant="contained" color="secondary" onClick={() => {
+          updateAllStocksDatabase('HNX_stocks')
+        }}>
+          Update HNX_stocks
+        </Button>
+        <Button variant="contained" color="secondary" onClick={() => {
+          updateAllStocksDatabase('UPCOM_stocks')
+        }}>
+          Update UPCOM_stocks
+        </Button>
 
         <div
           className="ag-theme-balham"

@@ -10,7 +10,6 @@ const endDay = moment()
   .subtract(1, "days")
   .format("YYYY-MM-DD");
 
-// if ()
 // domain = "http://localhost:8000/";
 
 export function getAllNotesUrl() {
@@ -41,49 +40,33 @@ export function getAllStocksUrl() {
   return domain + 'stocks/all'
 }
 
-export async function updateAllStocksDatabase() {
-  const response = await deleteAllStocks()
-  if (response.data.data === 'Deleted all stocks successfully') {
-    let stop = false
-    const response2 = await updatedStockDatabase(HOSE_stocks)
-    console.log(response2)
-    response2.map(item => {
-      if (item.message === 'error') {
-        stop = true
-        return
-      }
-    })
-    if (!stop) {
-      const response3 = await updatedStockDatabase(HNX_stocks)
-      console.log(response3)
-      response3.map(item => {
-        if (item.message === 'error') {
-          stop = true
-          return
-        }
-      })
-    }
-    if (!stop) {
-      const response4 = await updatedStockDatabase(UPCOM_stocks)
-      console.log(response4)
-      response4.map(item => {
-        if (item.message === 'error') {
-          stop = true
-          return
-        }
-      })
-    }
-    if (stop) {
-      return 'Updated all stocks failed'
-    }
-    console.log('Updated all stocks successfully')
-    return 'Updated all stocks successfully'
-  } else {
-    return 'Delete all stocks failed'
+export async function updateAllStocksDatabase(floor) {
+  let stop = false
+  let floor_stocks
+  if (floor === 'HOSE_stocks') {
+    floor_stocks = HOSE_stocks
+  } else if (floor === 'HNX_stocks') {
+    floor_stocks = HNX_stocks
+  } else if (floor === 'UPCOM_stocks') {
+    floor_stocks = UPCOM_stocks
   }
+  const response2 = await updatedStockDatabase(floor_stocks)
+  console.log(response2)
+  response2.map(item => {
+    if (item.message === 'error') {
+      stop = true
+      return
+    }
+  })
+
+  if (stop) {
+    return 'Updated all stocks failed' + floor
+  }
+  console.log(`Updated all stocks successfully ${floor}`)
+  return 'Updated all stocks successfully'
 }
 
-function deleteAllStocks() {
+export function deleteAllStocks() {
   return axios.post(getDeleteAllStocksUrl())
 }
 
