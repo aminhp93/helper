@@ -9,6 +9,7 @@ import { updateAllStocksDatabase } from '../../helpers/requests'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
+import Button from '@material-ui/core/Button'
 
 class Stock extends Component {
   constructor(props) {
@@ -44,14 +45,17 @@ class Stock extends Component {
           Api du lieu tu fireant --> so sanh gia tai 1 thoi diem va truoc do 1
           nam
         </div>
-        <div onClick={() => {
+        <Button variant="contained" color="secondary" onClick={() => {
           const status = updateAllStocksDatabase()
           if (status === 'Updated all stock successfully') {
             this.setState({
               message: 'Updated all stock successfully'
             })
           }
-        }}>Update data base</div>
+        }}>
+          Update data base
+      </Button>
+
         <div
           className="ag-theme-balham"
           style={{
