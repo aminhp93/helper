@@ -1,8 +1,6 @@
 import React from "react";
 import axios from "axios";
 import {
-  getAllNotesUrl,
-  getCreateNoteUrl,
   getUpdateNoteUrl,
   getDeleteNoteUrl
 } from "../../helpers/requests";

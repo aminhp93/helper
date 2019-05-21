@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { getData } from "./../../helpers/data";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-balham.css";
-import { PieChart, Pie, Legend, Tooltip } from "recharts";
 import CustomPieChart from "./../CustomPieChart";
-import { calculateClose, mapData } from "./../../helpers/functionUtils";
-import moment from "moment";
+import { mapData } from "./../../helpers/functionUtils";
+import { updateAllStocksDatabase } from '../../helpers/requests'
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+} from 'recharts';
 
 class Stock extends Component {
   constructor(props) {
@@ -19,8 +20,13 @@ class Stock extends Component {
           field: "symbol"
         },
         {
-          headerName: "price_data",
-          field: "price_data"
+          headerName: "close",
+          field: "close",
+          cellRenderer: function (params) {
+            if (params.data.close) {
+              return ((params.data.close) / 1000).toFixed(2)
+            }
+          }
         },
         {
           headerName: 'Index 1',
@@ -38,6 +44,14 @@ class Stock extends Component {
           Api du lieu tu fireant --> so sanh gia tai 1 thoi diem va truoc do 1
           nam
         </div>
+        <div onClick={() => {
+          const status = updateAllStocksDatabase()
+          if (status === 'Updated all stock successfully') {
+            this.setState({
+              message: 'Updated all stock successfully'
+            })
+          }
+        }}>Update data base</div>
         <div
           className="ag-theme-balham"
           style={{
@@ -58,83 +72,66 @@ class Stock extends Component {
             percentValue={20}
           />
         </div>
+        <div>
+          <BarChart
+            width={500}
+            height={300}
+            data={this.state.barChartData}
+            margin={{
+              top: 5, right: 30, left: 20, bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="increasedStockNumbers" fill="green" />
+            <Bar dataKey="decreasedStockNumbers" fill="red" />
+            <Bar dataKey="unchangedStockNumbers" fill="grey" />
+          </BarChart>
+        </div>
       </div>
     );
   }
 
-  componentDidMount() {
-    const array = [
-      "ROS",
-      "FLC",
-      "VRE",
-      "HQC",
-      "HBC",
-      "ITA",
-      "PVD",
-      "HAG",
-      "SCR",
-      "ASM"
-    ];
-    const endDay = moment()
-      .subtract(1, "days")
-      .format("YYYY-MM-DD");
-    // array.map(item => {
-    //   axios
-    //     .get(
-    //       `https://svr1.fireant.vn/api/Data/Markets/HistoricalQuotes?symbol=${item}&startDate=2012-1-1&endDate=${endDay}`
-    //     )
-    //     .then(response => {
-    //       console.log(response.data);
-    //       // axios
-    //       //   .post("https://project-2018-backend.herokuapp.com/note/update", {
-    //       //     note: JSON.stringify(response.data)
-    //       //   })
-    //       //   .then(response => {
-    //       //     console.log(response.data);
-    //       //   })
-    //       //   .catch(error => {
-    //       //     console.log(error);
-    //       //   });
-    //       axios
-    //         .post("http://localhost:8000/stock/create", {
-    //           symbol: item,
-    //           price_data: JSON.stringify(response.data)
-    //         })
-    //         .then(response => {
-    //           console.log(response);
-    //         })
-    //         .catch(error => {
-    //           console.log(error);
-    //         });
-    //     })
-    //     .catch(error => {
-    //       console.log(error);
-    //     });
-    // });
-
-    // axios
-    //   .get("https://project-2018-backend.herokuapp.com/notes/all")
+  getAllStocks() {
+    // axios.get('https://finfo-api.vndirect.com.vn/stocks?status=all')
     //   .then(response => {
-    //     const rowData = JSON.parse(response.data.note);
-    //     console.log(rowData);
-    //     this.setState({
-    //       rowData
-    //     });
+    //     console.log(response)
+    //     let array_HOSE = []
+    //     let array_UPCOM = []
+    //     let array_HNX = []
+    //     const data = response.data.data.map(item => {
+    //       if (item.floor === 'HOSE') {
+    //         array_HOSE.push(item.symbol)
+    //       } else if (item.floor === 'HNX') {
+    //         array_HNX.push(item.symbol)
+    //       } else if (item.floor === 'UPCOM') {
+    //         array_UPCOM.push(item.symbol)
+    //       }
+    //     })
+    //     console.log(String(array_HOSE), String(array_HNX), String(array_UPCOM))
     //   })
     //   .catch(error => {
-    //     console.log(error);
-    //   });
+    //     console.log(error)
+    //   })
+  }
 
+  componentDidMount() {
     axios
       .get("http://localhost:8000/stocks/all")
       .then(response => {
         console.log(response);
         const rowData = response.data.stocks
         const mappedData = mapData(rowData, 'price_gap_index')
+        console.log(mappedData)
         const minData = JSON.parse(rowData[2].price_data)
+
         this.setState({
           minData,
-          rowData: mappedData
+          rowData: mappedData.returnedData,
+          barChartData: mappedData.barChartData
         })
       })
       .catch(error => {

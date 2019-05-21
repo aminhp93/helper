@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { PieChart, Pie, Legend, Tooltip, Cell } from "recharts";
+import { PieChart, Pie, Tooltip, Cell } from "recharts";
 import { calculateClose, findMaxPercent } from "./../../helpers/functionUtils";
 import Input from "@material-ui/core/Input";
 

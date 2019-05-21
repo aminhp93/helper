@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./components/App";
 import * as serviceWorker from "./serviceWorker";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import Note from "./components/Note";
 import Learning from "./components/Learning";
 import RealEstate from "./components/RealEstate";

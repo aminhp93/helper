@@ -62,9 +62,40 @@ export function findMaxPercent(data, percentValue = 0) {
 }
 
 export function mapData(data, key) {
+  let returnedData = []
+  let decreasedStockNumbers = 0
+  let increasedStockNumbers = 0
+  let unchangedStockNumbers = 0
   for (let i = 0; i < data.length; i++) {
     let item = JSON.parse(data[i].price_data)
-    data[i][key] = 'test'
+    let lastDay = item[item.length - 1]
+    let lastTwoDays = item[item.length - 2]
+    // console.log(lastDay)
+    let returnItem = {}
+    returnItem['symbol'] = data[i]['symbol']
+    returnItem['close'] = lastDay && lastDay.Close
+    returnItem[key] = key
+    returnedData.push(returnItem)
+
+    if (lastDay && lastDay.Close && lastTwoDays && lastTwoDays.Close) {
+      if (lastDay.Close > lastTwoDays.Close) {
+        increasedStockNumbers += 1
+      } else if (lastDay.Close < lastTwoDays.Close) {
+        decreasedStockNumbers += 1
+      } else {
+        unchangedStockNumbers += 1
+      }
+    }
   }
-  return data
+  return {
+    returnedData,
+    barChartData: [
+      {
+        name: 'Name 1',
+        increasedStockNumbers,
+        decreasedStockNumbers,
+        unchangedStockNumbers
+      }
+    ]
+  }
 }

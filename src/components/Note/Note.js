@@ -2,9 +2,7 @@ import React from "react";
 import axios from "axios";
 import {
   getAllNotesUrl,
-  getCreateNoteUrl,
-  getUpdateNoteUrl,
-  getDeleteNoteUrl
+  getCreateNoteUrl
 } from "../../helpers/requests";
 import NoteItem from "./NoteItem";
 
@@ -78,8 +76,8 @@ export default class Note extends React.Component {
             })}
           </div>
         ) : (
-          <div className="noNote">Please add some notes</div>
-        )}
+            <div className="noNote">Please add some notes</div>
+          )}
         <div />
       </div>
     );
