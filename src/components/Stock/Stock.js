@@ -46,12 +46,7 @@ class Stock extends Component {
           nam
         </div>
         <Button variant="contained" color="secondary" onClick={() => {
-          const status = updateAllStocksDatabase()
-          if (status === 'Updated all stock successfully') {
-            this.setState({
-              message: 'Updated all stock successfully'
-            })
-          }
+          updateAllStocksDatabase()
         }}>
           Update data base
       </Button>

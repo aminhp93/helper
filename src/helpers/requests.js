@@ -64,6 +64,7 @@ export async function updateAllStocksDatabase() {
     if (stop) {
       return 'Updated all stocks failed'
     }
+    console.log('Updated all stocks successfully')
     return 'Updated all stocks successfully'
   } else {
     return 'Delete all stocks failed'
