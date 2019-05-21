@@ -5,7 +5,7 @@ import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-balham.css";
 import CustomPieChart from "./../CustomPieChart";
 import { mapData } from "./../../helpers/functionUtils";
-import { updateAllStocksDatabase } from '../../helpers/requests'
+import { updateAllStocksDatabase, getAllStocksUrl } from '../../helpers/requests'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
@@ -119,7 +119,7 @@ class Stock extends Component {
 
   componentDidMount() {
     axios
-      .get("http://localhost:8000/stocks/all")
+      .get(getAllStocksUrl())
       .then(response => {
         console.log(response);
         const rowData = response.data.stocks

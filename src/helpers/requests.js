@@ -29,6 +29,18 @@ export function getDeleteNoteUrl() {
   return domain + "post/delete";
 }
 
+export function getDeleteAllStocksUrl() {
+  return domain + 'stock/delete/all'
+}
+
+export function getCreateStockUrl() {
+  return domain + 'stock/create'
+}
+
+export function getAllStocksUrl() {
+  return domain + 'stocks/all'
+}
+
 export async function updateAllStocksDatabase() {
   const response = await deleteAllStocks()
   if (response.data.data === 'Deleted all stocks successfully') {
@@ -72,7 +84,7 @@ export async function updateAllStocksDatabase() {
 }
 
 function deleteAllStocks() {
-  return axios.post('http://localhost:8000/stock/delete/all')
+  return axios.post(getDeleteAllStocksUrl())
 }
 
 function updatedStockDatabase(floor) {
@@ -84,7 +96,7 @@ function updatedStockDatabase(floor) {
         .get(`https://svr1.fireant.vn/api/Data/Markets/HistoricalQuotes?symbol=${item}&startDate=2012-1-1&endDate=${endDay}`)
         .then(response => {
           axios
-            .post("http://localhost:8000/stock/create", {
+            .post(getCreateStockUrl(), {
               symbol: item,
               price_data: JSON.stringify(response.data)
             })
