@@ -1,0 +1,6 @@
+{
+    "name": "CustomedAgGridReact",
+    "version": "0.0.0",
+    "private": true,
+    "main": "./CustomedAgGridReact.js"
+}

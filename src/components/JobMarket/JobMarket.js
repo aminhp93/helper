@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { AgGridReact } from "ag-grid-react";
 import Input from "@material-ui/core/Input";
+import CustomedAgGridReact from '../CustomedAgGridReact';
 
 class JobMarket extends Component {
     constructor(props) {
@@ -47,9 +47,6 @@ class JobMarket extends Component {
 
             ]
         }
-        this.defaultColDef = {
-            sortable: true
-        }
     }
 
     handleOnChangeQuerySearch(e) {
@@ -70,10 +67,9 @@ class JobMarket extends Component {
                         height: "500px"
                     }}
                 >
-                    <AgGridReact
+                    <CustomedAgGridReact
                         columnDefs={this.state.columnDefs}
                         rowData={this.state.rowData}
-                        defaultColDef={this.defaultColDef}
                     />
                 </div>
             </div>

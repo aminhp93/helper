@@ -1,8 +1,5 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { AgGridReact } from "ag-grid-react";
-import "ag-grid-community/dist/styles/ag-grid.css";
-import "ag-grid-community/dist/styles/ag-theme-balham.css";
 import CustomPieChart from "./../CustomPieChart";
 import { mapData } from "./../../helpers/functionUtils";
 import { updateAllStocksDatabase, getAllStocksUrl, deleteAllStocks } from '../../helpers/requests'
@@ -10,6 +7,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
 import Button from '@material-ui/core/Button'
+import CustomedAgGridReact from '../CustomedAgGridReact';
 
 class Stock extends Component {
   constructor(props) {
@@ -37,6 +35,7 @@ class Stock extends Component {
       rowData: []
     };
   }
+
   render() {
     return (
       <div className="stock">
@@ -72,7 +71,7 @@ class Stock extends Component {
             height: "500px"
           }}
         >
-          <AgGridReact
+          <CustomedAgGridReact
             columnDefs={this.state.columnDefs}
             rowData={this.state.rowData}
           />
