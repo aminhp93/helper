@@ -2,11 +2,22 @@ import React from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-balham.css";
+import Modal from "@material-ui/core/Modal";
+import StockDetail from "./../StockDetail";
+
+function getModalStyle() {
+  return {
+    top: `5px`,
+    left: `5px`
+  };
+}
 
 class CustomedAgGridReact extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      open: false
+    };
     this.defaultColDef = {
       sortable: true,
       filter: true
@@ -50,6 +61,14 @@ class CustomedAgGridReact extends React.Component {
     }
   }
 
+  handleOnRowClicked = () => {
+    this.setState({ open: true });
+  };
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
   render() {
     return (
       <div
@@ -64,7 +83,18 @@ class CustomedAgGridReact extends React.Component {
           rowData={this.props.rowData}
           defaultColDef={this.defaultColDef}
           onGridReady={this.onGridReady.bind(this)}
+          onRowClicked={this.handleOnRowClicked.bind(this)}
         />
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={this.state.open}
+          onClose={this.handleClose}
+        >
+          <div style={getModalStyle()}>
+            <StockDetail />
+          </div>
+        </Modal>
       </div>
     );
   }
