@@ -10,7 +10,7 @@ const endDay = moment()
   .subtract(1, "days")
   .format("YYYY-MM-DD");
 
-domain = "http://localhost:8000/";
+// domain = "http://localhost:8000/";
 
 export function getAllNotesUrl() {
   return domain + "posts/all";

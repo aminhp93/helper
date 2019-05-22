@@ -28,6 +28,33 @@ class Stock extends Component {
           }
         },
         {
+          headerName: "ROE",
+          field: "ROE",
+          cellRenderer: function (params) {
+            if (params.data.ROE) {
+              return ((params.data.ROE) * 100).toFixed(2)
+            }
+          }
+        },
+        {
+          headerName: "EPS",
+          field: "EPS",
+          cellRenderer: function (params) {
+            if (params.data.EPS) {
+              return (params.data.EPS).toFixed(0)
+            }
+          }
+        },
+        {
+          headerName: "MarketCapitalization",
+          field: "MarketCapitalization",
+          cellRenderer: function (params) {
+            if (params.data.MarketCapitalization) {
+              return (params.data.MarketCapitalization / Math.pow(10, 9)).toFixed(0)
+            }
+          }
+        },
+        {
           headerName: 'Index 1',
           field: 'price_gap_index'
         }

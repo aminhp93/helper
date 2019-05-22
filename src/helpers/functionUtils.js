@@ -67,13 +67,20 @@ export function mapData(data, key) {
   let increasedStockNumbers = 0
   let unchangedStockNumbers = 0
   for (let i = 0; i < data.length; i++) {
-    let item = JSON.parse(data[i].price_data)
-    let lastDay = item[item.length - 1]
-    let lastTwoDays = item[item.length - 2]
+    let price_data_item = JSON.parse(data[i].price_data)
+    let lastDay = price_data_item[price_data_item.length - 1]
+    let lastTwoDays = price_data_item[price_data_item.length - 2]
+
+    let financial_data_item = JSON.parse(data[i].financial_data)
     // console.log(lastDay)
     let returnItem = {}
     returnItem['symbol'] = data[i]['symbol']
     returnItem['close'] = lastDay && lastDay.Close
+    if (financial_data_item) {
+      returnItem['ROE'] = financial_data_item && financial_data_item.ROE
+      returnItem['EPS'] = financial_data_item.EPS
+      returnItem['MarketCapitalization'] = financial_data_item.MarketCapitalization
+    }
     returnItem[key] = key
     returnedData.push(returnItem)
 
