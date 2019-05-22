@@ -2,12 +2,22 @@ import React, { Component } from "react";
 import axios from "axios";
 import CustomPieChart from "./../CustomPieChart";
 import { mapData } from "./../../helpers/functionUtils";
-import { updateAllStocksDatabase, getAllStocksUrl, deleteAllStocks } from '../../helpers/requests'
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-} from 'recharts';
-import Button from '@material-ui/core/Button'
-import CustomedAgGridReact from '../CustomedAgGridReact';
+  updateAllStocksDatabase,
+  getAllStocksUrl,
+  deleteAllStocks
+} from "../../helpers/requests";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend
+} from "recharts";
+import Button from "@material-ui/core/Button";
+import CustomedAgGridReact from "../CustomedAgGridReact";
 
 class Stock extends Component {
   constructor(props) {
@@ -21,42 +31,55 @@ class Stock extends Component {
         {
           headerName: "close",
           field: "close",
-          cellRenderer: function (params) {
+          filter: "agNumberColumnFilter",
+          cellRenderer: function(params) {
             if (params.data.close) {
-              return ((params.data.close) / 1000).toFixed(2)
+              return params.data.close.toFixed(2);
             }
           }
         },
         {
           headerName: "ROE",
           field: "ROE",
-          cellRenderer: function (params) {
+          filter: "agNumberColumnFilter",
+          cellRenderer: function(params) {
             if (params.data.ROE) {
-              return ((params.data.ROE) * 100).toFixed(2)
+              return params.data.ROE.toFixed(2);
             }
           }
         },
         {
           headerName: "EPS",
           field: "EPS",
-          cellRenderer: function (params) {
+          filter: "agNumberColumnFilter",
+          cellRenderer: function(params) {
             if (params.data.EPS) {
-              return (params.data.EPS).toFixed(0)
+              return params.data.EPS.toFixed(0);
             }
           }
         },
         {
           headerName: "MarketCapitalization",
           field: "MarketCapitalization",
-          cellRenderer: function (params) {
+          filter: "agNumberColumnFilter",
+          cellRenderer: function(params) {
             if (params.data.MarketCapitalization) {
-              return (params.data.MarketCapitalization / Math.pow(10, 9)).toFixed(0)
+              return params.data.MarketCapitalization.toFixed(0);
             }
           }
         },
         {
-          headerName: 'Index 1',
-          field: 'price_gap_index'
+          headerName: "Volume",
+          field: "volume",
+          filter: "agNumberColumnFilter"
+        },
+        {
+          headerName: "Date",
+          field: "trading_date"
+        },
+        {
+          headerName: "Index 1",
+          field: "price_gap_index"
         }
       ],
       rowData: []
@@ -71,34 +94,45 @@ class Stock extends Component {
           Api du lieu tu fireant --> so sanh gia tai 1 thoi diem va truoc do 1
           nam
         </div>
-        <Button variant="contained" color="secondary" onClick={() => {
-          deleteAllStocks()
-        }}>
-          Delete all stocks
-        </Button>
-        <Button variant="contained" color="secondary" onClick={() => {
-          updateAllStocksDatabase('HOSE_stocks')
-        }}>
-          Update HOSE_stocks
-        </Button>
-        <Button variant="contained" color="secondary" onClick={() => {
-          updateAllStocksDatabase('HNX_stocks')
-        }}>
-          Update HNX_stocks
-        </Button>
-        <Button variant="contained" color="secondary" onClick={() => {
-          updateAllStocksDatabase('UPCOM_stocks')
-        }}>
-          Update UPCOM_stocks
-        </Button>
-
-        <div
-          className="ag-theme-balham"
-          style={{
-            height: "500px"
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => {
+            deleteAllStocks();
           }}
         >
+          Delete all stocks
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => {
+            updateAllStocksDatabase("HOSE_stocks");
+          }}
+        >
+          Update HOSE_stocks
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => {
+            updateAllStocksDatabase("HNX_stocks");
+          }}
+        >
+          Update HNX_stocks
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => {
+            updateAllStocksDatabase("UPCOM_stocks");
+          }}
+        >
+          Update UPCOM_stocks
+        </Button>
+        <div>
           <CustomedAgGridReact
+            title="stock"
             columnDefs={this.state.columnDefs}
             rowData={this.state.rowData}
           />
@@ -118,7 +152,10 @@ class Stock extends Component {
             height={300}
             data={this.state.barChartData}
             margin={{
-              top: 5, right: 30, left: 20, bottom: 5,
+              top: 5,
+              right: 30,
+              left: 20,
+              bottom: 5
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
@@ -163,16 +200,16 @@ class Stock extends Component {
       .get(getAllStocksUrl())
       .then(response => {
         console.log(response);
-        const rowData = response.data.stocks
-        const mappedData = mapData(rowData, 'price_gap_index')
-        console.log(mappedData)
-        const minData = JSON.parse(rowData[2].price_data)
+        const rowData = response.data.stocks;
+        const mappedData = mapData(rowData, "price_gap_index");
+        console.log(mappedData);
+        const minData = JSON.parse(rowData[2].price_data);
 
         this.setState({
           minData,
           rowData: mappedData.returnedData,
           barChartData: mappedData.barChartData
-        })
+        });
       })
       .catch(error => {
         console.log(error);
