@@ -70,33 +70,42 @@ export function deleteAllStocks() {
   return axios.post(getDeleteAllStocksUrl())
 }
 
+async function getLastestFinancialInfo(resolve, item) {
+  let response1
+  let response2
+  let errorsList = []
+  await axios
+    .get(`https://svr1.fireant.vn/api/Data/Markets/HistoricalQuotes?symbol=${item}&startDate=2012-1-1&endDate=${endDay}`)
+    .then(response => {
+      response1 = response
+    })
+    .catch(error => {
+      errorsList.push(error)
+      console.log(error);
+    });
+  if (errorsList.length > 0) return resolve({ message: 'error' })
+  await axios
+    .post(getCreateStockUrl(), {
+      symbol: item,
+      price_data: JSON.stringify(response1.data)
+    })
+    .then(response => {
+
+    })
+    .catch(error => {
+      errorsList.push(error)
+      console.log(error);
+    });
+  if (errorsList.length > 0) return resolve({ message: 'error' })
+  return resolve({ message: 'success' })
+}
+
 function updatedStockDatabase(floor) {
   let listPromises = []
   let listErrors = []
   floor.map(item => {
     listPromises.push(new Promise(resolve => {
-      axios
-        .get(`https://svr1.fireant.vn/api/Data/Markets/HistoricalQuotes?symbol=${item}&startDate=2012-1-1&endDate=${endDay}`)
-        .then(response => {
-          axios
-            .post(getCreateStockUrl(), {
-              symbol: item,
-              price_data: JSON.stringify(response.data)
-            })
-            .then(response => {
-              resolve({ message: 'success' })
-            })
-            .catch(error => {
-              listErrors.push(error)
-              resolve({ message: 'error' })
-              console.log(error);
-            });
-        })
-        .catch(error => {
-          listErrors.push(error)
-          resolve({ message: 'error' })
-          console.log(error);
-        });
+      getLastestFinancialInfo(resolve, item)
     }))
   });
   return Promise.all(listPromises)
