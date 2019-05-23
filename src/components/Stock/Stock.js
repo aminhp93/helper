@@ -5,7 +5,8 @@ import { mapData } from "./../../helpers/functionUtils";
 import {
   updateAllStocksDatabase,
   getAllStocksUrl,
-  deleteAllStocks
+  deleteAllStocks,
+  getQuickFilteredStocksUrl
 } from "../../helpers/requests";
 import {
   BarChart,
@@ -222,6 +223,13 @@ class Stock extends Component {
       .catch(error => {
         console.log(error);
       });
+    axios.get(getQuickFilteredStocksUrl())
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 }
 

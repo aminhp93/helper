@@ -61,7 +61,7 @@ export function findMaxPercent(data, percentValue = 0) {
   return returnedData;
 }
 
-function calculateRSI(data) {
+export function calculateRSI(data) {
   let sumGain = 0;
   let sumLoss = 0
   for (let j = 1; j < data.length; j++) {
