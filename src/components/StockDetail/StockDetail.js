@@ -55,7 +55,7 @@ class StockDetail extends React.Component {
             <Tab label="Luu chuyen tien te - Gian tiep" />
           </Tabs>
         </AppBar>
-        {value === 0 && <TabContainer><ChartTV/></TabContainer>}
+        {value === 0 && <TabContainer><ChartTV symbol={this.state.symbol}/></TabContainer>}
         {value === 1 && <TabContainer>Ket qua kinh doanh | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary='2' /></TabContainer>}
         {value === 2 && <TabContainer>Can doi ke toan | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary='1' /></TabContainer>}
         {value === 3 && (

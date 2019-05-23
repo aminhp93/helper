@@ -52,7 +52,8 @@ class ChartTV extends React.Component {
             client_id: 'abc.com',
             footer_screenshot: false,
             disabled_features: ['use_localstorage_for_settings', 'study_templates', 'dome_widget', 'header_layouttoggle', 'header_screenshot', 'move_logo_to_main_pane', 'snapshot_trading_drawings', 'show_logo_on_all_charts'],
-            user_id: 'public_user_id'
+            user_id: 'public_user_id',
+            symbol: this.props.symbol || 'FPT'
         };
         this.widget = new TradingView.widget(option);
         this.widget && this.widget.onChartReady && this.widget.onChartReady(function () {
@@ -74,26 +75,27 @@ class ChartTV extends React.Component {
                 console.log(div)
                 that.saveLayoutChart(div);
             })
-            that.loadLayoutChart()
+            // that.loadLayoutChart()
+            that.widget.load()
         });
     }
 
-    loadLayoutChart() {
-        let url = getLoadLayoutChartUrl()
-        axios.get(url)
-            .then(response => {
-                if (response.data) {
-                    console.log(response.data)
-                    const savedLayout = JSON.parse(response.data.data.content).content
-                    console.log(savedLayout)
-                    this.widget && this.widget.load && this.widget.load(savedLayout)
-                }
-            })
-            .catch(error => {
-                console.log(error.response)
-            });
+    // loadLayoutChart() {
+    //     let url = getLoadLayoutChartUrl()
+    //     axios.get(url)
+    //         .then(response => {
+    //             if (response.data) {
+    //                 console.log(response.data)
+    //                 const savedLayout = JSON.parse(response.data.data.content).content
+    //                 console.log(savedLayout)
+    //                 this.widget && this.widget.load && this.widget.load(savedLayout)
+    //             }
+    //         })
+    //         .catch(error => {
+    //             console.log(error.response)
+    //         });
 
-    }
+    // }
 
     callbackSearch(response) {
         console.log(response)
