@@ -68,3 +68,11 @@ input {
 .stock .stockTable {
   margin-bottom: 50px;
 }
+
+.chartTV {
+  height: 500px;
+}
+
+.chartTV > iframe {
+  height: 100% !important;
+}

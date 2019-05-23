@@ -8,6 +8,7 @@
     "ag-grid-react": "^20.2.0",
     "axios": "^0.18.0",
     "faker": "^4.1.0",
+    "jquery": "^3.4.1",
     "moment": "^2.24.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",

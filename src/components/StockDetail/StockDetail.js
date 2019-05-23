@@ -6,6 +6,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import BusinessSummary from "../BusinessSummary";
+import ChartTV from "../ChartTV";
 
 function TabContainer(props) {
   return (
@@ -47,23 +48,22 @@ class StockDetail extends React.Component {
       <div className={classes.root}>
         <AppBar position="static">
           <Tabs value={value} onChange={this.handleChange}>
+            <Tab label="Chart" />
             <Tab label="Ket qua kinh doanh" />
             <Tab label="Can doi ke toan" />
             <Tab label="Luu chuyen tien te - Truc tiep" />
             <Tab label="Luu chuyen tien te - Gian tiep" />
           </Tabs>
         </AppBar>
-        {value === 0 && <TabContainer>Ket qua kinh doanh | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary='2' /></TabContainer>}
-        {value === 1 && <TabContainer>Can doi ke toan | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary='1' /></TabContainer>}
-        {value === 2 && (
+        {value === 0 && <TabContainer><ChartTV/></TabContainer>}
+        {value === 1 && <TabContainer>Ket qua kinh doanh | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary='2' /></TabContainer>}
+        {value === 2 && <TabContainer>Can doi ke toan | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary='1' /></TabContainer>}
+        {value === 3 && (
           <TabContainer>Luu chuyen tien te - Truc tiep | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary='3' /></TabContainer>
         )}
-        {value === 3 && (
+        {value === 4 && (
           <TabContainer>Luu chuyen tien te - Gian tiep | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary='4' /></TabContainer>
         )}
-        {
-          value === 4 && <TabContainer></TabContainer>
-        }
       </div>
     );
   }
