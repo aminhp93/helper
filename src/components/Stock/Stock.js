@@ -26,16 +26,16 @@ class Stock extends Component {
     this.state = {
       columnDefs: [
         {
-          headerName: "symbol",
-          field: "symbol"
+          headerName: "Symbol",
+          field: "Symbol"
         },
         {
-          headerName: "close",
-          field: "close",
+          headerName: "Close",
+          field: "Close",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
-            if (params.data.close) {
-              return params.data.close.toFixed(2);
+          cellRenderer: function(params) {
+            if (params.data.Close) {
+              return params.data.Close.toFixed(0);
             }
           }
         },
@@ -43,7 +43,7 @@ class Stock extends Component {
           headerName: "ROE",
           field: "ROE",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.ROE) {
               return params.data.ROE.toFixed(2);
             }
@@ -53,7 +53,7 @@ class Stock extends Component {
           headerName: "EPS",
           field: "EPS",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.EPS) {
               return params.data.EPS.toFixed(0);
             }
@@ -63,7 +63,7 @@ class Stock extends Component {
           headerName: "MarketCapitalization",
           field: "MarketCapitalization",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.MarketCapitalization) {
               return params.data.MarketCapitalization.toFixed(0);
             }
@@ -71,7 +71,7 @@ class Stock extends Component {
         },
         {
           headerName: "Volume",
-          field: "volume",
+          field: "Volume",
           filter: "agNumberColumnFilter"
         },
         // {
@@ -79,14 +79,14 @@ class Stock extends Component {
         //   field: "trading_date"
         // },
         {
-          headerName: 'RSI_14',
-          field: 'RSI_14',
-          filter: "agNumberColumnFilter",
+          headerName: "RSI_14",
+          field: "RSI_14",
+          filter: "agNumberColumnFilter"
         },
         {
-          headerName: 'RSI_14_diff',
-          field: 'RSI_14_diff',
-          filter: "agNumberColumnFilter",
+          headerName: "RSI_14_diff",
+          field: "RSI_14_diff",
+          filter: "agNumberColumnFilter"
         },
         {
           headerName: "Index 1",
@@ -101,7 +101,7 @@ class Stock extends Component {
     return (
       <div className="stock">
         Stock
-        <div className='stockTable'>
+        <div className="stockTable">
           <CustomedAgGridReact
             title="stock"
             columnDefs={this.state.columnDefs}
@@ -139,7 +139,7 @@ class Stock extends Component {
             <Bar dataKey="unchangedStockNumbers" fill="grey" />
           </BarChart>
         </div>
-        <div className='updateButtons'>
+        <div className="updateButtons">
           <Button
             variant="contained"
             color="secondary"
@@ -148,7 +148,7 @@ class Stock extends Component {
             }}
           >
             Delete all stocks
-        </Button>
+          </Button>
           <Button
             variant="contained"
             color="secondary"
@@ -157,7 +157,7 @@ class Stock extends Component {
             }}
           >
             Update HOSE_stocks
-        </Button>
+          </Button>
           <Button
             variant="contained"
             color="secondary"
@@ -166,7 +166,7 @@ class Stock extends Component {
             }}
           >
             Update HNX_stocks
-        </Button>
+          </Button>
           <Button
             variant="contained"
             color="secondary"
@@ -175,7 +175,7 @@ class Stock extends Component {
             }}
           >
             Update UPCOM_stocks
-        </Button>
+          </Button>
         </div>
       </div>
     );
@@ -205,31 +205,35 @@ class Stock extends Component {
   }
 
   componentDidMount() {
+    // axios
+    // .get(getAllStocksUrl())
+    // .then(response => {
+    //   console.log(response);
+    //   const rowData = response.data.stocks;
+    //   const mappedData = mapData(rowData, "price_gap_index");
+    //   console.log(mappedData);
+    //   const minData = JSON.parse(rowData[2].price_data);
+
+    //   this.setState({
+    //     minData,
+    //     rowData: mappedData.returnedData,
+    //     barChartData: mappedData.barChartData
+    //   });
+    // })
+    // .catch(error => {
+    //   console.log(error);
+    // });
     axios
-      .get(getAllStocksUrl())
+      .get(getQuickFilteredStocksUrl())
       .then(response => {
         console.log(response);
-        const rowData = response.data.stocks;
-        const mappedData = mapData(rowData, "price_gap_index");
-        console.log(mappedData);
-        const minData = JSON.parse(rowData[2].price_data);
-
         this.setState({
-          minData,
-          rowData: mappedData.returnedData,
-          barChartData: mappedData.barChartData
+          rowData: response.data.stocks
         });
       })
       .catch(error => {
         console.log(error);
       });
-    axios.get(getQuickFilteredStocksUrl())
-      .then(response => {
-        console.log(response)
-      })
-      .catch(error => {
-        console.log(error)
-      })
   }
 }
 

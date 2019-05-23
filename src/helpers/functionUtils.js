@@ -1,4 +1,5 @@
 export function calculateClose(data, timeValue, percentValue = 0) {
+  if (!data) return;
   let smallerCount = 0;
   let largerCount = 0;
   for (let i = 0; i < data.length - timeValue; i++) {
@@ -63,41 +64,45 @@ export function findMaxPercent(data, percentValue = 0) {
 
 export function calculateRSI(data) {
   let sumGain = 0;
-  let sumLoss = 0
+  let sumLoss = 0;
   for (let j = 1; j < data.length; j++) {
     let change = data[j].Close - data[j - 1].Close;
     if (change > 0) {
-      data[j].Gain = change
-      data[j].Loss = 0
+      data[j].Gain = change;
+      data[j].Loss = 0;
     }
     if (change < 0) {
-      data[j].Loss = -change
-      data[j].Gain = 0
+      data[j].Loss = -change;
+      data[j].Gain = 0;
     }
     if (change === 0) {
-      data[j].Loss = 0
-      data[j].Gain = 0
+      data[j].Loss = 0;
+      data[j].Gain = 0;
     }
-    sumGain += data[j].Gain || 0
-    sumLoss += data[j].Loss || 0
+    sumGain += data[j].Gain || 0;
+    sumLoss += data[j].Loss || 0;
     if (j < 14) {
-      data[j].AverageGain = sumGain / 14
-      data[j].AverageLoss = sumLoss / 14
+      data[j].AverageGain = sumGain / 14;
+      data[j].AverageLoss = sumLoss / 14;
     } else {
-      data[j].AverageGain = (data[j - 1].AverageGain * 13 + data[j].Gain) / 14
-      data[j].AverageLoss = (data[j - 1].AverageLoss * 13 + data[j].Loss) / 14
-      data[j].RSI = 100 - 100 / (1 + (data[j].AverageGain) / (data[j].AverageLoss))
-
+      data[j].AverageGain = (data[j - 1].AverageGain * 13 + data[j].Gain) / 14;
+      data[j].AverageLoss = (data[j - 1].AverageLoss * 13 + data[j].Loss) / 14;
+      data[j].RSI = 100 - 100 / (1 + data[j].AverageGain / data[j].AverageLoss);
     }
   }
 
-  if (data[data.length - 1].RSI && data[data.length - 2].RSI) {
+  if (
+    data[data.length - 1] &&
+    data[data.length - 2] &&
+    data[data.length - 1].RSI &&
+    data[data.length - 2].RSI
+  ) {
     return {
       RSI_14_previous: Number(data[data.length - 2].RSI.toFixed(0)) || 0,
       RSI_14: Number(data[data.length - 1].RSI.toFixed(0)) || 0
-    }
+    };
   }
-  return {}
+  return {};
 }
 
 export function mapData(data, key) {
@@ -113,14 +118,14 @@ export function mapData(data, key) {
     let financial_data_item = JSON.parse(data[i].financial_data);
     // console.log(lastDay)
     let returnItem = {};
-    returnItem["symbol"] = data[i]["symbol"];
+    returnItem["Symbol"] = data[i]["Symbol"];
     if (lastDay) {
-      returnItem["close"] = lastDay.Close / 1000;
-      returnItem["volume"] = lastDay.Volume;
-      returnItem["trading_date"] = lastDay.Date;
-      const calculateRSI_result = calculateRSI(price_data_item)
-      returnItem['RSI_14'] = calculateRSI_result.RSI_14
-      returnItem['RSI_14_diff'] = calculateRSI_result.RSI_14 - calculateRSI_result.RSI_14_previous
+      returnItem["Close"] = lastDay.Close / 1000;
+      returnItem["Volume"] = lastDay.Volume;
+      const calculateRSI_result = calculateRSI(price_data_item);
+      returnItem["RSI_14"] = calculateRSI_result.RSI_14;
+      returnItem["RSI_14_diff"] =
+        calculateRSI_result.RSI_14 - calculateRSI_result.RSI_14_previous;
     }
     if (financial_data_item) {
       returnItem["ROE"] = financial_data_item && financial_data_item.ROE * 100;
@@ -157,10 +162,10 @@ export function mapData(data, key) {
 export function formatNumber(input, decimal, fill, nonFixToZero) {
   try {
     if (input === null || isNaN(input) || input === undefined) {
-      return '--';
+      return "--";
     }
-    if (input === '' && !nonFixToZero) {
-      return '0';
+    if (input === "" && !nonFixToZero) {
+      return "0";
     }
     if (decimal == null) {
       if (parseFloat(input) >= 2) {
@@ -171,15 +176,13 @@ export function formatNumber(input, decimal, fill, nonFixToZero) {
     } else {
       input = roundFloat(input, decimal);
     }
-    input = input
-      .toString()
-      .split('.');
-    input[0] = input[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    input = input.toString().split(".");
+    input[0] = input[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
     if (decimal && fill) {
-      if (!input[1]) input[1] = '0'.repeat(decimal);
-      else input[1] += '0'.repeat(decimal - input[1].length);
+      if (!input[1]) input[1] = "0".repeat(decimal);
+      else input[1] += "0".repeat(decimal - input[1].length);
     }
-    return input.join('.')
+    return input.join(".");
   } catch (ex) {
     console.error(ex);
   }
@@ -194,22 +197,26 @@ export function roundFloat(numberFloat, lenght) {
     //     itenDivison += '0';
     // }
     // const division = Number(itenDivison);
-    let numberString = numberFloat + '';
-    let arrNumber = numberString.split('.');
+    let numberString = numberFloat + "";
+    let arrNumber = numberString.split(".");
     if (!arrNumber[1]) return numberFloat;
     for (let i = 0; i < lenght; i++) {
       if (arrNumber[1][0]) {
         arrNumber[0] += arrNumber[1][0];
         arrNumber[1] = arrNumber[1].substr(1);
       } else {
-        arrNumber[0] += '0'
+        arrNumber[0] += "0";
       }
     }
-    numberString = arrNumber.join('.');
+    numberString = arrNumber.join(".");
     arrNumber = Math.round(numberString).toString();
-    arrNumber = arrNumber.replace(/^(-?)/, '$1' + '0'.repeat(lenght))
-    let result = Number(arrNumber.substring(0, arrNumber.length - lenght) + '.' + arrNumber.substr(-lenght));
-    return result
+    arrNumber = arrNumber.replace(/^(-?)/, "$1" + "0".repeat(lenght));
+    let result = Number(
+      arrNumber.substring(0, arrNumber.length - lenght) +
+        "." +
+        arrNumber.substr(-lenght)
+    );
+    return result;
   } catch (e) {
     console.error(e);
   }
