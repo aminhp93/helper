@@ -93,7 +93,7 @@ export async function updateAllStocksDatabase(floor) {
   response2.map(item => {
     if (item.message === "error") {
       stop = true;
-      console.log("Failed at" + JSON.stringify(item.errorsList));
+      console.log(JSON.stringify(item.errorsList[0].data.Symbol));
       return;
     }
   });
