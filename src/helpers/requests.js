@@ -78,6 +78,7 @@ export function getLoadLayoutChartUrl() {
 
 export async function updateAllStocksDatabase(floor) {
   let startTime = new Date();
+  let endTime;
   let stop = false;
   let floor_stocks;
   if (floor === "HOSE_stocks") {
@@ -92,14 +93,17 @@ export async function updateAllStocksDatabase(floor) {
   response2.map(item => {
     if (item.message === "error") {
       stop = true;
+      console.log("Failed at" + JSON.stringify(item.errorsList));
       return;
     }
   });
 
   if (stop) {
+    endTime = new Date();
+    console.log(`Updated failed somewhere in ${msToTime(endTime - startTime)}`);
     return "Updated all stocks failed" + floor;
   }
-  let endTime = new Date();
+  endTime = new Date();
   console.log(
     `Updated all stocks successfully ${floor} in ${msToTime(
       endTime - startTime
@@ -143,10 +147,21 @@ async function getLastestFinancialInfo(resolve, item) {
     })
     .then(response => {})
     .catch(error => {
-      errorsList.push(error);
+      errorsList.push({
+        error,
+        data: {
+          Symbol: item,
+          price_data: JSON.stringify(response1.data),
+          Close: lastDay && lastDay.Close,
+          Volume: lastDay && lastDay.Volume,
+          RSI_14: calculateRSI_result.RSI_14,
+          RSI_14_diff:
+            calculateRSI_result.RSI_14 - calculateRSI_result.RSI_14_previous
+        }
+      });
       console.log(error);
     });
-  if (errorsList.length > 0) return resolve({ message: "error" });
+  if (errorsList.length > 0) return resolve({ message: "error", errorsList });
   return resolve({ message: "success" });
 }
 
