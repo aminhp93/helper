@@ -72,7 +72,6 @@ export function deleteAllStocks() {
 
 async function getLastestFinancialInfo(resolve, item) {
   let response1
-  let response2
   let errorsList = []
   await axios
     .get(`https://svr1.fireant.vn/api/Data/Markets/HistoricalQuotes?symbol=${item}&startDate=2012-1-1&endDate=${endDay}`)
@@ -102,7 +101,6 @@ async function getLastestFinancialInfo(resolve, item) {
 
 function updatedStockDatabase(floor) {
   let listPromises = []
-  let listErrors = []
   floor.map(item => {
     listPromises.push(new Promise(resolve => {
       getLastestFinancialInfo(resolve, item)

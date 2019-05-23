@@ -4,6 +4,8 @@ import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-balham.css";
 import Modal from "@material-ui/core/Modal";
 import StockDetail from "./../StockDetail";
+import Button from "@material-ui/core/Button";
+import { Input } from "@material-ui/core";
 
 function getModalStyle() {
   return {
@@ -37,7 +39,16 @@ class CustomedAgGridReact extends React.Component {
       volume: {
         type: "greaterThan",
         filter: "10000"
-      }
+      },
+      RSI_14: {
+        type: 'inRange',
+        filter: '60',
+        filterTo: '70'
+      },
+      RSI_14_diff: {
+        type: "greaterThan",
+        filter: "0"
+      },
     };
     this.gridApi.setFilterModel(hardCodedFilter);
     this.gridApi.onFilterChanged();
@@ -51,18 +62,21 @@ class CustomedAgGridReact extends React.Component {
     switch (this.props.title) {
       case "stock":
         return (
-          <div onClick={this.setQuickFilter.bind(this)}>
-            QuickFilter EPS > 3000, ROE > 17, Volume > 10000
-          </div>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={this.setQuickFilter.bind(this)}
+          >
+            Quick filter(EPS > 3000, ROE > 17, VOLUME > 10000, ROI > 60)
+          </Button>
         );
-
       default:
         return null;
     }
   }
 
-  handleOnRowClicked = () => {
-    this.setState({ open: true });
+  handleOnRowClicked = (params) => {
+    this.setState({ open: true, symbol: params.data.symbol });
   };
 
   handleClose = () => {
@@ -77,6 +91,10 @@ class CustomedAgGridReact extends React.Component {
           height: "500px"
         }}
       >
+        <Input onChange={(e) => {
+          console.log(e.target.value)
+          this.gridApi.setQuickFilter(e.target.value)
+        }} />
         {this.renderQuickFilterButton()}
         <AgGridReact
           columnDefs={this.props.columnDefs}
@@ -92,7 +110,7 @@ class CustomedAgGridReact extends React.Component {
           onClose={this.handleClose}
         >
           <div style={getModalStyle()}>
-            <StockDetail />
+            <StockDetail symbol={this.state.symbol} />
           </div>
         </Modal>
       </div>

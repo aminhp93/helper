@@ -5,6 +5,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
+import BusinessSummary from "../BusinessSummary";
 
 function TabContainer(props) {
   return (
@@ -26,9 +27,13 @@ const styles = theme => ({
 });
 
 class StockDetail extends React.Component {
-  state = {
-    value: 0
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 0,
+      symbol: props.symbol
+    }
+  }
 
   handleChange = (event, value) => {
     this.setState({ value });
@@ -48,17 +53,22 @@ class StockDetail extends React.Component {
             <Tab label="Luu chuyen tien te - Gian tiep" />
           </Tabs>
         </AppBar>
-        {value === 0 && <TabContainer>Ket qua kinh doanh</TabContainer>}
-        {value === 1 && <TabContainer>Can doi ke toan</TabContainer>}
+        {value === 0 && <TabContainer>Ket qua kinh doanh | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary='2' /></TabContainer>}
+        {value === 1 && <TabContainer>Can doi ke toan | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary='1' /></TabContainer>}
         {value === 2 && (
-          <TabContainer>Luu chuyen tien te - Truc tiep</TabContainer>
+          <TabContainer>Luu chuyen tien te - Truc tiep | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary='3' /></TabContainer>
         )}
         {value === 3 && (
-          <TabContainer>Luu chuyen tien te - Gian tiep</TabContainer>
+          <TabContainer>Luu chuyen tien te - Gian tiep | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary='4' /></TabContainer>
         )}
+        {
+          value === 4 && <TabContainer></TabContainer>
+        }
       </div>
     );
   }
+
+
 }
 
 export default withStyles(styles)(StockDetail);

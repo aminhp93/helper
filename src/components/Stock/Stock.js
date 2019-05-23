@@ -32,7 +32,7 @@ class Stock extends Component {
           headerName: "close",
           field: "close",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.close) {
               return params.data.close.toFixed(2);
             }
@@ -42,7 +42,7 @@ class Stock extends Component {
           headerName: "ROE",
           field: "ROE",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.ROE) {
               return params.data.ROE.toFixed(2);
             }
@@ -52,7 +52,7 @@ class Stock extends Component {
           headerName: "EPS",
           field: "EPS",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.EPS) {
               return params.data.EPS.toFixed(0);
             }
@@ -62,7 +62,7 @@ class Stock extends Component {
           headerName: "MarketCapitalization",
           field: "MarketCapitalization",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.MarketCapitalization) {
               return params.data.MarketCapitalization.toFixed(0);
             }
@@ -78,6 +78,16 @@ class Stock extends Component {
           field: "trading_date"
         },
         {
+          headerName: 'RSI_14',
+          field: 'RSI_14',
+          filter: "agNumberColumnFilter",
+        },
+        {
+          headerName: 'RSI_14_diff',
+          field: 'RSI_14_diff',
+          filter: "agNumberColumnFilter",
+        },
+        {
           headerName: "Index 1",
           field: "price_gap_index"
         }
@@ -90,47 +100,7 @@ class Stock extends Component {
     return (
       <div className="stock">
         Stock
-        <div>
-          Api du lieu tu fireant --> so sanh gia tai 1 thoi diem va truoc do 1
-          nam
-        </div>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => {
-            deleteAllStocks();
-          }}
-        >
-          Delete all stocks
-        </Button>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => {
-            updateAllStocksDatabase("HOSE_stocks");
-          }}
-        >
-          Update HOSE_stocks
-        </Button>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => {
-            updateAllStocksDatabase("HNX_stocks");
-          }}
-        >
-          Update HNX_stocks
-        </Button>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => {
-            updateAllStocksDatabase("UPCOM_stocks");
-          }}
-        >
-          Update UPCOM_stocks
-        </Button>
-        <div>
+        <div className='stockTable'>
           <CustomedAgGridReact
             title="stock"
             columnDefs={this.state.columnDefs}
@@ -167,6 +137,44 @@ class Stock extends Component {
             <Bar dataKey="decreasedStockNumbers" fill="red" />
             <Bar dataKey="unchangedStockNumbers" fill="grey" />
           </BarChart>
+        </div>
+        <div className='updateButtons'>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              deleteAllStocks();
+            }}
+          >
+            Delete all stocks
+        </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              updateAllStocksDatabase("HOSE_stocks");
+            }}
+          >
+            Update HOSE_stocks
+        </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              updateAllStocksDatabase("HNX_stocks");
+            }}
+          >
+            Update HNX_stocks
+        </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              updateAllStocksDatabase("UPCOM_stocks");
+            }}
+          >
+            Update UPCOM_stocks
+        </Button>
         </div>
       </div>
     );

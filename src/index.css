@@ -64,3 +64,7 @@ input {
 .stock .chartContainer {
   display: flex;
 }
+
+.stock .stockTable {
+  margin-bottom: 50px;
+}
