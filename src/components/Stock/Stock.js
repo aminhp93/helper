@@ -172,6 +172,13 @@ class Stock extends Component {
           >
             Update UPCOM_stocks
           </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={this.getAllDatabase.bind(this)}
+          >
+            Get all database
+          </Button>
         </div>
       </div>
     );
@@ -200,8 +207,8 @@ class Stock extends Component {
     //   })
   }
 
-  componentDidMount() {
-    // axios
+  getAllDatabase() {
+    //  axios
     // .get(getAllStocksUrl())
     // .then(response => {
     //   console.log(response);
@@ -210,15 +217,29 @@ class Stock extends Component {
     //   console.log(mappedData);
     //   const minData = JSON.parse(rowData[2].price_data);
 
-    //   this.setState({
-    //     minData,
-    //     rowData: mappedData.returnedData,
-    //     barChartData: mappedData.barChartData
+    // this.setState({
+    // minData,
+    // rowData: mappedData.returnedData,
+    // barChartData: mappedData.barChartData
     //   });
     // })
     // .catch(error => {
     //   console.log(error);
     // });
+    axios
+      .get(getAllStocksUrl())
+      .then(response => {
+        console.log(response);
+        this.setState({
+          rowData: response.data.stocks
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  componentDidMount() {
     axios
       .get(getQuickFilteredStocksUrl())
       .then(response => {
