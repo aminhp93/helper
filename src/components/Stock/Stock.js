@@ -74,10 +74,6 @@ class Stock extends Component {
           field: "Volume",
           filter: "agNumberColumnFilter"
         },
-        // {
-        //   headerName: "Date",
-        //   field: "trading_date"
-        // },
         {
           headerName: "RSI_14",
           field: "RSI_14",
