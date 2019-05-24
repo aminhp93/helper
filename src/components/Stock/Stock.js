@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import CustomPieChart from "./../CustomPieChart";
-import { mapData } from "./../../helpers/functionUtils";
+// import { mapData } from "./../../helpers/functionUtils";
 import {
   updateAllStocksDatabase,
   getAllStocksUrl,

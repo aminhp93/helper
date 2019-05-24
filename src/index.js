@@ -10,6 +10,7 @@ import RealEstate from "./components/RealEstate";
 import Stock from "./components/Stock";
 import JobMarket from "./components/JobMarket";
 import Book from "./components/Book";
+import CheckList from "./components/CheckList";
 
 ReactDOM.render(
   <Router>
@@ -20,6 +21,7 @@ ReactDOM.render(
     <Route path="/stock" component={Stock} />
     <Route path="/job" component={JobMarket} />
     <Route path="/book" component={Book} />
+    <Route path="/checklist" component={CheckList} />
   </Router>,
   document.getElementById("root")
 );

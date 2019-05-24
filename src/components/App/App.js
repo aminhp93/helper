@@ -26,6 +26,9 @@ class App extends Component {
         <li>
           <Link to="/book">Book</Link>
         </li>
+        <li>
+          <Link to="/checklist">CheckList</Link>
+        </li>
       </ul>
     );
   }

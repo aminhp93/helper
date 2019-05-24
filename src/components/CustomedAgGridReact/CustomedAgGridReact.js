@@ -41,14 +41,14 @@ class CustomedAgGridReact extends React.Component {
         filter: "10000"
       },
       RSI_14: {
-        type: 'inRange',
-        filter: '60',
-        filterTo: '70'
+        type: "inRange",
+        filter: "60",
+        filterTo: "70"
       },
       RSI_14_diff: {
         type: "greaterThan",
         filter: "0"
-      },
+      }
     };
     this.gridApi.setFilterModel(hardCodedFilter);
     this.gridApi.onFilterChanged();
@@ -75,8 +75,8 @@ class CustomedAgGridReact extends React.Component {
     }
   }
 
-  handleOnRowClicked = (params) => {
-    this.setState({ open: true, symbol: params.data.symbol });
+  handleOnRowClicked = params => {
+    this.setState({ open: true, symbol: params.data.Symbol });
   };
 
   handleClose = () => {
@@ -91,10 +91,12 @@ class CustomedAgGridReact extends React.Component {
           height: "500px"
         }}
       >
-        <Input onChange={(e) => {
-          console.log(e.target.value)
-          this.gridApi.setQuickFilter(e.target.value)
-        }} />
+        <Input
+          onChange={e => {
+            console.log(e.target.value);
+            this.gridApi.setQuickFilter(e.target.value);
+          }}
+        />
         {this.renderQuickFilterButton()}
         <AgGridReact
           columnDefs={this.props.columnDefs}
