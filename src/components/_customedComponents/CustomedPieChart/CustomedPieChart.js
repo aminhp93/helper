@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { PieChart, Pie, Tooltip, Cell } from "recharts";
-import { calculateClose, findMaxPercent } from "./../../helpers/functionUtils";
+import { calculateClose, findMaxPercent } from "../../../helpers/functionUtils";
 import Input from "@material-ui/core/Input";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];

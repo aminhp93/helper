@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import CustomPieChart from "./../CustomPieChart";
+import CustomedPieChart from "./../_customedComponents/CustomedPieChart";
 // import { mapData } from "./../../helpers/functionUtils";
 import {
   updateAllStocksDatabase,
@@ -18,7 +18,7 @@ import {
   Legend
 } from "recharts";
 import Button from "@material-ui/core/Button";
-import CustomedAgGridReact from "../CustomedAgGridReact";
+import CustomedAgGridReact from "../_customedComponents/CustomedAgGridReact";
 
 class Stock extends Component {
   constructor(props) {
@@ -33,7 +33,7 @@ class Stock extends Component {
           headerName: "Close",
           field: "Close",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.Close) {
               return params.data.Close.toFixed(0);
             }
@@ -43,7 +43,7 @@ class Stock extends Component {
           headerName: "ROE",
           field: "ROE",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.ROE) {
               return params.data.ROE.toFixed(2);
             }
@@ -53,7 +53,7 @@ class Stock extends Component {
           headerName: "EPS",
           field: "EPS",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.EPS) {
               return params.data.EPS.toFixed(0);
             }
@@ -63,7 +63,7 @@ class Stock extends Component {
           headerName: "MarketCapitalization",
           field: "MarketCapitalization",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.MarketCapitalization) {
               return params.data.MarketCapitalization.toFixed(0);
             }
@@ -105,9 +105,9 @@ class Stock extends Component {
           />
         </div>
         <div className="chartContainer">
-          <CustomPieChart data={this.state.minData} timeValue={251} />
-          <CustomPieChart data={this.state.minData} timeValue={18} />
-          <CustomPieChart
+          <CustomedPieChart data={this.state.minData} timeValue={251} />
+          <CustomedPieChart data={this.state.minData} timeValue={18} />
+          <CustomedPieChart
             data={this.state.minData}
             timeValue={251}
             percentValue={20}

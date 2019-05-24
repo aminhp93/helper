@@ -1,0 +1,6 @@
+{
+  "name": "CustomedCheckBox",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./CustomedCheckBox.js"
+}

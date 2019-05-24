@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Input from "@material-ui/core/Input";
-import CustomedAgGridReact from '../CustomedAgGridReact';
+import CustomedAgGridReact from '../_customedComponents/CustomedAgGridReact';
 
 class JobMarket extends Component {
     constructor(props) {

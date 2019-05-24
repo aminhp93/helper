@@ -1,3 +1,4 @@
 export default {
-  isProduction: true
+  // isProduction: true
+  isProduction: false
 };

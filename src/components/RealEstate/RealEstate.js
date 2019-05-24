@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import CustomedAgGridReact from '../CustomedAgGridReact'
+import CustomedAgGridReact from '../_customedComponents/CustomedAgGridReact'
 // import axios from "axios";
 
 class RealEstate extends Component {

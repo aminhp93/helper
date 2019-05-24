@@ -3,7 +3,7 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-balham.css";
 import Modal from "@material-ui/core/Modal";
-import StockDetail from "./../StockDetail";
+import StockDetail from "../../StockDetail/StockDetail";
 import Button from "@material-ui/core/Button";
 import { Input } from "@material-ui/core";
 
