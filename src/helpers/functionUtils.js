@@ -257,6 +257,7 @@ export function getCustomedPieChartData(data) {
       value: returnObj[key]
     });
   }
+  returnArray.sort((a, b) => b.value - a.value);
   console.log(returnArray);
   return returnArray;
 }
@@ -282,6 +283,7 @@ export function getAverageSalary(data) {
       value: calculateAverage(returnObj[key])
     });
   }
+  returnArray.sort((a, b) => b.value - a.value);
   console.log(returnArray);
   return returnArray.slice(0, 5);
 }
