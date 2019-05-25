@@ -2,6 +2,7 @@ import moment from "moment";
 import axios from "axios";
 import { calculateRSI, msToTime } from "../helpers/functionUtils";
 import config from "./../config";
+import { func } from "prop-types";
 let domain = config.isProduction
   ? "https://project-2018-backend.herokuapp.com/"
   : "http://localhost:8000/";
@@ -48,6 +49,22 @@ export function getAllStocksUrl() {
 
 export function getQuickFilteredStocksUrl() {
   return domain + "stocks/quickFilteredStocks";
+}
+
+export function getAllJobsUrl() {
+  return domain + "jobs/all";
+}
+
+export function getCreateJobUrl() {
+  return domain + "job/create";
+}
+
+export function getLastJobUrl() {
+  return domain + "job/lastjob";
+}
+
+export function getUpdateJobUrl() {
+  return domain + "job/update";
 }
 
 export function getDataHistoryUrl(symbol, resolution, fromDate, toDate) {

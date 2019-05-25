@@ -4,6 +4,12 @@ import Input from "@material-ui/core/Input";
 import CustomedAgGridReact from "../_customedComponents/CustomedAgGridReact";
 import CustomedPieChart from "./../_customedComponents/CustomedPieChart";
 import {
+  getAllJobsUrl,
+  getCreateJobUrl,
+  getLastJobUrl,
+  getUpdateJobUrl
+} from "../../helpers/requests";
+import {
   getCustomedPieChartData,
   getAverageSalary
 } from "./../../helpers/functionUtils";
@@ -17,6 +23,7 @@ import {
   Tooltip,
   Legend
 } from "recharts";
+import { Button } from "@material-ui/core";
 
 class JobMarket extends Component {
   constructor(props) {
@@ -99,6 +106,13 @@ class JobMarket extends Component {
         />
         Add chart to see the movement(compared to 1 month ago) and weight of job
         market
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => this.handleUpdateJobsDatabase()}
+        >
+          Update jobs database
+        </Button>
         <div>
           <CustomedAgGridReact
             columnDefs={this.state.columnDefs}
@@ -170,8 +184,79 @@ class JobMarket extends Component {
       });
   }
 
+  async handleUpdateJobsDatabase() {
+    let hitsPerPage = "1000";
+    let indexName = "vnw_job_v2";
+    let maxValuesPerFacet = "20";
+    let page = "0";
+    let query = "";
+    let data = `{"requests":[{"indexName":"${indexName}","params":"query=${query}&hitsPerPage=${hitsPerPage}&maxValuesPerFacet=${maxValuesPerFacet}&page=${page}&restrictSearchableAttributes=%5B%22jobTitle%22%2C%22skills%22%2C%22company%22%5D&facets=%5B%22categoryIds%22%2C%22locationIds%22%2C%22categories%22%2C%22locations%22%2C%22skills%22%2C%22jobLevel%22%2C%22company%22%5D&tagFilters="}]}`;
+    let url =
+      "https://jf8q26wwud-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%20(lite)%203.30.0%3Binstantsearch.js%201.6.0%3BJS%20Helper%202.26.1&x-algolia-application-id=JF8Q26WWUD&x-algolia-api-key=ZmYwMTVkYTMwNTk4YmU5MGRhYzI1Y2I4ZjY1OGZkZTUyNjE4NDg3NDI0M2IyZjcwMmZjNDk3NWFkOGYzYjNkYXRhZ0ZpbHRlcnM9JnVzZXJUb2tlbj03NmUyNDExZjc1MGY2NjFjYTc5ZTRlNjgwZmFkYTZjZA%3D%3D";
+    let success;
+    let lastJob;
+    await axios
+      .get(getLastJobUrl())
+      .then(response => {
+        lastJob = response.data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    if (!lastJob) return;
+    await axios
+      .post(url, data)
+      .then(response => {
+        console.log(response);
+        success = response.data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    if (!success) return;
+
+    const jobData = {};
+    jobData.content = JSON.stringify(success);
+    jobData.timestamp = new Date().getTime();
+    if (
+      !lastJob.job ||
+      new Date(lastJob.job.timestamp).toDateString() ===
+        new Date().toDateString()
+    ) {
+      // update last job search
+      jobData.id = lastJob.job.id;
+      await axios
+        .post(getUpdateJobUrl(), jobData)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    } else {
+      // create new database last job search
+      jobData.searchWord = "";
+      await axios
+        .post(getCreateJobUrl(), jobData)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  }
+
   componentDidMount() {
     this.search();
+    axios
+      .get(getAllJobsUrl())
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 }
 
