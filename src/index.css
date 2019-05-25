@@ -124,3 +124,8 @@ input {
 .jobMarket .analysisContainer {
   display: flex;
 }
+
+.jobMarket .barChartContainer {
+  display: flex;
+  align-items: center;
+}

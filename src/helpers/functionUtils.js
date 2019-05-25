@@ -283,7 +283,7 @@ export function getAverageSalary(data) {
     });
   }
   console.log(returnArray);
-  return returnArray;
+  return returnArray.slice(0, 5);
 }
 
 export function calculateAverage(data) {

@@ -17,50 +17,6 @@ import {
   Tooltip,
   Legend
 } from "recharts";
-const data = [
-  {
-    name: "Page A",
-    value: 4000,
-    pv: 2400,
-    amt: 2400
-  },
-  {
-    name: "Page B",
-    uv: 3000,
-    pv: 1398,
-    amt: 2210
-  },
-  {
-    name: "Page C",
-    uv: 2000,
-    pv: 9800,
-    amt: 2290
-  },
-  {
-    name: "Page D",
-    uv: 2780,
-    pv: 3908,
-    amt: 2000
-  },
-  {
-    name: "Page E",
-    uv: 1890,
-    pv: 4800,
-    amt: 2181
-  },
-  {
-    name: "Page F",
-    uv: 2390,
-    pv: 3800,
-    amt: 2500
-  },
-  {
-    name: "Page G",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100
-  }
-];
 
 class JobMarket extends Component {
   constructor(props) {
@@ -153,9 +109,9 @@ class JobMarket extends Component {
           <div>
             <CustomedPieChart data={this.state.customedPieChartData} />
           </div>
-          <div>
+          <div className="barChartContainer">
             <BarChart
-              width={500}
+              width={800}
               height={300}
               data={this.state.averageSalaryData}
               margin={{
@@ -166,7 +122,10 @@ class JobMarket extends Component {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
+              <XAxis
+                dataKey="name"
+                //   tick={this.renderCustomAxisTick}
+              />
               <YAxis />
               <Tooltip />
               <Legend />
@@ -176,6 +135,10 @@ class JobMarket extends Component {
         </div>
       </div>
     );
+  }
+
+  renderCustomAxisTick() {
+    return <div>1</div>;
   }
 
   search(querySearch) {
