@@ -187,20 +187,20 @@ export function formatNumber(input, decimal, fill, nonFixToZero) {
     console.error(ex);
   }
 }
-export function roundFloat(numberFloat, lenght) {
+export function roundFloat(numberFloat, length) {
   try {
-    if (numberFloat == null || lenght == null) {
+    if (numberFloat == null || length == null) {
       return 0;
     }
     // let itenDivison = '1';
-    // for (let i = 0; i < lenght; i++) {
+    // for (let i = 0; i < length; i++) {
     //     itenDivison += '0';
     // }
     // const division = Number(itenDivison);
     let numberString = numberFloat + "";
     let arrNumber = numberString.split(".");
     if (!arrNumber[1]) return numberFloat;
-    for (let i = 0; i < lenght; i++) {
+    for (let i = 0; i < length; i++) {
       if (arrNumber[1][0]) {
         arrNumber[0] += arrNumber[1][0];
         arrNumber[1] = arrNumber[1].substr(1);
@@ -210,11 +210,11 @@ export function roundFloat(numberFloat, lenght) {
     }
     numberString = arrNumber.join(".");
     arrNumber = Math.round(numberString).toString();
-    arrNumber = arrNumber.replace(/^(-?)/, "$1" + "0".repeat(lenght));
+    arrNumber = arrNumber.replace(/^(-?)/, "$1" + "0".repeat(length));
     let result = Number(
-      arrNumber.substring(0, arrNumber.length - lenght) +
+      arrNumber.substring(0, arrNumber.length - length) +
         "." +
-        arrNumber.substr(-lenght)
+        arrNumber.substr(-length)
     );
     return result;
   } catch (e) {
@@ -234,4 +234,65 @@ export function msToTime(duration) {
   seconds = seconds < 10 ? "0" + seconds : seconds;
 
   return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+}
+
+export function getCustomedPieChartData(data) {
+  if (!data || !data.length) return [];
+  const returnObj = {};
+  let returnArray = [];
+  for (let i = 0; i < data.length; i++) {
+    let item = data[i];
+    let key = item.locations && item.locations[0];
+    if (key) {
+      if (!returnObj.hasOwnProperty(key)) {
+        returnObj[key] = 0;
+      } else {
+        returnObj[key] += 1;
+      }
+    }
+  }
+  for (let key in returnObj) {
+    returnArray.push({
+      name: key,
+      value: returnObj[key]
+    });
+  }
+  console.log(returnArray);
+  return returnArray;
+}
+
+export function getAverageSalary(data) {
+  if (!data || !data.length) return [];
+  const returnObj = {};
+  let returnArray = [];
+  for (let i = 0; i < data.length; i++) {
+    let item = data[i];
+    let key = item.locations && item.locations[0];
+    if (key) {
+      if (!returnObj.hasOwnProperty(key)) {
+        returnObj[key] = [];
+      } else {
+        returnObj[key].push(item.jobSalary);
+      }
+    }
+  }
+  for (let key in returnObj) {
+    returnArray.push({
+      name: key,
+      value: calculateAverage(returnObj[key])
+    });
+  }
+  console.log(returnArray);
+  return returnArray;
+}
+
+export function calculateAverage(data) {
+  if (!data || !data.length) return 0;
+  let sum = 0;
+  let count = 0;
+  for (let i = 0; i < data.length; i++) {
+    sum += data[i];
+    count += 1;
+  }
+  return sum / count;
 }

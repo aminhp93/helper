@@ -56,6 +56,7 @@ class CustomedAgGridReact extends React.Component {
 
   onGridReady(params) {
     this.gridApi = params.api;
+    this.gridApi.sizeColumnsToFit();
   }
 
   renderQuickFilterButton() {
@@ -85,12 +86,7 @@ class CustomedAgGridReact extends React.Component {
 
   render() {
     return (
-      <div
-        className="ag-theme-balham"
-        style={{
-          height: "500px"
-        }}
-      >
+      <div className="ag-theme-balham customedAgGrid">
         <Input
           onChange={e => {
             console.log(e.target.value);
@@ -98,13 +94,16 @@ class CustomedAgGridReact extends React.Component {
           }}
         />
         {this.renderQuickFilterButton()}
-        <AgGridReact
-          columnDefs={this.props.columnDefs}
-          rowData={this.props.rowData}
-          defaultColDef={this.defaultColDef}
-          onGridReady={this.onGridReady.bind(this)}
-          onRowClicked={this.handleOnRowClicked.bind(this)}
-        />
+        <div className="agGridReactRoot">
+          <AgGridReact
+            columnDefs={this.props.columnDefs}
+            rowData={this.props.rowData}
+            defaultColDef={this.defaultColDef}
+            onGridReady={this.onGridReady.bind(this)}
+            onRowClicked={this.handleOnRowClicked.bind(this)}
+          />
+        </div>
+
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"

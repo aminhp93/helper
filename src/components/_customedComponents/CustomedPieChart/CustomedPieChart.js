@@ -35,8 +35,7 @@ class CustomPieChart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      rowData: props.data,
-      customedData: [],
+      data: props.data,
       timeValue: props.timeValue || 20,
       percentValue: props.percentValue || 0
     };
@@ -44,12 +43,7 @@ class CustomPieChart extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      rowData: nextProps.data,
-      customedData: calculateClose(
-        nextProps.data,
-        this.state.timeValue,
-        this.state.percentValue
-      )
+      data: nextProps.data
     });
   }
 
@@ -57,8 +51,8 @@ class CustomPieChart extends Component {
     if (!/[0-9]+/.test(e.target.value)) return;
     this.setState({
       timeValue: Number(e.target.value),
-      customedData: calculateClose(
-        this.state.rowData,
+      data: calculateClose(
+        this.state.data,
         Number(e.target.value),
         this.state.percentValue
       )
@@ -69,8 +63,8 @@ class CustomPieChart extends Component {
     if (!/[0-9]+/.test(e.target.value)) return;
     this.setState({
       percentValue: Number(e.target.value),
-      customedData: calculateClose(
-        this.state.rowData,
+      data: calculateClose(
+        this.state.data,
         this.state.timeValue,
         Number(e.target.value)
       )
@@ -78,11 +72,11 @@ class CustomPieChart extends Component {
   }
 
   handleOnClick(e) {
-    const result = findMaxPercent(this.state.rowData);
+    const result = findMaxPercent(this.state.data);
     console.log(result);
     this.setState({
       timeValue: result.timeValue,
-      customedData: result.customedData
+      data: result.customedData
     });
   }
 
@@ -90,9 +84,9 @@ class CustomPieChart extends Component {
     return (
       <div>
         <div>
-          {this.state.rowData &&
-            this.state.rowData.length &&
-            this.state.rowData[0].Symbol}
+          {this.state.data &&
+            this.state.data.length &&
+            this.state.data[0].Symbol}
         </div>
         <div onClick={e => this.handleOnClick(e)}>Find</div>
         <Input
@@ -107,15 +101,15 @@ class CustomPieChart extends Component {
           <Pie
             dataKey="value"
             isAnimationActive={false}
-            data={this.state.customedData}
+            data={this.state.data}
             cx={200}
             cy={200}
-            outerRadius={80}
+            outerRadius={120}
             fill="#8884d8"
             label={renderCustomizedLabel}
           >
-            {this.state.customedData &&
-              this.state.customedData.map((entry, index) => (
+            {this.state.data &&
+              this.state.data.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}

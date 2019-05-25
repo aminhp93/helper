@@ -110,3 +110,17 @@ input {
 .customedInput {
   width: 100%;
 }
+
+.customedAgGrid {
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.agGridReactRoot {
+  flex: 1;
+}
+
+.jobMarket .analysisContainer {
+  display: flex;
+}
