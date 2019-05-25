@@ -90,6 +90,7 @@ class JobMarket extends Component {
   handleOnChangeQuerySearch(e) {
     const searchText = e.target.value;
     if (!searchText) return;
+    this.searchText = searchText;
     if (this.timeout) clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
       this.search(searchText);
@@ -189,21 +190,24 @@ class JobMarket extends Component {
     let indexName = "vnw_job_v2";
     let maxValuesPerFacet = "20";
     let page = "0";
-    let query = "";
+    let query = this.searchText;
     let data = `{"requests":[{"indexName":"${indexName}","params":"query=${query}&hitsPerPage=${hitsPerPage}&maxValuesPerFacet=${maxValuesPerFacet}&page=${page}&restrictSearchableAttributes=%5B%22jobTitle%22%2C%22skills%22%2C%22company%22%5D&facets=%5B%22categoryIds%22%2C%22locationIds%22%2C%22categories%22%2C%22locations%22%2C%22skills%22%2C%22jobLevel%22%2C%22company%22%5D&tagFilters="}]}`;
     let url =
       "https://jf8q26wwud-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%20(lite)%203.30.0%3Binstantsearch.js%201.6.0%3BJS%20Helper%202.26.1&x-algolia-application-id=JF8Q26WWUD&x-algolia-api-key=ZmYwMTVkYTMwNTk4YmU5MGRhYzI1Y2I4ZjY1OGZkZTUyNjE4NDg3NDI0M2IyZjcwMmZjNDk3NWFkOGYzYjNkYXRhZ0ZpbHRlcnM9JnVzZXJUb2tlbj03NmUyNDExZjc1MGY2NjFjYTc5ZTRlNjgwZmFkYTZjZA%3D%3D";
     let success;
     let lastJob;
+    const lastJobData = {};
+    lastJobData.searchWord = this.searchText || "";
     await axios
-      .get(getLastJobUrl())
+      .post(getLastJobUrl(), lastJobData)
       .then(response => {
         lastJob = response.data;
       })
       .catch(error => {
         console.log(error);
       });
-    if (!lastJob) return;
+    console.log(lastJob);
+    if (!lastJob || lastJob.data === "Invalid data") return;
     await axios
       .post(url, data)
       .then(response => {
@@ -218,8 +222,10 @@ class JobMarket extends Component {
     const jobData = {};
     jobData.content = JSON.stringify(success);
     jobData.timestamp = new Date().getTime();
+    jobData.searchWord = this.searchText;
     if (
-      !lastJob.job ||
+      lastJob.job &&
+      lastJob.job.id &&
       new Date(lastJob.job.timestamp).toDateString() ===
         new Date().toDateString()
     ) {
@@ -235,7 +241,6 @@ class JobMarket extends Component {
         });
     } else {
       // create new database last job search
-      jobData.searchWord = "";
       await axios
         .post(getCreateJobUrl(), jobData)
         .then(response => {
