@@ -2,7 +2,10 @@ import React from "react";
 import axios from "axios";
 import { AgGridReact } from "ag-grid-react";
 // import durationReportEnums from '../../constants/durationReportEnums'
-import { formatNumber } from "../../helpers/functionUtils";
+import {
+  formatNumber,
+  mapDataBusinessSummary
+} from "../../helpers/functionUtils";
 
 export function getLastestFinancialReports(type, symbol, index) {
   return `https://www.fireant.vn/api/Data/Finance/LastestFinancialReports?symbol=${symbol}&type=${type}&year=2018&quarter=${
@@ -84,7 +87,9 @@ export default class BusinessSummary extends React.Component {
         headerName: "2017",
         width: 120,
         cellRenderer: function(params) {
-          return (params.data.Values[params.data.Values.length - 2] || {}).Value
+          const div = document.createElement("div");
+          let value = (params.data.Values[params.data.Values.length - 2] || {})
+            .Value
             ? formatNumber(
                 (params.data.Values[params.data.Values.length - 2] || {})
                   .Value / 1000000,
@@ -92,6 +97,10 @@ export default class BusinessSummary extends React.Component {
                 true
               )
             : "";
+          div.innerHTML = value;
+          div.className =
+            [5, 15, 110].indexOf(params.data.ID) > -1 ? "highlight" : "";
+          return div;
         }
       },
       {
@@ -111,7 +120,65 @@ export default class BusinessSummary extends React.Component {
             : "";
           div.innerHTML = value;
           div.className =
-            params.data.ID === 11 || params.data.ID === 14 ? "highlight" : "";
+            [5, 15, 110].indexOf(params.data.ID) > -1 ? "highlight" : "";
+          return div;
+        }
+      },
+      {
+        headerName: "2016-2015",
+        field: "",
+        cellRenderer: function(params) {
+          let value_2016 = (
+            params.data.Values[params.data.Values.length - 3] || {}
+          ).Value;
+
+          let value_2015 = (
+            params.data.Values[params.data.Values.length - 4] || {}
+          ).Value;
+          return formatNumber((value_2016 - value_2015) / 1000000, 1, true);
+        }
+      },
+      {
+        headerName: "2017-2016",
+        field: "",
+        cellRenderer: function(params) {
+          let value_2017 = (
+            params.data.Values[params.data.Values.length - 2] || {}
+          ).Value;
+
+          let value_2016 = (
+            params.data.Values[params.data.Values.length - 3] || {}
+          ).Value;
+          const div = document.createElement("div");
+          div.innerHTML = formatNumber(
+            (value_2017 - value_2016) / 1000000,
+            1,
+            true
+          );
+          div.className =
+            [1, 5].indexOf(params.data.ID) > -1 ? "highlight" : "";
+          return div;
+        }
+      },
+      {
+        headerName: "2018-2017",
+        field: "",
+        cellRenderer: function(params) {
+          let value_2018 = (
+            params.data.Values[params.data.Values.length - 1] || {}
+          ).Value;
+
+          let value_2017 = (
+            params.data.Values[params.data.Values.length - 2] || {}
+          ).Value;
+          const div = document.createElement("div");
+          div.innerHTML = formatNumber(
+            (value_2018 - value_2017) / 1000000,
+            1,
+            true
+          );
+          div.className =
+            [1, 5, 110, 15].indexOf(params.data.ID) > -1 ? "highlight" : "";
           return div;
         }
       },
@@ -141,8 +208,12 @@ export default class BusinessSummary extends React.Component {
           let value_2016 = (
             params.data.Values[params.data.Values.length - 3] || {}
           ).Value;
-
-          return ((value_2017 / value_2016 - 1) * 100).toFixed(2) + "%";
+          const div = document.createElement("div");
+          let value = ((value_2017 / value_2016 - 1) * 100).toFixed(2) + "%";
+          div.innerHTML = value;
+          div.className =
+            [1, 5].indexOf(params.data.ID) > -1 ? "highlight" : "";
+          return div;
         }
       },
       {
@@ -156,8 +227,12 @@ export default class BusinessSummary extends React.Component {
           let value_2017 = (
             params.data.Values[params.data.Values.length - 2] || {}
           ).Value;
-
-          return ((value_2018 / value_2017 - 1) * 100).toFixed(2) + "%";
+          const div = document.createElement("div");
+          let value = ((value_2018 / value_2017 - 1) * 100).toFixed(2) + "%";
+          div.innerHTML = value;
+          div.className =
+            params.data.ID === 1 || params.data.ID === 5 ? "highlight" : "";
+          return div;
         }
       }
     ];
@@ -345,7 +420,9 @@ export default class BusinessSummary extends React.Component {
       .get(url)
       .then(response => {
         console.log(response);
-        this.gridApi.setRowData(response.data);
+        this.gridApi.setRowData(
+          mapDataBusinessSummary(response.data, this.typeBusinessSummary)
+        );
         this.gridApi.setColumnDefs(
           index === durationReportEnums.YEAR
             ? this.columnDefs_year

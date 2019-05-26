@@ -310,3 +310,33 @@ export function mapStockData(data) {
 
   return data;
 }
+
+export function mapDataBusinessSummary(data, type) {
+  if (type === "2") {
+    const addItem = {};
+    addItem.Expanded = true;
+    addItem.Field = null;
+    addItem.ID = 110;
+    addItem.Level = 1;
+    addItem.Name = "110. Loi nhuan hoat dong kinh doanh chinh (5) - (9) - (10)";
+    addItem.ParentId = -1;
+    addItem.Values = [];
+    for (let i = 0; i < data[4].Values.length; i++) {
+      let loi_nhuan_gop = data[4].Values[i].Value;
+      let chi_phi_ban_hang = data[9].Values[i].Value;
+      let chi_phi_quan_ly = data[10].Values[i].Value;
+      let loi_nhuan_hoat_dong_kinh_doanh_chinh =
+        loi_nhuan_gop - chi_phi_ban_hang - chi_phi_quan_ly;
+      addItem.Values.push({
+        Period: data[4].Values[i].Period,
+        Year: data[4].Values[i].Period,
+        Quarter: data[4].Values[i].Period,
+        Value: loi_nhuan_hoat_dong_kinh_doanh_chinh
+      });
+    }
+    data.splice(12, 0, addItem);
+    console.log(data);
+    return data;
+  }
+  return data;
+}
