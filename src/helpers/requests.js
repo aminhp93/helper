@@ -80,17 +80,12 @@ export function getDataHistoryUrl(symbol, resolution, fromDate, toDate) {
   );
 }
 
-export function getSaveLayoutChartUrl() {
-  // Save to new layout
-  // 'https://chart-api.vndirect.com.vn/1.1/charts?client=vnds_trading_view&user=vnds-0001813109'
-  // Save to current layout
-  return "https://chart-api.vndirect.com.vn/1.1/charts?client=vnds_trading_view&user=vnds-0001813109&chart=33095";
+export function getAllLayoutsUrl() {
+  return "https://chart-api.vndirect.com.vn/1.1/charts?client=vnds_trading_view&user=vnds-0001813109";
 }
-export function getLoadLayoutChartUrl() {
-  // All layout
-  // https://chart-api.vndirect.com.vn/1.1/charts?client=vnds_trading_view&user=vnds-0001813109
-  // Current layout
-  return "https://chart-api.vndirect.com.vn/1.1/charts?client=vnds_trading_view&user=vnds-0001813109&chart=33095";
+
+export function getSaveLayoutChartUrl(id) {
+  return `https://chart-api.vndirect.com.vn/1.1/charts?client=vnds_trading_view&user=vnds-0001813109&chart=${id}`;
 }
 
 export async function updateAllStocksDatabase(floor) {

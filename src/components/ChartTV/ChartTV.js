@@ -5,8 +5,8 @@ import Datafeeds from "./datafeeds";
 import axios from "axios";
 import chartTV_constants from "../../constants/chartTV_constants";
 import {
-  getSaveLayoutChartUrl
-  // , getLoadLayoutChartUrl
+  getSaveLayoutChartUrl,
+  getAllLayoutsUrl
 } from "../../helpers/requests";
 import FormData from "form-data";
 
@@ -95,27 +95,48 @@ class ChartTV extends React.Component {
           console.log(div);
           that.saveLayoutChart(div);
         });
-        // that.loadLayoutChart()
-        that.widget.load();
+        that.loadLayoutChart();
       });
   }
 
-  // loadLayoutChart() {
-  //     let url = getLoadLayoutChartUrl()
-  //     axios.get(url)
-  //         .then(response => {
-  //             if (response.data) {
-  //                 console.log(response.data)
-  //                 const savedLayout = JSON.parse(response.data.data.content).content
-  //                 console.log(savedLayout)
-  //                 this.widget && this.widget.load && this.widget.load(savedLayout)
-  //             }
-  //         })
-  //         .catch(error => {
-  //             console.log(error.response)
-  //         });
-
-  // }
+  async loadLayoutChart() {
+    let url = getAllLayoutsUrl();
+    let listLayout;
+    await axios
+      .get(url)
+      .then(response => {
+        listLayout = response.data.data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    if (!listLayout) {
+      this.widget.load();
+      return;
+    }
+    let indexLayout = listLayout.findIndex(
+      item => item.symbol === this.props.symbol
+    );
+    if (indexLayout === -1) {
+      this.widget.load();
+      return;
+    }
+    let id = listLayout[indexLayout].id;
+    url = getSaveLayoutChartUrl(id);
+    await axios
+      .get(url)
+      .then(response => {
+        if (response.data) {
+          console.log(response.data);
+          const savedLayout = JSON.parse(response.data.data.content).content;
+          console.log(savedLayout);
+          this.widget && this.widget.load && this.widget.load(savedLayout);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
 
   callbackSearch(response) {
     console.log(response);
@@ -131,45 +152,85 @@ class ChartTV extends React.Component {
     }, 0);
   }
 
-  saveLayoutChart(div) {
+  async saveLayoutChart(div) {
+    let listLayout;
+    await axios
+      .get(getAllLayoutsUrl())
+      .then(response => {
+        console.log(response);
+        listLayout = response.data.data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    if (!listLayout) return;
+    let indexLayout = listLayout.findIndex(
+      item => item.symbol === this.props.symbol
+    );
     this.widget &&
       this.widget.save &&
       this.widget.save(savedObj => {
         console.log(savedObj);
-        let url = getSaveLayoutChartUrl();
         var formData = new FormData();
         const content = {
           publish_request_id: uuidv4().substring(0, 12),
-          id: 33095,
-          name: "basic_layout",
+          name: `${this.props.symbol}_layout`,
           description: "",
           resolution: "D",
           symbol_type: "stock",
           exchange: "HOSE",
           listed_exchange: "",
-          symbol: "VNM",
-          short_name: "VNM",
-          legs: '[{"symbol":"VNM","pro_symbol":"VNM"}]',
+          symbol: this.props.symbol,
+          short_name: this.props.symbol,
+          legs: `[{"symbol":"${this.props.symbol}","pro_symbol":"${
+            this.props.symbol
+          }"}]`,
           content: savedObj
         };
-        formData.append("name", "basic_layout");
-        formData.append("content", JSON.stringify(content));
-        formData.append("symbol", "VNM");
+        formData.append("name", `${this.props.symbol}_layout`);
+        formData.append("symbol", this.props.symbol);
         formData.append("resolution", "D");
 
-        div.innerText = "Saving";
-        axios
-          .post(url, formData)
-          .then(response => {
-            if (response.data) {
+        if (indexLayout > -1) {
+          // update current layout
+          let id = listLayout[indexLayout].id;
+          content.id = id;
+          formData.append("content", JSON.stringify(content));
+          let url = getSaveLayoutChartUrl(id);
+          div.innerText = "Updating";
+          axios
+            .post(url, formData)
+            .then(response => {
+              if (response.data) {
+                div.innerText = "Done";
+                setTimeout(() => {
+                  div.innerText = "Save";
+                }, 1000);
+                console.log(response.data);
+              }
+            })
+            .catch(error => {
+              div.innerText = "Failed";
+              console.log(error.response);
+            });
+        } else {
+          // create new layout
+          formData.append("content", JSON.stringify(content));
+          div.innerText = "Createing";
+          axios
+            .post(getAllLayoutsUrl(), formData)
+            .then(response => {
               div.innerText = "Done";
-              console.log(response.data);
-            }
-          })
-          .catch(error => {
-            div.innerText = "Failed";
-            console.log(error.response);
-          });
+              setTimeout(() => {
+                div.innerText = "Save";
+              }, 1000);
+              console.log(response);
+            })
+            .catch(error => {
+              console.log(error);
+              div.innerText = "Failed";
+            });
+        }
       });
   }
 
