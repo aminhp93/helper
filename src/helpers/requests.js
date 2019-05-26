@@ -51,6 +51,10 @@ export function getQuickFilteredStocksUrl() {
   return domain + "stocks/quickFilteredStocks";
 }
 
+export function getFilteredStocksUrl() {
+  return domain + "stocks/filter";
+}
+
 export function getAllJobsUrl() {
   return domain + "jobs/all";
 }
@@ -86,6 +90,10 @@ export function getAllLayoutsUrl() {
 
 export function getSaveLayoutChartUrl(id) {
   return `https://chart-api.vndirect.com.vn/1.1/charts?client=vnds_trading_view&user=vnds-0001813109&chart=${id}`;
+}
+
+export function getWatchingStocksUrl() {
+  return "https://watchlist-api.vndirect.com.vn/api/watchlists?filter[where][creator]=vnds-0001813109";
 }
 
 export async function updateAllStocksDatabase(floor) {

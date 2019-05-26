@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import axios from "axios";
 import CustomedPieChart from "./../_customedComponents/CustomedPieChart";
-// import { mapData } from "./../../helpers/functionUtils";
+import {
+  mapStockData
+  //  mapData
+} from "./../../helpers/functionUtils";
 import {
   updateAllStocksDatabase,
   getAllStocksUrl,
@@ -33,7 +36,7 @@ class Stock extends Component {
           headerName: "Close",
           field: "Close",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.Close) {
               return params.data.Close.toFixed(0);
             }
@@ -43,7 +46,7 @@ class Stock extends Component {
           headerName: "ROE",
           field: "ROE",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.ROE) {
               return params.data.ROE.toFixed(2);
             }
@@ -53,7 +56,7 @@ class Stock extends Component {
           headerName: "EPS",
           field: "EPS",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.EPS) {
               return params.data.EPS.toFixed(0);
             }
@@ -63,11 +66,15 @@ class Stock extends Component {
           headerName: "MarketCapitalization",
           field: "MarketCapitalization",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.MarketCapitalization) {
               return params.data.MarketCapitalization.toFixed(0);
             }
           }
+        },
+        {
+          headerName: "Gia tri GD",
+          field: "DayTradingValue"
         },
         {
           headerName: "Volume",
@@ -101,7 +108,7 @@ class Stock extends Component {
           <CustomedAgGridReact
             title="stock"
             columnDefs={this.state.columnDefs}
-            rowData={this.state.rowData}
+            rowData={mapStockData(this.state.rowData)}
           />
         </div>
         <div className="chartContainer">

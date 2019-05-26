@@ -116,6 +116,9 @@ input {
   display: flex;
   flex-direction: column;
 }
+.customedAgGrid .header {
+  display: flex;
+}
 
 .agGridReactRoot {
   flex: 1;
@@ -128,4 +131,8 @@ input {
 .jobMarket .barChartContainer {
   display: flex;
   align-items: center;
+}
+
+.businessSummary .highlight {
+  background: lightblue;
 }

@@ -298,3 +298,15 @@ export function calculateAverage(data) {
   }
   return sum / count;
 }
+
+export function mapStockData(data) {
+  data.map(item => {
+    if (item.Close && item.Volume) {
+      item.DayTradingValue = Number(
+        ((item.Close * item.Volume) / Math.pow(10, 9)).toFixed(1)
+      );
+    }
+  });
+
+  return data;
+}
