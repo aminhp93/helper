@@ -1,0 +1,6 @@
+{
+    "name": "CustomedButton",
+    "version": "0.0.0",
+    "private": true,
+    "main": "./CustomedButton.js"
+}

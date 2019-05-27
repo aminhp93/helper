@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import CustomedPieChart from "./../_customedComponents/CustomedPieChart";
+import CustomedButton from "./../_customedComponents/CustomedButton";
 import {
   mapStockData
   //  mapData
@@ -36,7 +37,7 @@ class Stock extends Component {
           headerName: "Close",
           field: "Close",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.Close) {
               return params.data.Close.toFixed(0);
             }
@@ -46,7 +47,7 @@ class Stock extends Component {
           headerName: "ROE",
           field: "ROE",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.ROE) {
               return params.data.ROE.toFixed(2);
             }
@@ -56,7 +57,7 @@ class Stock extends Component {
           headerName: "EPS",
           field: "EPS",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.EPS) {
               return params.data.EPS.toFixed(0);
             }
@@ -66,7 +67,7 @@ class Stock extends Component {
           headerName: "MarketCapitalization",
           field: "MarketCapitalization",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.MarketCapitalization) {
               return params.data.MarketCapitalization.toFixed(0);
             }
@@ -146,6 +147,7 @@ class Stock extends Component {
           <Button
             variant="contained"
             color="secondary"
+            disabled={this.state.loading}
             onClick={() => {
               deleteAllStocks();
             }}
@@ -155,8 +157,11 @@ class Stock extends Component {
           <Button
             variant="contained"
             color="secondary"
+            disabled={this.state.loading}
             onClick={() => {
-              updateAllStocksDatabase("HOSE_stocks");
+              this.setState({
+                loading: true
+              }, () => updateAllStocksDatabase("HOSE_stocks", this))
             }}
           >
             Update HOSE_stocks
@@ -164,8 +169,11 @@ class Stock extends Component {
           <Button
             variant="contained"
             color="secondary"
+            disabled={this.state.loading}
             onClick={() => {
-              updateAllStocksDatabase("HNX_stocks");
+              this.setState({
+                loading: true
+              }, () => updateAllStocksDatabase("HNX_stocks", this))
             }}
           >
             Update HNX_stocks
@@ -173,8 +181,11 @@ class Stock extends Component {
           <Button
             variant="contained"
             color="secondary"
+            disabled={this.state.loading}
             onClick={() => {
-              updateAllStocksDatabase("UPCOM_stocks");
+              this.setState({
+                loading: true
+              }, () => updateAllStocksDatabase("UPCOM_stocks", this))
             }}
           >
             Update UPCOM_stocks
@@ -182,6 +193,7 @@ class Stock extends Component {
           <Button
             variant="contained"
             color="secondary"
+            disabled={this.state.loading}
             onClick={this.getAllDatabase.bind(this)}
           >
             Get all database
@@ -233,17 +245,26 @@ class Stock extends Component {
     // .catch(error => {
     //   console.log(error);
     // });
-    axios
-      .get(getAllStocksUrl())
-      .then(response => {
-        console.log(response);
-        this.setState({
-          rowData: response.data.stocks
+    this.setState({
+      loading: true
+    }, () => {
+      axios
+        .get(getAllStocksUrl())
+        .then(response => {
+          console.log(response);
+          this.setState({
+            rowData: response.data.stocks,
+            loading: false
+          });
+        })
+        .catch(error => {
+          console.log(error);
+          this.setState({
+            loading: false
+          })
         });
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    })
+
   }
 
   componentDidMount() {

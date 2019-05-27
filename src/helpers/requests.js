@@ -96,7 +96,7 @@ export function getWatchingStocksUrl() {
   return "https://watchlist-api.vndirect.com.vn/api/watchlists?filter[where][creator]=vnds-0001813109";
 }
 
-export async function updateAllStocksDatabase(floor) {
+export async function updateAllStocksDatabase(floor, _this) {
   let startTime = new Date();
   let endTime;
   let stop = false;
@@ -120,6 +120,9 @@ export async function updateAllStocksDatabase(floor) {
 
   if (stop) {
     endTime = new Date();
+    _this.setState({
+      loading: false
+    })
     console.log(`Updated failed somewhere in ${msToTime(endTime - startTime)}`);
     return "Updated all stocks failed" + floor;
   }
@@ -129,6 +132,9 @@ export async function updateAllStocksDatabase(floor) {
       endTime - startTime
     )}`
   );
+  _this.setState({
+    loading: false
+  })
   return "Updated all stocks successfully";
 }
 
@@ -165,7 +171,7 @@ async function getLastestFinancialInfo(resolve, item) {
       RSI_14_diff:
         calculateRSI_result.RSI_14 - calculateRSI_result.RSI_14_previous
     })
-    .then(response => {})
+    .then(response => { })
     .catch(error => {
       errorsList.push({
         error,
