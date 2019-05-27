@@ -49,7 +49,7 @@ export default class BusinessSummary extends React.Component {
           return (params.data.Values[params.data.Values.length - 5] || {}).Value
             ? formatNumber(
               (params.data.Values[params.data.Values.length - 5] || {})
-                .Value / 1000000,
+                .Value / Math.pow(10, 9),
               1,
               true
             )
@@ -60,28 +60,40 @@ export default class BusinessSummary extends React.Component {
         headerName: "2015",
         width: 120,
         cellRenderer: function (params) {
-          return (params.data.Values[params.data.Values.length - 4] || {}).Value
+          const div = document.createElement("div");
+          let value = (params.data.Values[params.data.Values.length - 4] || {})
+            .Value
             ? formatNumber(
               (params.data.Values[params.data.Values.length - 4] || {})
-                .Value / 1000000,
+                .Value / Math.pow(10, 9),
               1,
               true
             )
             : "";
+          div.innerHTML = value;
+          div.className = "";
+          div.classList.add('number')
+          return div;
         }
       },
       {
         headerName: "2016",
         width: 120,
         cellRenderer: function (params) {
-          return (params.data.Values[params.data.Values.length - 3] || {}).Value
+          const div = document.createElement("div");
+          let value = (params.data.Values[params.data.Values.length - 3] || {})
+            .Value
             ? formatNumber(
               (params.data.Values[params.data.Values.length - 3] || {})
-                .Value / 1000000,
+                .Value / Math.pow(10, 9),
               1,
               true
             )
             : "";
+          div.innerHTML = value;
+          div.className = "";
+          div.classList.add('number')
+          return div;
         }
       },
       {
@@ -93,7 +105,7 @@ export default class BusinessSummary extends React.Component {
             .Value
             ? formatNumber(
               (params.data.Values[params.data.Values.length - 2] || {})
-                .Value / 1000000,
+                .Value / Math.pow(10, 9),
               1,
               true
             )
@@ -101,6 +113,7 @@ export default class BusinessSummary extends React.Component {
           div.innerHTML = value;
           div.className =
             [5, 15, 110].indexOf(params.data.ID) > -1 ? "highlight" : "";
+          div.classList.add('number')
           return div;
         }
       },
@@ -113,7 +126,7 @@ export default class BusinessSummary extends React.Component {
             .Value
             ? formatNumber(
               (params.data.Values[params.data.Values.length - 1] || {})
-                .Value / 1000000,
+                .Value / Math.pow(10, 9),
               1,
               true
             )
@@ -121,6 +134,7 @@ export default class BusinessSummary extends React.Component {
           div.innerHTML = value;
           div.className =
             [5, 15, 110].indexOf(params.data.ID) > -1 ? "highlight" : "";
+          div.classList.add('number')
           return div;
         }
       }
@@ -138,7 +152,15 @@ export default class BusinessSummary extends React.Component {
           let value_2015 = (
             params.data.Values[params.data.Values.length - 4] || {}
           ).Value;
-          return formatNumber((value_2016 - value_2015) / 1000000, 1, true);
+          const div = document.createElement("div");
+          div.innerHTML = formatNumber(
+            (value_2016 - value_2015) / 1000000,
+            1,
+            true
+          );
+          div.className = "";
+          div.classList.add('number')
+          return div;
         }
       },
       {
@@ -160,6 +182,7 @@ export default class BusinessSummary extends React.Component {
           );
           div.className =
             [1, 5].indexOf(params.data.ID) > -1 ? "highlight" : "";
+          div.classList.add('number')
           return div;
         }
       },
@@ -182,6 +205,7 @@ export default class BusinessSummary extends React.Component {
           );
           div.className =
             [1, 5, 110, 15].indexOf(params.data.ID) > -1 ? "highlight" : "";
+          div.classList.add('number')
           return div;
         }
       },
@@ -196,8 +220,13 @@ export default class BusinessSummary extends React.Component {
           let value_2015 = (
             params.data.Values[params.data.Values.length - 4] || {}
           ).Value;
-
-          return ((value_2016 / value_2015 - 1) * 100).toFixed(2) + "%";
+          const div = document.createElement("div");
+          let value = ((value_2016 / value_2015 - 1) * 100).toFixed(2) + "%";
+          div.innerHTML = value;
+          div.className =
+            params.data.ID === 1 || params.data.ID === 5 ? "highlight" : "";
+          div.classList.add('number')
+          return div;
         }
       },
       {
@@ -216,6 +245,7 @@ export default class BusinessSummary extends React.Component {
           div.innerHTML = value;
           div.className =
             [1, 5].indexOf(params.data.ID) > -1 ? "highlight" : "";
+          div.classList.add('number')
           return div;
         }
       },
@@ -235,6 +265,7 @@ export default class BusinessSummary extends React.Component {
           div.innerHTML = value;
           div.className =
             params.data.ID === 1 || params.data.ID === 5 ? "highlight" : "";
+          div.classList.add('number')
           return div;
         }
       }
@@ -246,9 +277,13 @@ export default class BusinessSummary extends React.Component {
         field: "",
         cellStyle: { 'background-color': 'gray' },
         cellRenderer: function (params) {
+          const div = document.createElement("div");
+          div.className = ''
+          div.classList.add('number')
           if (params.data.Analysis_1) {
-            return (params.data.Analysis_1[params.data.Analysis_1.length - 4] || {}).Value + '%'
+            div.innerHTML = (params.data.Analysis_1[params.data.Analysis_1.length - 4] || {}).Value + '%'
           }
+          return div
         }
       },
       {
@@ -256,9 +291,13 @@ export default class BusinessSummary extends React.Component {
         field: "",
         cellStyle: { 'background-color': 'gray' },
         cellRenderer: function (params) {
+          const div = document.createElement("div");
+          div.className = ''
+          div.classList.add('number')
           if (params.data.Analysis_1) {
-            return (params.data.Analysis_1[params.data.Analysis_1.length - 3] || {}).Value + '%'
+            div.innerHTML = (params.data.Analysis_1[params.data.Analysis_1.length - 3] || {}).Value + '%'
           }
+          return div
         }
       },
       {
@@ -266,9 +305,13 @@ export default class BusinessSummary extends React.Component {
         field: "",
         cellStyle: { 'background-color': 'gray' },
         cellRenderer: function (params) {
+          const div = document.createElement("div");
+          div.className = ''
+          div.classList.add('number')
           if (params.data.Analysis_1) {
-            return (params.data.Analysis_1[params.data.Analysis_1.length - 2] || {}).Value + '%'
+            div.innerHTML = (params.data.Analysis_1[params.data.Analysis_1.length - 2] || {}).Value + '%'
           }
+          return div
         }
       },
       {
@@ -276,36 +319,52 @@ export default class BusinessSummary extends React.Component {
         field: "",
         cellStyle: { 'background-color': 'gray' },
         cellRenderer: function (params) {
+          const div = document.createElement("div");
+          div.className = ''
+          div.classList.add('number')
           if (params.data.Analysis_1) {
-            return (params.data.Analysis_1[params.data.Analysis_1.length - 1] || {}).Value + '%'
+            div.innerHTML = (params.data.Analysis_1[params.data.Analysis_1.length - 1] || {}).Value + '%'
           }
+          return div
         }
       },
       {
         headerName: "2016-2015",
         field: "",
         cellRenderer: function (params) {
+          const div = document.createElement("div");
+          div.className = ''
+          div.classList.add('number')
           if (params.data.Analysis_1) {
-            return ((params.data.Analysis_1[params.data.Analysis_1.length - 3] || {}).Value - (params.data.Analysis_1[params.data.Analysis_1.length - 4] || {}).Value).toFixed(2) + '%'
+            div.innerHTML = ((params.data.Analysis_1[params.data.Analysis_1.length - 3] || {}).Value - (params.data.Analysis_1[params.data.Analysis_1.length - 4] || {}).Value).toFixed(2) + '%'
           }
+          return div
         }
       },
       {
         headerName: "2017-2016",
         field: "",
         cellRenderer: function (params) {
+          const div = document.createElement("div");
+          div.className = ''
+          div.classList.add('number')
           if (params.data.Analysis_1) {
-            return ((params.data.Analysis_1[params.data.Analysis_1.length - 2] || {}).Value - (params.data.Analysis_1[params.data.Analysis_1.length - 3] || {}).Value).toFixed(2) + '%'
+            div.innerHTML = ((params.data.Analysis_1[params.data.Analysis_1.length - 2] || {}).Value - (params.data.Analysis_1[params.data.Analysis_1.length - 3] || {}).Value).toFixed(2) + '%'
           }
+          return div
         }
       },
       {
         headerName: "2018-2017",
         field: "",
         cellRenderer: function (params) {
+          const div = document.createElement("div");
+          div.className = ''
+          div.classList.add('number')
           if (params.data.Analysis_1) {
-            return ((params.data.Analysis_1[params.data.Analysis_1.length - 1] || {}).Value - (params.data.Analysis_1[params.data.Analysis_1.length - 2] || {}).Value).toFixed(2) + '%'
+            div.innerHTML = ((params.data.Analysis_1[params.data.Analysis_1.length - 1] || {}).Value - (params.data.Analysis_1[params.data.Analysis_1.length - 2] || {}).Value).toFixed(2) + '%'
           }
+          return div
         }
       }
     ]

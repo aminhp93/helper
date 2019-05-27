@@ -136,3 +136,7 @@ input {
 .businessSummary .highlight {
   background: lightblue;
 }
+
+.businessSummary .number {
+  text-align: right;
+}
