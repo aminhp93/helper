@@ -244,6 +244,7 @@ export default class BusinessSummary extends React.Component {
       {
         headerName: "2015",
         field: "",
+        cellStyle: { 'background-color': 'gray' },
         cellRenderer: function (params) {
           if (params.data.Analysis_1) {
             return (params.data.Analysis_1[params.data.Analysis_1.length - 4] || {}).Value + '%'
@@ -253,6 +254,7 @@ export default class BusinessSummary extends React.Component {
       {
         headerName: "2016",
         field: "",
+        cellStyle: { 'background-color': 'gray' },
         cellRenderer: function (params) {
           if (params.data.Analysis_1) {
             return (params.data.Analysis_1[params.data.Analysis_1.length - 3] || {}).Value + '%'
@@ -262,6 +264,7 @@ export default class BusinessSummary extends React.Component {
       {
         headerName: "2017",
         field: "",
+        cellStyle: { 'background-color': 'gray' },
         cellRenderer: function (params) {
           if (params.data.Analysis_1) {
             return (params.data.Analysis_1[params.data.Analysis_1.length - 2] || {}).Value + '%'
@@ -271,6 +274,7 @@ export default class BusinessSummary extends React.Component {
       {
         headerName: "2018",
         field: "",
+        cellStyle: { 'background-color': 'gray' },
         cellRenderer: function (params) {
           if (params.data.Analysis_1) {
             return (params.data.Analysis_1[params.data.Analysis_1.length - 1] || {}).Value + '%'
@@ -278,56 +282,30 @@ export default class BusinessSummary extends React.Component {
         }
       },
       {
-        headerName: "2016/2015",
+        headerName: "2016-2015",
         field: "",
         cellRenderer: function (params) {
-          let value_2016 = (
-            params.data.Values[params.data.Values.length - 3] || {}
-          ).Value;
-
-          let value_2015 = (
-            params.data.Values[params.data.Values.length - 4] || {}
-          ).Value;
-
-          return ((value_2016 / value_2015 - 1) * 100).toFixed(2) + "%";
+          if (params.data.Analysis_1) {
+            return ((params.data.Analysis_1[params.data.Analysis_1.length - 3] || {}).Value - (params.data.Analysis_1[params.data.Analysis_1.length - 4] || {}).Value).toFixed(2) + '%'
+          }
         }
       },
       {
-        headerName: "2017/2016",
+        headerName: "2017-2016",
         field: "",
         cellRenderer: function (params) {
-          let value_2017 = (
-            params.data.Values[params.data.Values.length - 2] || {}
-          ).Value;
-
-          let value_2016 = (
-            params.data.Values[params.data.Values.length - 3] || {}
-          ).Value;
-          const div = document.createElement("div");
-          let value = ((value_2017 / value_2016 - 1) * 100).toFixed(2) + "%";
-          div.innerHTML = value;
-          div.className =
-            [1, 5].indexOf(params.data.ID) > -1 ? "highlight" : "";
-          return div;
+          if (params.data.Analysis_1) {
+            return ((params.data.Analysis_1[params.data.Analysis_1.length - 2] || {}).Value - (params.data.Analysis_1[params.data.Analysis_1.length - 3] || {}).Value).toFixed(2) + '%'
+          }
         }
       },
       {
-        headerName: "2018/2017",
+        headerName: "2018-2017",
         field: "",
         cellRenderer: function (params) {
-          let value_2018 = (
-            params.data.Values[params.data.Values.length - 1] || {}
-          ).Value;
-
-          let value_2017 = (
-            params.data.Values[params.data.Values.length - 2] || {}
-          ).Value;
-          const div = document.createElement("div");
-          let value = ((value_2018 / value_2017 - 1) * 100).toFixed(2) + "%";
-          div.innerHTML = value;
-          div.className =
-            params.data.ID === 1 || params.data.ID === 5 ? "highlight" : "";
-          return div;
+          if (params.data.Analysis_1) {
+            return ((params.data.Analysis_1[params.data.Analysis_1.length - 1] || {}).Value - (params.data.Analysis_1[params.data.Analysis_1.length - 2] || {}).Value).toFixed(2) + '%'
+          }
         }
       }
     ]
