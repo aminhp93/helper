@@ -14,6 +14,9 @@ class ChartTV extends React.Component {
   constructor(props) {
     super(props);
     this.id = uuidv4();
+    this.state = {
+      symbol: props.symbol || 'FPT'
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -77,12 +80,12 @@ class ChartTV extends React.Component {
         "show_logo_on_all_charts"
       ],
       user_id: "public_user_id",
-      symbol: this.props.symbol || "FPT"
+      symbol: this.state.symbol
     };
     this.widget = new TradingView.widget(option);
     this.widget &&
       this.widget.onChartReady &&
-      this.widget.onChartReady(function() {
+      this.widget.onChartReady(function () {
         // createStudy(name, forceOverlay, lock, inputs, callback, overrides, options)
         // this.widget.chart().createStudy('RSI60', false, true);
         // this.widget.chart().createStudy('MACD_Minh', false, false, [14, 30, "close", 9])
@@ -91,7 +94,7 @@ class ChartTV extends React.Component {
         ReactDOM.render(<div className="saveChart">Save</div>, div);
 
         that.widget.createButton().append(div);
-        div.parentNode.parentNode.addEventListener("click", function() {
+        div.parentNode.parentNode.addEventListener("click", function () {
           console.log(div);
           that.saveLayoutChart(div);
         });
@@ -115,7 +118,7 @@ class ChartTV extends React.Component {
       return;
     }
     let indexLayout = listLayout.findIndex(
-      item => item.symbol === this.props.symbol
+      item => item.symbol === this.state.symbol
     );
     if (indexLayout === -1) {
       this.widget.load();
@@ -144,6 +147,9 @@ class ChartTV extends React.Component {
 
   cbSymbol(response) {
     console.log(response);
+    this.setState({
+      symbol: response.symbol
+    })
   }
 
   componentDidMount() {
@@ -165,7 +171,7 @@ class ChartTV extends React.Component {
       });
     if (!listLayout) return;
     let indexLayout = listLayout.findIndex(
-      item => item.symbol === this.props.symbol
+      item => item.symbol === this.state.symbol
     );
     this.widget &&
       this.widget.save &&
@@ -174,21 +180,21 @@ class ChartTV extends React.Component {
         var formData = new FormData();
         const content = {
           publish_request_id: uuidv4().substring(0, 12),
-          name: `${this.props.symbol}_layout`,
+          name: `${this.state.symbol}_layout`,
           description: "",
           resolution: "D",
           symbol_type: "stock",
           exchange: "HOSE",
           listed_exchange: "",
-          symbol: this.props.symbol,
-          short_name: this.props.symbol,
-          legs: `[{"symbol":"${this.props.symbol}","pro_symbol":"${
-            this.props.symbol
-          }"}]`,
+          symbol: this.state.symbol,
+          short_name: this.state.symbol,
+          legs: `[{"symbol":"${this.state.symbol}","pro_symbol":"${
+            this.state.symbol
+            }"}]`,
           content: savedObj
         };
-        formData.append("name", `${this.props.symbol}_layout`);
-        formData.append("symbol", this.props.symbol);
+        formData.append("name", `${this.state.symbol}_layout`);
+        formData.append("symbol", this.state.symbol);
         formData.append("resolution", "D");
 
         if (indexLayout > -1) {
