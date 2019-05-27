@@ -6,11 +6,12 @@ import {
   formatNumber,
   mapDataBusinessSummary
 } from "../../helpers/functionUtils";
+import Button from "@material-ui/core/Button";
 
 export function getLastestFinancialReports(type, symbol, index) {
   return `https://www.fireant.vn/api/Data/Finance/LastestFinancialReports?symbol=${symbol}&type=${type}&year=2018&quarter=${
     index === durationReportEnums.YEAR ? "0" : "4"
-  }&count=5`;
+    }&count=5`;
 }
 function strcmp(a, b) {
   return a < b ? -1 : a > b ? 1 : 0;
@@ -34,7 +35,7 @@ export default class BusinessSummary extends React.Component {
         headerName: "Name",
         field: "Name",
         width: 200,
-        cellRenderer: function(params) {
+        cellRenderer: function (params) {
           const div = document.createElement("div");
           div.title = params.data.Name;
           div.innerHTML = params.data.Name;
@@ -44,58 +45,58 @@ export default class BusinessSummary extends React.Component {
       {
         headerName: "2014",
         width: 120,
-        cellRenderer: function(params) {
+        cellRenderer: function (params) {
           return (params.data.Values[params.data.Values.length - 5] || {}).Value
             ? formatNumber(
-                (params.data.Values[params.data.Values.length - 5] || {})
-                  .Value / 1000000,
-                1,
-                true
-              )
+              (params.data.Values[params.data.Values.length - 5] || {})
+                .Value / 1000000,
+              1,
+              true
+            )
             : "";
         }
       },
       {
         headerName: "2015",
         width: 120,
-        cellRenderer: function(params) {
+        cellRenderer: function (params) {
           return (params.data.Values[params.data.Values.length - 4] || {}).Value
             ? formatNumber(
-                (params.data.Values[params.data.Values.length - 4] || {})
-                  .Value / 1000000,
-                1,
-                true
-              )
+              (params.data.Values[params.data.Values.length - 4] || {})
+                .Value / 1000000,
+              1,
+              true
+            )
             : "";
         }
       },
       {
         headerName: "2016",
         width: 120,
-        cellRenderer: function(params) {
+        cellRenderer: function (params) {
           return (params.data.Values[params.data.Values.length - 3] || {}).Value
             ? formatNumber(
-                (params.data.Values[params.data.Values.length - 3] || {})
-                  .Value / 1000000,
-                1,
-                true
-              )
+              (params.data.Values[params.data.Values.length - 3] || {})
+                .Value / 1000000,
+              1,
+              true
+            )
             : "";
         }
       },
       {
         headerName: "2017",
         width: 120,
-        cellRenderer: function(params) {
+        cellRenderer: function (params) {
           const div = document.createElement("div");
           let value = (params.data.Values[params.data.Values.length - 2] || {})
             .Value
             ? formatNumber(
-                (params.data.Values[params.data.Values.length - 2] || {})
-                  .Value / 1000000,
-                1,
-                true
-              )
+              (params.data.Values[params.data.Values.length - 2] || {})
+                .Value / 1000000,
+              1,
+              true
+            )
             : "";
           div.innerHTML = value;
           div.className =
@@ -106,28 +107,30 @@ export default class BusinessSummary extends React.Component {
       {
         headerName: "2018",
         width: 120,
-        cellRenderer: function(params) {
-          console.log(params.data);
+        cellRenderer: function (params) {
           const div = document.createElement("div");
           let value = (params.data.Values[params.data.Values.length - 1] || {})
             .Value
             ? formatNumber(
-                (params.data.Values[params.data.Values.length - 1] || {})
-                  .Value / 1000000,
-                1,
-                true
-              )
+              (params.data.Values[params.data.Values.length - 1] || {})
+                .Value / 1000000,
+              1,
+              true
+            )
             : "";
           div.innerHTML = value;
           div.className =
             [5, 15, 110].indexOf(params.data.ID) > -1 ? "highlight" : "";
           return div;
         }
-      },
+      }
+    ];
+
+    this.columnDefs_analysis_1 = [
       {
         headerName: "2016-2015",
         field: "",
-        cellRenderer: function(params) {
+        cellRenderer: function (params) {
           let value_2016 = (
             params.data.Values[params.data.Values.length - 3] || {}
           ).Value;
@@ -141,7 +144,7 @@ export default class BusinessSummary extends React.Component {
       {
         headerName: "2017-2016",
         field: "",
-        cellRenderer: function(params) {
+        cellRenderer: function (params) {
           let value_2017 = (
             params.data.Values[params.data.Values.length - 2] || {}
           ).Value;
@@ -163,7 +166,7 @@ export default class BusinessSummary extends React.Component {
       {
         headerName: "2018-2017",
         field: "",
-        cellRenderer: function(params) {
+        cellRenderer: function (params) {
           let value_2018 = (
             params.data.Values[params.data.Values.length - 1] || {}
           ).Value;
@@ -185,7 +188,7 @@ export default class BusinessSummary extends React.Component {
       {
         headerName: "2016/2015",
         field: "",
-        cellRenderer: function(params) {
+        cellRenderer: function (params) {
           let value_2016 = (
             params.data.Values[params.data.Values.length - 3] || {}
           ).Value;
@@ -200,7 +203,7 @@ export default class BusinessSummary extends React.Component {
       {
         headerName: "2017/2016",
         field: "",
-        cellRenderer: function(params) {
+        cellRenderer: function (params) {
           let value_2017 = (
             params.data.Values[params.data.Values.length - 2] || {}
           ).Value;
@@ -219,7 +222,7 @@ export default class BusinessSummary extends React.Component {
       {
         headerName: "2018/2017",
         field: "",
-        cellRenderer: function(params) {
+        cellRenderer: function (params) {
           let value_2018 = (
             params.data.Values[params.data.Values.length - 1] || {}
           ).Value;
@@ -235,7 +238,99 @@ export default class BusinessSummary extends React.Component {
           return div;
         }
       }
-    ];
+    ]
+
+    this.columnDefs_analysis_2 = [
+      {
+        headerName: "2015",
+        field: "",
+        cellRenderer: function (params) {
+          if (params.data.Analysis_1) {
+            return (params.data.Analysis_1[params.data.Analysis_1.length - 4] || {}).Value + '%'
+          }
+        }
+      },
+      {
+        headerName: "2016",
+        field: "",
+        cellRenderer: function (params) {
+          if (params.data.Analysis_1) {
+            return (params.data.Analysis_1[params.data.Analysis_1.length - 3] || {}).Value + '%'
+          }
+        }
+      },
+      {
+        headerName: "2017",
+        field: "",
+        cellRenderer: function (params) {
+          if (params.data.Analysis_1) {
+            return (params.data.Analysis_1[params.data.Analysis_1.length - 2] || {}).Value + '%'
+          }
+        }
+      },
+      {
+        headerName: "2018",
+        field: "",
+        cellRenderer: function (params) {
+          if (params.data.Analysis_1) {
+            return (params.data.Analysis_1[params.data.Analysis_1.length - 1] || {}).Value + '%'
+          }
+        }
+      },
+      {
+        headerName: "2016/2015",
+        field: "",
+        cellRenderer: function (params) {
+          let value_2016 = (
+            params.data.Values[params.data.Values.length - 3] || {}
+          ).Value;
+
+          let value_2015 = (
+            params.data.Values[params.data.Values.length - 4] || {}
+          ).Value;
+
+          return ((value_2016 / value_2015 - 1) * 100).toFixed(2) + "%";
+        }
+      },
+      {
+        headerName: "2017/2016",
+        field: "",
+        cellRenderer: function (params) {
+          let value_2017 = (
+            params.data.Values[params.data.Values.length - 2] || {}
+          ).Value;
+
+          let value_2016 = (
+            params.data.Values[params.data.Values.length - 3] || {}
+          ).Value;
+          const div = document.createElement("div");
+          let value = ((value_2017 / value_2016 - 1) * 100).toFixed(2) + "%";
+          div.innerHTML = value;
+          div.className =
+            [1, 5].indexOf(params.data.ID) > -1 ? "highlight" : "";
+          return div;
+        }
+      },
+      {
+        headerName: "2018/2017",
+        field: "",
+        cellRenderer: function (params) {
+          let value_2018 = (
+            params.data.Values[params.data.Values.length - 1] || {}
+          ).Value;
+
+          let value_2017 = (
+            params.data.Values[params.data.Values.length - 2] || {}
+          ).Value;
+          const div = document.createElement("div");
+          let value = ((value_2018 / value_2017 - 1) * 100).toFixed(2) + "%";
+          div.innerHTML = value;
+          div.className =
+            params.data.ID === 1 || params.data.ID === 5 ? "highlight" : "";
+          return div;
+        }
+      }
+    ]
 
     this.columnDefs_quarter = [
       {
@@ -247,13 +342,13 @@ export default class BusinessSummary extends React.Component {
         headerName: "Q2 2017",
         field: "Q2 2017",
         width: 120,
-        cellRenderer: function(params) {
+        cellRenderer: function (params) {
           return (params.data.Values[0] || {}).Value
             ? formatNumber(
-                (params.data.Values[0] || {}).Value / 1000000,
-                1,
-                true
-              )
+              (params.data.Values[0] || {}).Value / 1000000,
+              1,
+              true
+            )
             : "";
         }
       },
@@ -261,13 +356,13 @@ export default class BusinessSummary extends React.Component {
         headerName: "Q3 2017",
         field: "Q3 2017",
         width: 120,
-        cellRenderer: function(params) {
+        cellRenderer: function (params) {
           return (params.data.Values[1] || {}).Value
             ? formatNumber(
-                (params.data.Values[1] || {}).Value / 1000000,
-                1,
-                true
-              )
+              (params.data.Values[1] || {}).Value / 1000000,
+              1,
+              true
+            )
             : "";
         }
       },
@@ -275,13 +370,13 @@ export default class BusinessSummary extends React.Component {
         headerName: "Q4 2017",
         field: "Q4 2017",
         width: 120,
-        cellRenderer: function(params) {
+        cellRenderer: function (params) {
           return (params.data.Values[2] || {}).Value
             ? formatNumber(
-                (params.data.Values[2] || {}).Value / 1000000,
-                1,
-                true
-              )
+              (params.data.Values[2] || {}).Value / 1000000,
+              1,
+              true
+            )
             : "";
         }
       },
@@ -289,13 +384,13 @@ export default class BusinessSummary extends React.Component {
         headerName: "Q1 2018",
         field: "Q1 2018",
         width: 120,
-        cellRenderer: function(params) {
+        cellRenderer: function (params) {
           return (params.data.Values[3] || {}).Value
             ? formatNumber(
-                (params.data.Values[3] || {}).Value / 1000000,
-                1,
-                true
-              )
+              (params.data.Values[3] || {}).Value / 1000000,
+              1,
+              true
+            )
             : "";
         }
       },
@@ -303,13 +398,13 @@ export default class BusinessSummary extends React.Component {
         headerName: "Q2 2018",
         field: "Q2 2018",
         width: 120,
-        cellRenderer: function(params) {
+        cellRenderer: function (params) {
           return (params.data.Values[4] || {}).Value
             ? formatNumber(
-                (params.data.Values[4] || {}).Value / 1000000,
-                0,
-                true
-              )
+              (params.data.Values[4] || {}).Value / 1000000,
+              0,
+              true
+            )
             : "";
         }
       }
@@ -329,7 +424,7 @@ export default class BusinessSummary extends React.Component {
         suppressCount: true,
         checkbox: true
       },
-      comparator: function(valueA, valueB) {
+      comparator: function (valueA, valueB) {
         if (valueA == null || valueB == null) return valueA - valueB;
         if (!valueA.substring || !valueB.substring) return valueA - valueB;
         if (valueA.length < 1 || valueB.length < 1) return valueA - valueB;
@@ -345,7 +440,40 @@ export default class BusinessSummary extends React.Component {
     this.gridApi = params.api;
   }
 
-  onRowClicked(row) {}
+  onRowClicked(row) { }
+
+  renderAnalysisOptions() {
+    switch (this.typeBusinessSummary) {
+      case '2':
+        return <div>
+          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(0)}>Default</Button>
+          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(1)}>Chieu ngang</Button>
+          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(2)}>Chieu doc</Button>
+        </div>
+      default:
+        return null
+    }
+  }
+
+  handleAnalyse(index) {
+    switch (index) {
+      case 0:
+        this.gridApi.setColumnDefs(this.columnDefs_year)
+        break;
+      case 1:
+        this.gridApi.setColumnDefs(this.columnDefs_year.concat(this.columnDefs_analysis_1))
+        break;
+      case 2:
+        this.gridApi.setColumnDefs(this.columnDefs_year.concat(this.columnDefs_analysis_2))
+        this.gridApi.setRowData(mapDataBusinessSummary(this.rootData, this.typeBusinessSummary, 2))
+        break;
+      default:
+        this.gridApi.setColumnDefs(this.columnDefs_year);
+        break;
+    }
+
+    this.gridApi.sizeColumnsToFit()
+  }
 
   render() {
     return (
@@ -355,6 +483,7 @@ export default class BusinessSummary extends React.Component {
           height: "500px"
         }}
       >
+        {this.renderAnalysisOptions()}
         <AgGridReact
           columnDefs={
             this.durationReport === durationReportEnums.YEAR
@@ -420,8 +549,9 @@ export default class BusinessSummary extends React.Component {
       .get(url)
       .then(response => {
         console.log(response);
+        this.rootData = response.data
         this.gridApi.setRowData(
-          mapDataBusinessSummary(response.data, this.typeBusinessSummary)
+          mapDataBusinessSummary(this.rootData, this.typeBusinessSummary, 1)
         );
         this.gridApi.setColumnDefs(
           index === durationReportEnums.YEAR

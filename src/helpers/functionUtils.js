@@ -213,8 +213,8 @@ export function roundFloat(numberFloat, length) {
     arrNumber = arrNumber.replace(/^(-?)/, "$1" + "0".repeat(length));
     let result = Number(
       arrNumber.substring(0, arrNumber.length - length) +
-        "." +
-        arrNumber.substr(-length)
+      "." +
+      arrNumber.substr(-length)
     );
     return result;
   } catch (e) {
@@ -311,32 +311,144 @@ export function mapStockData(data) {
   return data;
 }
 
-export function mapDataBusinessSummary(data, type) {
-  if (type === "2") {
-    const addItem = {};
-    addItem.Expanded = true;
-    addItem.Field = null;
-    addItem.ID = 110;
-    addItem.Level = 1;
-    addItem.Name = "110. Loi nhuan hoat dong kinh doanh chinh (5) - (9) - (10)";
-    addItem.ParentId = -1;
-    addItem.Values = [];
-    for (let i = 0; i < data[4].Values.length; i++) {
-      let loi_nhuan_gop = data[4].Values[i].Value;
-      let chi_phi_ban_hang = data[9].Values[i].Value;
-      let chi_phi_quan_ly = data[10].Values[i].Value;
-      let loi_nhuan_hoat_dong_kinh_doanh_chinh =
-        loi_nhuan_gop - chi_phi_ban_hang - chi_phi_quan_ly;
-      addItem.Values.push({
-        Period: data[4].Values[i].Period,
-        Year: data[4].Values[i].Period,
-        Quarter: data[4].Values[i].Period,
-        Value: loi_nhuan_hoat_dong_kinh_doanh_chinh
-      });
+export function mapDataBusinessSummary(data, businessSummaryType, analysisType) {
+  console.log(data, businessSummaryType, analysisType)
+  if (businessSummaryType === "2") {
+    if (analysisType === 1) {
+      const addItem = {};
+      addItem.Expanded = true;
+      addItem.Field = null;
+      addItem.ID = 110;
+      addItem.Level = 1;
+      addItem.Name = "110. Loi nhuan hoat dong kinh doanh chinh (5) - (9) - (10)";
+      addItem.ParentId = -1;
+      addItem.Values = [];
+      for (let i = 0; i < data[4].Values.length; i++) {
+        let loi_nhuan_gop_5 = data[4].Values[i].Value;
+        let chi_phi_ban_hang_9 = data[9].Values[i].Value;
+        let chi_phi_quan_ly_10 = data[10].Values[i].Value;
+        let loi_nhuan_hoat_dong_kinh_doanh_chinh_110 =
+          loi_nhuan_gop_5 - chi_phi_ban_hang_9 - chi_phi_quan_ly_10;
+        addItem.Values.push({
+          Period: data[4].Values[i].Period,
+          Year: data[4].Values[i].Period,
+          Quarter: data[4].Values[i].Period,
+          Value: loi_nhuan_hoat_dong_kinh_doanh_chinh_110
+        });
+      }
+      data.splice(12, 0, addItem);
+      console.log(data);
+      return data;
+    } else if (analysisType === 2) {
+      data[3].Analysis_1 = []
+      data[4].Analysis_1 = []
+      data[5].Analysis_1 = []
+      data[6].Analysis_1 = []
+      data[7].Analysis_1 = []
+      data[8].Analysis_1 = []
+      data[9].Analysis_1 = []
+      data[10].Analysis_1 = []
+      data[11].Analysis_1 = []
+      data[12].Analysis_1 = []
+      data[13].Analysis_1 = []
+      data[14].Analysis_1 = []
+      data[15].Analysis_1 = []
+      data[16].Analysis_1 = []
+      data[17].Analysis_1 = []
+      data[18].Analysis_1 = []
+      data[19].Analysis_1 = []
+      data[20].Analysis_1 = []
+      data[21].Analysis_1 = []
+      data[22].Analysis_1 = []
+      for (let i = 0; i < data[4].Values.length; i++) {
+        let doanh_thu_thuan_3 = data[2].Values[i].Value;
+        let gia_von_ban_hang_4 = data[3].Values[i].Value;
+        let loi_nhuan_gop_5 = data[4].Values[i].Value;
+        let doanh_thu_hoat_dong_tai_chinh_6 = data[5].Values[i].Value;
+        let chi_phi_tai_chinh_7 = data[6].Values[i].Value;
+        let chi_phi_lai_vay_701 = data[7].Values[i].Value;
+        let phan_loi_nhuan_lien_ket_kinh_doanh_8 = data[8].Values[i].Value;
+        let chi_phi_ban_hang_9 = data[9].Values[i].Value;
+        let chi_phi_quan_ly_10 = data[10].Values[i].Value;
+        let loi_nhuan_thuan_tu_hoat_dong_kinh_doanh_11 = data[11].Values[i].Value;
+        let loi_nhuan_hoat_dong_kinh_doanh_chinh_110 = data[12].Values[i].Value;
+        let thu_nhap_khac_12 = data[13].Values[i].Value;
+        let chi_phi_khac_13 = data[14].Values[i].Value;
+        let loi_nhuan_khac_14 = data[15].Values[i].Value;
+        let tong_loi_nhuan_ke_toan_truoc_thue_15 = data[16].Values[i].Value;
+        let chi_phi_thue_TNDN_hien_hanh_16 = data[17].Values[i].Value;
+        let chi_phi_thue_TNDN_hoan_lai_17 = data[18].Values[i].Value;
+        let chi_phi_thue_TNDN_18 = data[19].Values[i].Value;
+        let loi_nhuan_sau_thue_thu_nhap_doanh_nghiep_19 = data[20].Values[i].Value;
+        let loi_nhuan_sau_thue_cua_co_dong_khong_kiem_soat_20 = data[21].Values[i].Value;
+        let loi_nhuan_sau_thue_cua_co_dong_cong_ty_me_21 = data[22].Values[i].Value;
+
+        data[3].Analysis_1.push({
+          Value: ((gia_von_ban_hang_4 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[4].Analysis_1.push({
+          Value: ((loi_nhuan_gop_5 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[5].Analysis_1.push({
+          Value: ((doanh_thu_hoat_dong_tai_chinh_6 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[6].Analysis_1.push({
+          Value: ((chi_phi_tai_chinh_7 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[7].Analysis_1.push({
+          Value: ((chi_phi_lai_vay_701 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[8].Analysis_1.push({
+          Value: ((phan_loi_nhuan_lien_ket_kinh_doanh_8 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[9].Analysis_1.push({
+          Value: ((chi_phi_ban_hang_9 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[10].Analysis_1.push({
+          Value: ((chi_phi_quan_ly_10 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[11].Analysis_1.push({
+          Value: ((loi_nhuan_thuan_tu_hoat_dong_kinh_doanh_11 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[12].Analysis_1.push({
+          Value: ((loi_nhuan_hoat_dong_kinh_doanh_chinh_110 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[13].Analysis_1.push({
+          Value: ((thu_nhap_khac_12 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[14].Analysis_1.push({
+          Value: ((chi_phi_khac_13 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[15].Analysis_1.push({
+          Value: ((loi_nhuan_khac_14 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[16].Analysis_1.push({
+          Value: ((tong_loi_nhuan_ke_toan_truoc_thue_15 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[17].Analysis_1.push({
+          Value: ((chi_phi_thue_TNDN_hien_hanh_16 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[18].Analysis_1.push({
+          Value: ((chi_phi_thue_TNDN_hoan_lai_17 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[19].Analysis_1.push({
+          Value: ((chi_phi_thue_TNDN_18 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[20].Analysis_1.push({
+          Value: ((loi_nhuan_sau_thue_thu_nhap_doanh_nghiep_19 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[21].Analysis_1.push({
+          Value: ((loi_nhuan_sau_thue_cua_co_dong_khong_kiem_soat_20 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+        data[22].Analysis_1.push({
+          Value: ((loi_nhuan_sau_thue_cua_co_dong_cong_ty_me_21 / doanh_thu_thuan_3) * 100).toFixed(2)
+        })
+      }
+      console.log(data);
+      return data
+    } else {
+      return data
     }
-    data.splice(12, 0, addItem);
-    console.log(data);
-    return data;
   }
   return data;
 }
