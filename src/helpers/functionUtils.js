@@ -1,3 +1,6 @@
+import businessSummaryTypes from '../constants/businessSummaryTypes'
+import analysisTypes from '../constants/analysisTypes'
+
 export function calculateClose(data, timeValue, percentValue = 0) {
   if (!data) return;
   let smallerCount = 0;
@@ -313,8 +316,8 @@ export function mapStockData(data) {
 
 export function mapDataBusinessSummary(data, businessSummaryType, analysisType) {
   console.log(data, businessSummaryType, analysisType)
-  if (businessSummaryType === "2") {
-    if (analysisType === 1) {
+  if (businessSummaryType === businessSummaryTypes.KET_QUA_KINH_DOANH) {
+    if (analysisType === analysisTypes.ANALYSIS_1) {
       const addItem = {};
       addItem.Expanded = true;
       addItem.Field = null;
@@ -339,7 +342,7 @@ export function mapDataBusinessSummary(data, businessSummaryType, analysisType) 
       data.splice(12, 0, addItem);
       console.log(data);
       return data;
-    } else if (analysisType === 2) {
+    } else if (analysisType === analysisTypes.ANALYSIS_2) {
       data[3].Analysis_1 = []
       data[4].Analysis_1 = []
       data[5].Analysis_1 = []
@@ -449,6 +452,12 @@ export function mapDataBusinessSummary(data, businessSummaryType, analysisType) 
     } else {
       return data
     }
+  } else if (businessSummaryType === businessSummaryTypes.CAN_DOI_KE_TOAN) {
+    return data
   }
   return data;
+}
+
+export function strcmp(a, b) {
+  return a < b ? -1 : a > b ? 1 : 0;
 }

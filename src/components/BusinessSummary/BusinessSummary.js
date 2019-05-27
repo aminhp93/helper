@@ -1,25 +1,16 @@
 import React from "react";
 import axios from "axios";
 import { AgGridReact } from "ag-grid-react";
-// import durationReportEnums from '../../constants/durationReportEnums'
 import {
   formatNumber,
-  mapDataBusinessSummary
+  mapDataBusinessSummary,
+  strcmp
 } from "../../helpers/functionUtils";
+import { getLastestFinancialReports } from '../../helpers/requests';
 import Button from "@material-ui/core/Button";
-
-export function getLastestFinancialReports(type, symbol, index) {
-  return `https://www.fireant.vn/api/Data/Finance/LastestFinancialReports?symbol=${symbol}&type=${type}&year=2018&quarter=${
-    index === durationReportEnums.YEAR ? "0" : "4"
-    }&count=5`;
-}
-function strcmp(a, b) {
-  return a < b ? -1 : a > b ? 1 : 0;
-}
-const durationReportEnums = {
-  QUARTER: "QUARTER",
-  YEAR: "YEAR"
-};
+import businessSummaryTypes from '../../constants/businessSummaryTypes'
+import analysisTypes from '../../constants/analysisTypes'
+import durationReportEnums from '../../constants/durationReportEnums'
 
 export default class BusinessSummary extends React.Component {
   constructor(props) {
@@ -28,7 +19,7 @@ export default class BusinessSummary extends React.Component {
       symbol: props.symbol || "FPT"
     };
     this.durationReport = props.durationReport || durationReportEnums.YEAR;
-    this.typeBusinessSummary = props.typeBusinessSummary || "1";
+    this.typeBusinessSummary = props.typeBusinessSummary || businessSummaryTypes.KET_QUA_KINH_DOANH;
 
     this.columnDefs_year = [
       {
@@ -46,7 +37,9 @@ export default class BusinessSummary extends React.Component {
         headerName: "2014",
         width: 120,
         cellRenderer: function (params) {
-          return (params.data.Values[params.data.Values.length - 5] || {}).Value
+          const div = document.createElement("div");
+          let value = (params.data.Values[params.data.Values.length - 5] || {})
+            .Value
             ? formatNumber(
               (params.data.Values[params.data.Values.length - 5] || {})
                 .Value / Math.pow(10, 9),
@@ -54,6 +47,10 @@ export default class BusinessSummary extends React.Component {
               true
             )
             : "";
+          div.innerHTML = value;
+          div.className = "";
+          div.classList.add('number')
+          return div
         }
       },
       {
@@ -154,7 +151,7 @@ export default class BusinessSummary extends React.Component {
           ).Value;
           const div = document.createElement("div");
           div.innerHTML = formatNumber(
-            (value_2016 - value_2015) / 1000000,
+            (value_2016 - value_2015) / Math.pow(10, 9),
             1,
             true
           );
@@ -176,7 +173,7 @@ export default class BusinessSummary extends React.Component {
           ).Value;
           const div = document.createElement("div");
           div.innerHTML = formatNumber(
-            (value_2017 - value_2016) / 1000000,
+            (value_2017 - value_2016) / Math.pow(10, 9),
             1,
             true
           );
@@ -199,7 +196,7 @@ export default class BusinessSummary extends React.Component {
           ).Value;
           const div = document.createElement("div");
           div.innerHTML = formatNumber(
-            (value_2018 - value_2017) / 1000000,
+            (value_2018 - value_2017) / Math.pow(10, 9),
             1,
             true
           );
@@ -369,6 +366,22 @@ export default class BusinessSummary extends React.Component {
       }
     ]
 
+    this.columnDefs_analysis_3 = [
+      {
+        headerName: 'Nguon von',
+        field: '',
+        cellRenderer: function (params) {
+          return 'Nguon von'
+        }
+      },
+      {
+        headerName: 'Su dung nguon',
+        field: '',
+        cellRenderer: function (params) {
+          return 'Su dung nguon'
+        }
+      }
+    ]
     this.columnDefs_quarter = [
       {
         headerName: "Name",
@@ -481,12 +494,20 @@ export default class BusinessSummary extends React.Component {
 
   renderAnalysisOptions() {
     switch (this.typeBusinessSummary) {
-      case '2':
+      case businessSummaryTypes.KET_QUA_KINH_DOANH:
         return <div>
-          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(0)}>Default</Button>
-          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(1)}>Chieu ngang</Button>
-          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(2)}>Chieu doc</Button>
+          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.DEFAULT)}>Default</Button>
+          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_1)}>Chieu ngang</Button>
+          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_2)}>Chieu doc</Button>
         </div>
+      case businessSummaryTypes.CAN_DOI_KE_TOAN:
+        return <div>
+          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_3)}>phan tich 1</Button>
+        </div>
+      case businessSummaryTypes.LUU_CHUYEN_TIEN_TE_TRUC_TIEP:
+        return null
+      case businessSummaryTypes.LUU_CHUYEN_TIEN_TE_GIAN_TIEP:
+        return null
       default:
         return null
     }
@@ -494,15 +515,18 @@ export default class BusinessSummary extends React.Component {
 
   handleAnalyse(index) {
     switch (index) {
-      case 0:
+      case analysisTypes.DEFAULT:
         this.gridApi.setColumnDefs(this.columnDefs_year)
         break;
-      case 1:
+      case analysisTypes.ANALYSIS_1:
         this.gridApi.setColumnDefs(this.columnDefs_year.concat(this.columnDefs_analysis_1))
         break;
-      case 2:
+      case analysisTypes.ANALYSIS_2:
         this.gridApi.setColumnDefs(this.columnDefs_year.concat(this.columnDefs_analysis_2))
-        this.gridApi.setRowData(mapDataBusinessSummary(this.rootData, this.typeBusinessSummary, 2))
+        this.gridApi.setRowData(mapDataBusinessSummary(this.rootData, this.typeBusinessSummary, analysisTypes.ANALYSIS_2))
+        break;
+      case analysisTypes.ANALYSIS_3:
+        this.gridApi.setColumnDefs(this.columnDefs_year.concat(this.columnDefs_analysis_3))
         break;
       default:
         this.gridApi.setColumnDefs(this.columnDefs_year);
@@ -588,7 +612,7 @@ export default class BusinessSummary extends React.Component {
         console.log(response);
         this.rootData = response.data
         this.gridApi.setRowData(
-          mapDataBusinessSummary(this.rootData, this.typeBusinessSummary, 1)
+          mapDataBusinessSummary(this.rootData, this.typeBusinessSummary, analysisTypes.ANALYSIS_1)
         );
         this.gridApi.setColumnDefs(
           index === durationReportEnums.YEAR

@@ -7,6 +7,8 @@ import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import BusinessSummary from "../BusinessSummary";
 import ChartTV from "../ChartTV";
+import businessSummaryTypes from '../../constants/businessSummaryTypes'
+import analysisTypes from '../../constants/analysisTypes'
 
 function TabContainer(props) {
   return (
@@ -55,14 +57,14 @@ class StockDetail extends React.Component {
             <Tab label="Luu chuyen tien te - Gian tiep" />
           </Tabs>
         </AppBar>
-        {value === 0 && <TabContainer><ChartTV symbol={this.state.symbol}/></TabContainer>}
-        {value === 1 && <TabContainer>Ket qua kinh doanh | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary='2' /></TabContainer>}
-        {value === 2 && <TabContainer>Can doi ke toan | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary='1' /></TabContainer>}
+        {value === 0 && <TabContainer><ChartTV symbol={this.state.symbol} /></TabContainer>}
+        {value === 1 && <TabContainer>Ket qua kinh doanh | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary={businessSummaryTypes.KET_QUA_KINH_DOANH} /></TabContainer>}
+        {value === 2 && <TabContainer>Can doi ke toan | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary={businessSummaryTypes.CAN_DOI_KE_TOAN} /></TabContainer>}
         {value === 3 && (
-          <TabContainer>Luu chuyen tien te - Truc tiep | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary='3' /></TabContainer>
+          <TabContainer>Luu chuyen tien te - Truc tiep | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary={businessSummaryTypes.LUU_CHUYEN_TIEN_TE_TRUC_TIEP} /></TabContainer>
         )}
         {value === 4 && (
-          <TabContainer>Luu chuyen tien te - Gian tiep | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary='4' /></TabContainer>
+          <TabContainer>Luu chuyen tien te - Gian tiep | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary={businessSummaryTypes.LUU_CHUYEN_TIEN_TE_GIAN_TIEP} /></TabContainer>
         )}
       </div>
     );

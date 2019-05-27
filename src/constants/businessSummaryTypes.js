@@ -1,0 +1,6 @@
+export default {
+    KET_QUA_KINH_DOANH: '2',
+    CAN_DOI_KE_TOAN: '1',
+    LUU_CHUYEN_TIEN_TE_TRUC_TIEP: '3',
+    LUU_CHUYEN_TIEN_TE_GIAN_TIEP: '4'
+}

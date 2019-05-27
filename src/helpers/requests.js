@@ -3,6 +3,8 @@ import axios from "axios";
 import { calculateRSI, msToTime } from "../helpers/functionUtils";
 import config from "./../config";
 import { func } from "prop-types";
+import durationReportEnums from '../constants/durationReportEnums'
+
 let domain = config.isProduction
   ? "https://project-2018-backend.herokuapp.com/"
   : "http://localhost:8000/";
@@ -94,6 +96,12 @@ export function getSaveLayoutChartUrl(id) {
 
 export function getWatchingStocksUrl() {
   return "https://watchlist-api.vndirect.com.vn/api/watchlists?filter[where][creator]=vnds-0001813109";
+}
+
+export function getLastestFinancialReports(type, symbol, index) {
+  return `https://www.fireant.vn/api/Data/Finance/LastestFinancialReports?symbol=${symbol}&type=${type}&year=2018&quarter=${
+    index === durationReportEnums.YEAR ? "0" : "4"
+    }&count=5`;
 }
 
 export async function updateAllStocksDatabase(floor, _this) {
