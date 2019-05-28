@@ -1,5 +1,5 @@
-import businessSummaryTypes from '../constants/businessSummaryTypes'
-import analysisTypes from '../constants/analysisTypes'
+import businessSummaryTypes from "../constants/businessSummaryTypes";
+import analysisTypes from "../constants/analysisTypes";
 
 export function calculateClose(data, timeValue, percentValue = 0) {
   if (!data) return;
@@ -102,7 +102,13 @@ export function calculateRSI(data) {
   ) {
     return {
       RSI_14_previous: Number(data[data.length - 2].RSI.toFixed(0)) || 0,
-      RSI_14: Number(data[data.length - 1].RSI.toFixed(0)) || 0
+      RSI_14: Number(data[data.length - 1].RSI.toFixed(0)) || 0,
+      percentage_change_in_volume:
+        (data[data.length - 1].Volume - data[data.length - 2].Volume) /
+        data[data.length - 2].Volume,
+      percentage_change_in_price:
+        (data[data.length - 1].Close - data[data.length - 2].Close) /
+        data[data.length - 2].Close
     };
   }
   return {};
@@ -216,8 +222,8 @@ export function roundFloat(numberFloat, length) {
     arrNumber = arrNumber.replace(/^(-?)/, "$1" + "0".repeat(length));
     let result = Number(
       arrNumber.substring(0, arrNumber.length - length) +
-      "." +
-      arrNumber.substr(-length)
+        "." +
+        arrNumber.substr(-length)
     );
     return result;
   } catch (e) {
@@ -303,19 +309,11 @@ export function calculateAverage(data) {
 }
 
 export function mapStockData(data) {
-  data.map(item => {
-    if (item.Close && item.Volume) {
-      item.DayTradingValue = Number(
-        ((item.Close * item.Volume) / Math.pow(10, 9)).toFixed(1)
-      );
-    }
-  });
-
   return data;
 }
 
 export function mapDataBusinessSummary(data, analysisType) {
-  console.log(data, analysisType)
+  console.log(data, analysisType);
   if (analysisType === analysisTypes.ANALYSIS_1) {
     const addItem = {};
     addItem.Expanded = true;
@@ -343,33 +341,59 @@ export function mapDataBusinessSummary(data, analysisType) {
     for (let i = 0; i < data[4].Values.length; i++) {
       let doanh_thu_thuan_3 = data[2].Values[i].Value;
       for (let j = 3; j < 23; j++) {
-        if (!data[j].ANALYSIS_2) data[j].ANALYSIS_2 = []
+        if (!data[j].ANALYSIS_2) data[j].ANALYSIS_2 = [];
         data[j].ANALYSIS_2.push({
-          Value: ((((data[j].Values[i] || {}).Value) / doanh_thu_thuan_3) * 100).toFixed(2)
-        })
+          Value: (
+            ((data[j].Values[i] || {}).Value / doanh_thu_thuan_3) *
+            100
+          ).toFixed(2)
+        });
       }
     }
   } else if (analysisType === analysisTypes.ANALYSIS_3) {
     for (let i = 0; i < data[4].Values.length; i++) {
       let tong_cong_tai_san_2 = data[62].Values[i].Value;
       for (let j = 1; j < 116; j++) {
-        if (!data[j].ANALYSIS_3) data[j].ANALYSIS_3 = []
+        if (!data[j].ANALYSIS_3) data[j].ANALYSIS_3 = [];
         data[j].ANALYSIS_3.push({
-          Value: ((((data[j].Values[i] || {}).Value) / tong_cong_tai_san_2) * 100).toFixed(2)
-        })
+          Value: (
+            ((data[j].Values[i] || {}).Value / tong_cong_tai_san_2) *
+            100
+          ).toFixed(2)
+        });
       }
     }
   } else if (analysisType === analysisTypes.ANALYSIS_4) {
-    let newArray = []
+    let newArray = [];
     for (let i = 0; i < data.length; i++) {
-      if ([1, 10101, 10102, 10103, 10104, 10105, 102, 2, 3, 3010101, 3010103, 3010111, 3010113, 30102, 30201, 30202, 4].indexOf(data[i].ID) > -1) {
-        newArray.push(data[i])
+      if (
+        [
+          1,
+          10101,
+          10102,
+          10103,
+          10104,
+          10105,
+          102,
+          2,
+          3,
+          3010101,
+          3010103,
+          3010111,
+          3010113,
+          30102,
+          30201,
+          30202,
+          4
+        ].indexOf(data[i].ID) > -1
+      ) {
+        newArray.push(data[i]);
       }
     }
-    data = newArray
+    data = newArray;
   }
 
-  console.log(data)
+  console.log(data);
   return data;
 }
 

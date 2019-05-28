@@ -10,7 +10,7 @@ import {
   updateAllStocksDatabase,
   getAllStocksUrl,
   deleteAllStocks,
-  getQuickFilteredStocksUrl
+  getFilteredStocksUrl
 } from "../../helpers/requests";
 import {
   BarChart,
@@ -34,22 +34,57 @@ class Stock extends Component {
           field: "Symbol"
         },
         {
+          headerName: "TodayCapitalization",
+          field: "today_capitalization",
+          filter: "agNumberColumnFilter",
+          cellRenderer: function(params) {
+            return (params.data.today_capitalization / Math.pow(10, 9)).toFixed(
+              0
+            );
+          }
+        },
+        {
+          headerName: "% Change in Price",
+          field: "percentage_change_in_price",
+          filter: "agNumberColumnFilter",
+          cellRenderer: function(params) {
+            if (params.data.percentage_change_in_price) {
+              return params.data.percentage_change_in_price.toFixed(2);
+            }
+          }
+        },
+        {
           headerName: "Close",
           field: "Close",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.Close) {
               return params.data.Close.toFixed(0);
             }
           }
         },
         {
+          headerName: "% Change in Volume",
+          field: "percentage_change_in_volume",
+          filter: "agNumberColumnFilter",
+          cellRenderer: function(params) {
+            if (params.data.percentage_change_in_volume) {
+              return params.data.percentage_change_in_volume.toFixed(2);
+            }
+          }
+        },
+        {
+          headerName: "Volume",
+          field: "Volume",
+          filter: "agNumberColumnFilter"
+        },
+        {
           headerName: "ROE",
           field: "ROE",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.ROE) {
-              return params.data.ROE.toFixed(2);
+              return params.data.ROE.toFixed(0);
             }
           }
         },
@@ -57,30 +92,11 @@ class Stock extends Component {
           headerName: "EPS",
           field: "EPS",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.EPS) {
               return params.data.EPS.toFixed(0);
             }
           }
-        },
-        {
-          headerName: "MarketCapitalization",
-          field: "MarketCapitalization",
-          filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
-            if (params.data.MarketCapitalization) {
-              return params.data.MarketCapitalization.toFixed(0);
-            }
-          }
-        },
-        {
-          headerName: "Gia tri GD",
-          field: "DayTradingValue"
-        },
-        {
-          headerName: "Volume",
-          field: "Volume",
-          filter: "agNumberColumnFilter"
         },
         {
           headerName: "RSI_14",
@@ -93,8 +109,14 @@ class Stock extends Component {
           filter: "agNumberColumnFilter"
         },
         {
-          headerName: "Index 1",
-          field: "price_gap_index"
+          headerName: "MarketCapitalization",
+          field: "MarketCapitalization",
+          filter: "agNumberColumnFilter",
+          cellRenderer: function(params) {
+            if (params.data.MarketCapitalization) {
+              return params.data.MarketCapitalization.toFixed(0);
+            }
+          }
         }
       ],
       rowData: []
@@ -159,9 +181,12 @@ class Stock extends Component {
             color="secondary"
             disabled={this.state.loading}
             onClick={() => {
-              this.setState({
-                loading: true
-              }, () => updateAllStocksDatabase("HOSE_stocks", this))
+              this.setState(
+                {
+                  loading: true
+                },
+                () => updateAllStocksDatabase("HOSE_stocks", this)
+              );
             }}
           >
             Update HOSE_stocks
@@ -171,9 +196,12 @@ class Stock extends Component {
             color="secondary"
             disabled={this.state.loading}
             onClick={() => {
-              this.setState({
-                loading: true
-              }, () => updateAllStocksDatabase("HNX_stocks", this))
+              this.setState(
+                {
+                  loading: true
+                },
+                () => updateAllStocksDatabase("HNX_stocks", this)
+              );
             }}
           >
             Update HNX_stocks
@@ -183,9 +211,12 @@ class Stock extends Component {
             color="secondary"
             disabled={this.state.loading}
             onClick={() => {
-              this.setState({
-                loading: true
-              }, () => updateAllStocksDatabase("UPCOM_stocks", this))
+              this.setState(
+                {
+                  loading: true
+                },
+                () => updateAllStocksDatabase("UPCOM_stocks", this)
+              );
             }}
           >
             Update UPCOM_stocks
@@ -245,31 +276,48 @@ class Stock extends Component {
     // .catch(error => {
     //   console.log(error);
     // });
-    this.setState({
-      loading: true
-    }, () => {
-      axios
-        .get(getAllStocksUrl())
-        .then(response => {
-          console.log(response);
-          this.setState({
-            rowData: response.data.stocks,
-            loading: false
-          });
-        })
-        .catch(error => {
-          console.log(error);
-          this.setState({
-            loading: false
+    this.setState(
+      {
+        loading: true
+      },
+      () => {
+        axios
+          .get(getAllStocksUrl())
+          .then(response => {
+            console.log(response);
+            // setTimeout(() => {
+            this.setState({
+              rowData: response.data.stocks,
+              loading: false
+            });
+            // });
           })
-        });
-    })
-
+          .catch(error => {
+            console.log(error);
+            this.setState({
+              loading: false
+            });
+          });
+      }
+    );
   }
 
   componentDidMount() {
+    let Volume_min = 10000;
+    let RSI_14_max = 70;
+    let RSI_14_min = 60;
+    let RSI_14_diff_min = 0;
+    let ROE_min = 17;
+    let EPS_min = 3000;
     axios
-      .get(getQuickFilteredStocksUrl())
+      .post(getFilteredStocksUrl(), {
+        Volume_min,
+        RSI_14_max,
+        RSI_14_min,
+        RSI_14_diff_min,
+        ROE_min,
+        EPS_min
+      })
       .then(response => {
         console.log(response);
         this.setState({

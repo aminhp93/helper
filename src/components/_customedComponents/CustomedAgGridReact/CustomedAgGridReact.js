@@ -27,7 +27,8 @@ class CustomedAgGridReact extends React.Component {
     };
     this.defaultColDef = {
       sortable: true,
-      filter: true
+      filter: true,
+      resizable: true
     };
   }
 

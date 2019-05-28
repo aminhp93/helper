@@ -3,7 +3,7 @@ import axios from "axios";
 import { calculateRSI, msToTime } from "../helpers/functionUtils";
 import config from "./../config";
 import { func } from "prop-types";
-import durationReportEnums from '../constants/durationReportEnums'
+import durationReportEnums from "../constants/durationReportEnums";
 
 let domain = config.isProduction
   ? "https://project-2018-backend.herokuapp.com/"
@@ -101,7 +101,7 @@ export function getWatchingStocksUrl() {
 export function getLastestFinancialReports(type, symbol, index) {
   return `https://www.fireant.vn/api/Data/Finance/LastestFinancialReports?symbol=${symbol}&type=${type}&year=2018&quarter=${
     index === durationReportEnums.YEAR ? "0" : "4"
-    }&count=5`;
+  }&count=5`;
 }
 
 export async function updateAllStocksDatabase(floor, _this) {
@@ -130,7 +130,7 @@ export async function updateAllStocksDatabase(floor, _this) {
     endTime = new Date();
     _this.setState({
       loading: false
-    })
+    });
     console.log(`Updated failed somewhere in ${msToTime(endTime - startTime)}`);
     return "Updated all stocks failed" + floor;
   }
@@ -142,7 +142,7 @@ export async function updateAllStocksDatabase(floor, _this) {
   );
   _this.setState({
     loading: false
-  })
+  });
   return "Updated all stocks successfully";
 }
 
@@ -169,17 +169,28 @@ async function getLastestFinancialInfo(resolve, item) {
   const lastDay = response1.data[response1.data.length - 1];
   const calculateRSI_result = calculateRSI(response1.data);
   console.log(calculateRSI_result);
+  let today_capitalization = 0;
+  let percentage_change_in_volume =
+    calculateRSI_result.percentage_change_in_volume;
+  let percentage_change_in_price =
+    calculateRSI_result.percentage_change_in_price;
+  if (lastDay && lastDay.Close && lastDay.Volume) {
+    today_capitalization = lastDay.Close * lastDay.Volume;
+  }
   await axios
     .post(getCreateStockUrl(), {
       Symbol: item,
       price_data: JSON.stringify(response1.data),
+      today_capitalization,
+      percentage_change_in_volume,
+      percentage_change_in_price,
       Close: lastDay && lastDay.Close,
       Volume: lastDay && lastDay.Volume,
       RSI_14: calculateRSI_result.RSI_14,
       RSI_14_diff:
         calculateRSI_result.RSI_14 - calculateRSI_result.RSI_14_previous
     })
-    .then(response => { })
+    .then(response => {})
     .catch(error => {
       errorsList.push({
         error,
