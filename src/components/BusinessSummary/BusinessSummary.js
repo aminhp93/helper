@@ -678,6 +678,7 @@ export default class BusinessSummary extends React.Component {
     switch (index) {
       case analysisTypes.DEFAULT:
         this.gridApi.setColumnDefs(this.columnDefs_year)
+        this.gridApi.setRowData(this.rootData)
         break;
       case analysisTypes.ANALYSIS_1:
         this.gridApi.setColumnDefs(this.columnDefs_year.concat(this.columnDefs_analysis_1))
