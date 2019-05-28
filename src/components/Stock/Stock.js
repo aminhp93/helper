@@ -23,6 +23,7 @@ import {
 } from "recharts";
 import Button from "@material-ui/core/Button";
 import CustomedAgGridReact from "../_customedComponents/CustomedAgGridReact";
+import moment from "moment";
 
 class Stock extends Component {
   constructor(props) {
@@ -49,7 +50,7 @@ class Stock extends Component {
           filter: "agNumberColumnFilter",
           cellRenderer: function(params) {
             if (params.data.percentage_change_in_price) {
-              return params.data.percentage_change_in_price.toFixed(2);
+              return (params.data.percentage_change_in_price * 100).toFixed(2);
             }
           }
         },
@@ -69,7 +70,7 @@ class Stock extends Component {
           filter: "agNumberColumnFilter",
           cellRenderer: function(params) {
             if (params.data.percentage_change_in_volume) {
-              return params.data.percentage_change_in_volume.toFixed(2);
+              return (params.data.percentage_change_in_volume * 100).toFixed(2);
             }
           }
         },
@@ -323,6 +324,20 @@ class Stock extends Component {
         this.setState({
           rowData: response.data.stocks
         });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    const endDay = moment()
+      .subtract(1, "days")
+      .format("YYYY-MM-DD");
+    let item = "VJC";
+    let url = `https://svr1.fireant.vn/api/Data/Markets/HistoricalQuotes?symbol=${item}&startDate=2012-1-1&endDate=${endDay}`;
+    axios
+      .get(url)
+      .then(response => {
+        console.log(response);
       })
       .catch(error => {
         console.log(error);

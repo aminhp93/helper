@@ -68,7 +68,11 @@ export function findMaxPercent(data, percentValue = 0) {
 export function calculateRSI(data) {
   let sumGain = 0;
   let sumLoss = 0;
+  let sum_volume = 0;
   for (let j = 1; j < data.length; j++) {
+    if (j > data.length - 17 && j < data.length - 1) {
+      sum_volume += data[j].Volume;
+    }
     let change = data[j].Close - data[j - 1].Close;
     if (change > 0) {
       data[j].Gain = change;
@@ -104,8 +108,7 @@ export function calculateRSI(data) {
       RSI_14_previous: Number(data[data.length - 2].RSI.toFixed(0)) || 0,
       RSI_14: Number(data[data.length - 1].RSI.toFixed(0)) || 0,
       percentage_change_in_volume:
-        (data[data.length - 1].Volume - data[data.length - 2].Volume) /
-        data[data.length - 2].Volume,
+        (data[data.length - 1].Volume - sum_volume / 15) / (sum_volume / 15),
       percentage_change_in_price:
         (data[data.length - 1].Close - data[data.length - 2].Close) /
         data[data.length - 2].Close
