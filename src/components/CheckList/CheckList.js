@@ -104,6 +104,23 @@ class CheckList extends Component {
             );
             return div;
           }
+        },
+        {
+          field: "scheduled_time",
+          cellRenderer: function(params) {
+            const div = document.createElement("div");
+            ReactDOM.render(
+              <CustomedInput
+                type="float"
+                value={params.data.scheduled_time}
+                cb={scheduled_time =>
+                  that.handleCbInput({ scheduled_time }, params.data.id)
+                }
+              />,
+              div
+            );
+            return div;
+          }
         }
       ],
       defaultColDef: {
@@ -219,18 +236,30 @@ class CheckList extends Component {
       });
   }
 
+  onRowDragStart(e) {
+    console.log(e);
+  }
+
+  onRowDragEnd(e) {
+    let obj = this.gridApi.getRowNode(e.overIndex).data;
+    console.log(e, obj, obj.scheduled_time);
+    // e.node.data.scheduled_time =
+    //   this.gridApi.getRowNode(e.overIndex).data.scheduled_time + 0.01;
+    // this.gridApi.updateRowData({
+    //   update: [e.node.data]
+    // });
+    // e.node.setDataValue(
+    //   "scheduled_time",
+    //   this.gridApi.getRowNode(e.overIndex).data.scheduled_time + 0.01
+    // );
+  }
+
   render() {
     return (
-      <div style={{ width: "100%", height: "500px" }} className="checkList">
+      <div className="checkList">
         <div onClick={e => this.handleCreate(e)}>Create</div>
-        <div
-          id="myGrid"
-          style={{
-            height: "100%",
-            width: "100%"
-          }}
-          className="ag-theme-balham"
-        >
+        <div />
+        <div className="ag-theme-balham agGridContainer">
           <AgGridReact
             columnDefs={this.state.columnDefs}
             defaultColDef={this.state.defaultColDef}
@@ -238,6 +267,8 @@ class CheckList extends Component {
             animateRows={true}
             onGridReady={this.onGridReady}
             rowData={this.state.rowData}
+            onRowDragEnd={this.onRowDragEnd.bind(this)}
+            onRowDragStart={this.onRowDragStart.bind(this)}
             headerHeight={0}
             rowHeight={50}
           />

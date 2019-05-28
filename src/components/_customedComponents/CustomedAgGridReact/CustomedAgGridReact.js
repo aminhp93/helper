@@ -32,31 +32,28 @@ class CustomedAgGridReact extends React.Component {
   }
 
   setQuickFilter() {
-    const hardCodedFilter = {
-      EPS: {
-        type: "greaterThan",
-        filter: "3000"
-      },
-      ROE: {
-        type: "greaterThan",
-        filter: "17"
-      },
-      volume: {
-        type: "greaterThan",
-        filter: "10000"
-      },
-      RSI_14: {
-        type: "inRange",
-        filter: "60",
-        filterTo: "70"
-      },
-      RSI_14_diff: {
-        type: "greaterThan",
-        filter: "0"
-      }
-    };
-    this.gridApi.setFilterModel(hardCodedFilter);
-    this.gridApi.onFilterChanged();
+    let Volume_min = 10000;
+    let RSI_14_max = 70;
+    let RSI_14_min = 60;
+    let RSI_14_diff_min = 0;
+    let ROE_min = 17;
+    let EPS_min = 3000;
+    axios
+      .post(getFilteredStocksUrl(), {
+        Volume_min,
+        RSI_14_max,
+        RSI_14_min,
+        RSI_14_diff_min,
+        ROE_min,
+        EPS_min
+      })
+      .then(response => {
+        console.log(response);
+        this.gridApi.setRowData(response.data.stocks);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   onGridReady(params) {

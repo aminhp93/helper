@@ -15,8 +15,8 @@ class ChartTV extends React.Component {
     super(props);
     this.id = uuidv4();
     this.state = {
-      symbol: props.symbol || 'FPT'
-    }
+      symbol: props.symbol || "FPT"
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -85,7 +85,7 @@ class ChartTV extends React.Component {
     this.widget = new TradingView.widget(option);
     this.widget &&
       this.widget.onChartReady &&
-      this.widget.onChartReady(function () {
+      this.widget.onChartReady(function() {
         // createStudy(name, forceOverlay, lock, inputs, callback, overrides, options)
         // this.widget.chart().createStudy('RSI60', false, true);
         // this.widget.chart().createStudy('MACD_Minh', false, false, [14, 30, "close", 9])
@@ -94,7 +94,7 @@ class ChartTV extends React.Component {
         ReactDOM.render(<div className="saveChart">Save</div>, div);
 
         that.widget.createButton().append(div);
-        div.parentNode.parentNode.addEventListener("click", function () {
+        div.parentNode.parentNode.addEventListener("click", function() {
           console.log(div);
           that.saveLayoutChart(div);
         });
@@ -120,6 +120,7 @@ class ChartTV extends React.Component {
     let indexLayout = listLayout.findIndex(
       item => item.symbol === this.state.symbol
     );
+    console.log(indexLayout, this.widget);
     if (indexLayout === -1) {
       this.widget.load();
       return;
@@ -149,7 +150,7 @@ class ChartTV extends React.Component {
     console.log(response);
     this.setState({
       symbol: response.symbol
-    })
+    });
   }
 
   componentDidMount() {
@@ -190,7 +191,7 @@ class ChartTV extends React.Component {
           short_name: this.state.symbol,
           legs: `[{"symbol":"${this.state.symbol}","pro_symbol":"${
             this.state.symbol
-            }"}]`,
+          }"}]`,
           content: savedObj
         };
         formData.append("name", `${this.state.symbol}_layout`);
