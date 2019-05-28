@@ -277,8 +277,8 @@ export default class BusinessSummary extends React.Component {
           const div = document.createElement("div");
           div.className = ''
           div.classList.add('number')
-          if (params.data.Analysis_1) {
-            div.innerHTML = (params.data.Analysis_1[params.data.Analysis_1.length - 4] || {}).Value + '%'
+          if (params.data.ANALYSIS_2) {
+            div.innerHTML = (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 4] || {}).Value + '%'
           }
           return div
         }
@@ -291,8 +291,8 @@ export default class BusinessSummary extends React.Component {
           const div = document.createElement("div");
           div.className = ''
           div.classList.add('number')
-          if (params.data.Analysis_1) {
-            div.innerHTML = (params.data.Analysis_1[params.data.Analysis_1.length - 3] || {}).Value + '%'
+          if (params.data.ANALYSIS_2) {
+            div.innerHTML = (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 3] || {}).Value + '%'
           }
           return div
         }
@@ -305,8 +305,8 @@ export default class BusinessSummary extends React.Component {
           const div = document.createElement("div");
           div.className = ''
           div.classList.add('number')
-          if (params.data.Analysis_1) {
-            div.innerHTML = (params.data.Analysis_1[params.data.Analysis_1.length - 2] || {}).Value + '%'
+          if (params.data.ANALYSIS_2) {
+            div.innerHTML = (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 2] || {}).Value + '%'
           }
           return div
         }
@@ -319,8 +319,8 @@ export default class BusinessSummary extends React.Component {
           const div = document.createElement("div");
           div.className = ''
           div.classList.add('number')
-          if (params.data.Analysis_1) {
-            div.innerHTML = (params.data.Analysis_1[params.data.Analysis_1.length - 1] || {}).Value + '%'
+          if (params.data.ANALYSIS_2) {
+            div.innerHTML = (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 1] || {}).Value + '%'
           }
           return div
         }
@@ -332,8 +332,8 @@ export default class BusinessSummary extends React.Component {
           const div = document.createElement("div");
           div.className = ''
           div.classList.add('number')
-          if (params.data.Analysis_1) {
-            div.innerHTML = ((params.data.Analysis_1[params.data.Analysis_1.length - 3] || {}).Value - (params.data.Analysis_1[params.data.Analysis_1.length - 4] || {}).Value).toFixed(2) + '%'
+          if (params.data.ANALYSIS_2) {
+            div.innerHTML = ((params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 3] || {}).Value - (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 4] || {}).Value).toFixed(2) + '%'
           }
           return div
         }
@@ -345,8 +345,8 @@ export default class BusinessSummary extends React.Component {
           const div = document.createElement("div");
           div.className = ''
           div.classList.add('number')
-          if (params.data.Analysis_1) {
-            div.innerHTML = ((params.data.Analysis_1[params.data.Analysis_1.length - 2] || {}).Value - (params.data.Analysis_1[params.data.Analysis_1.length - 3] || {}).Value).toFixed(2) + '%'
+          if (params.data.ANALYSIS_2) {
+            div.innerHTML = ((params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 2] || {}).Value - (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 3] || {}).Value).toFixed(2) + '%'
           }
           return div
         }
@@ -358,8 +358,8 @@ export default class BusinessSummary extends React.Component {
           const div = document.createElement("div");
           div.className = ''
           div.classList.add('number')
-          if (params.data.Analysis_1) {
-            div.innerHTML = ((params.data.Analysis_1[params.data.Analysis_1.length - 1] || {}).Value - (params.data.Analysis_1[params.data.Analysis_1.length - 2] || {}).Value).toFixed(2) + '%'
+          if (params.data.ANALYSIS_2) {
+            div.innerHTML = ((params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 1] || {}).Value - (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 2] || {}).Value).toFixed(2) + '%'
           }
           return div
         }
@@ -368,20 +368,87 @@ export default class BusinessSummary extends React.Component {
 
     this.columnDefs_analysis_3 = [
       {
-        headerName: 'Nguon von',
+        headerName: '2014',
         field: '',
+        cellStyle: { 'background-color': 'gray' },
         cellRenderer: function (params) {
-          return 'Nguon von'
+          const div = document.createElement("div");
+          div.className = ''
+          div.classList.add('number')
+          if (params.data.ANALYSIS_3) {
+            let value = (params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 5] || {}).Value
+            if (typeof value === 'undefined' || value === '0.00') return null
+            div.innerHTML = value + '%'
+          }
+          return div
         }
       },
       {
-        headerName: 'Su dung nguon',
+        headerName: '2015',
         field: '',
+        cellStyle: { 'background-color': 'gray' },
         cellRenderer: function (params) {
-          return 'Su dung nguon'
+          const div = document.createElement("div");
+          div.className = ''
+          div.classList.add('number')
+          if (params.data.ANALYSIS_3) {
+            let value = (params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 4] || {}).Value
+            if (typeof value === 'undefined' || value === '0.00') return null
+            div.innerHTML = value + '%'
+          }
+          return div
         }
-      }
+      },
+      {
+        headerName: '2016',
+        field: '',
+        cellStyle: { 'background-color': 'gray' },
+        cellRenderer: function (params) {
+          const div = document.createElement("div");
+          div.className = ''
+          div.classList.add('number')
+          if (params.data.ANALYSIS_3) {
+            let value = (params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 3] || {}).Value
+            if (typeof value === 'undefined' || value === '0.00') return null
+            div.innerHTML = value + '%'
+          }
+          return div
+        }
+      },
+      {
+        headerName: '2017',
+        field: '',
+        cellStyle: { 'background-color': 'gray' },
+        cellRenderer: function (params) {
+          const div = document.createElement("div");
+          div.className = ''
+          div.classList.add('number')
+          if (params.data.ANALYSIS_3) {
+            let value = (params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 2] || {}).Value
+            if (typeof value === 'undefined' || value === '0.00') return null
+            div.innerHTML = value + '%'
+          }
+          return div
+        }
+      },
+      {
+        headerName: '2018',
+        field: '',
+        cellStyle: { 'background-color': 'gray' },
+        cellRenderer: function (params) {
+          const div = document.createElement("div");
+          div.className = ''
+          div.classList.add('number')
+          if (params.data.ANALYSIS_3) {
+            let value = (params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 1] || {}).Value
+            if (typeof value === 'undefined' || value === '0.00') return null
+            div.innerHTML = value + '%'
+          }
+          return div
+        }
+      },
     ]
+
     this.columnDefs_quarter = [
       {
         headerName: "Name",
@@ -502,6 +569,7 @@ export default class BusinessSummary extends React.Component {
         </div>
       case businessSummaryTypes.CAN_DOI_KE_TOAN:
         return <div>
+          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.DEFAULT)}>Default</Button>
           <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_3)}>phan tich 1</Button>
         </div>
       case businessSummaryTypes.LUU_CHUYEN_TIEN_TE_TRUC_TIEP:
@@ -527,6 +595,7 @@ export default class BusinessSummary extends React.Component {
         break;
       case analysisTypes.ANALYSIS_3:
         this.gridApi.setColumnDefs(this.columnDefs_year.concat(this.columnDefs_analysis_3))
+        this.gridApi.setRowData(mapDataBusinessSummary(this.rootData, this.typeBusinessSummary, analysisTypes.ANALYSIS_3))
         break;
       default:
         this.gridApi.setColumnDefs(this.columnDefs_year);
