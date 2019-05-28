@@ -11,6 +11,7 @@ import Button from "@material-ui/core/Button";
 import businessSummaryTypes from '../../constants/businessSummaryTypes'
 import analysisTypes from '../../constants/analysisTypes'
 import durationReportEnums from '../../constants/durationReportEnums'
+import { Input } from "@material-ui/core";
 
 export default class BusinessSummary extends React.Component {
   constructor(props) {
@@ -373,7 +374,7 @@ export default class BusinessSummary extends React.Component {
         cellStyle: { 'background-color': 'gray' },
         cellRenderer: function (params) {
           const div = document.createElement("div");
-          div.className = ''
+          div.className = [301, 302, 30101].indexOf(params.data.ID) > -1 ? 'highlight' : ''
           div.classList.add('number')
           if (params.data.ANALYSIS_3) {
             let value = (params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 5] || {}).Value
@@ -389,7 +390,7 @@ export default class BusinessSummary extends React.Component {
         cellStyle: { 'background-color': 'gray' },
         cellRenderer: function (params) {
           const div = document.createElement("div");
-          div.className = ''
+          div.className = [301, 302, 30101].indexOf(params.data.ID) > -1 ? 'highlight' : ''
           div.classList.add('number')
           if (params.data.ANALYSIS_3) {
             let value = (params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 4] || {}).Value
@@ -405,7 +406,7 @@ export default class BusinessSummary extends React.Component {
         cellStyle: { 'background-color': 'gray' },
         cellRenderer: function (params) {
           const div = document.createElement("div");
-          div.className = ''
+          div.className = [301, 302, 30101].indexOf(params.data.ID) > -1 ? 'highlight' : ''
           div.classList.add('number')
           if (params.data.ANALYSIS_3) {
             let value = (params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 3] || {}).Value
@@ -421,7 +422,7 @@ export default class BusinessSummary extends React.Component {
         cellStyle: { 'background-color': 'gray' },
         cellRenderer: function (params) {
           const div = document.createElement("div");
-          div.className = ''
+          div.className = [301, 302, 30101].indexOf(params.data.ID) > -1 ? 'highlight' : ''
           div.classList.add('number')
           if (params.data.ANALYSIS_3) {
             let value = (params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 2] || {}).Value
@@ -437,7 +438,7 @@ export default class BusinessSummary extends React.Component {
         cellStyle: { 'background-color': 'gray' },
         cellRenderer: function (params) {
           const div = document.createElement("div");
-          div.className = ''
+          div.className = [301, 302, 30101].indexOf(params.data.ID) > -1 ? 'highlight' : ''
           div.classList.add('number')
           if (params.data.ANALYSIS_3) {
             let value = (params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 1] || {}).Value
@@ -613,6 +614,12 @@ export default class BusinessSummary extends React.Component {
           height: "500px"
         }}
       >
+        <Input
+          onChange={e => {
+            console.log(e.target.value);
+            this.gridApi.setQuickFilter(e.target.value);
+          }}
+        />
         {this.renderAnalysisOptions()}
         <AgGridReact
           columnDefs={
