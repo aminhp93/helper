@@ -447,7 +447,98 @@ export default class BusinessSummary extends React.Component {
           }
           return div
         }
+      }
+    ]
+    this.columnDefs_analysis_4 = [
+      {
+        headerName: "Name",
+        field: "Name",
+        width: 200,
+        cellRenderer: function (params) {
+          const div = document.createElement("div");
+          div.title = params.data.Name;
+          div.innerHTML = params.data.Name;
+          return div;
+        }
       },
+      {
+        headerName: "2017",
+        width: 120,
+        cellRenderer: function (params) {
+          const div = document.createElement("div");
+          let value = (params.data.Values[params.data.Values.length - 2] || {})
+            .Value
+            ? formatNumber(
+              (params.data.Values[params.data.Values.length - 2] || {})
+                .Value / Math.pow(10, 9),
+              1,
+              true
+            )
+            : "";
+          div.innerHTML = value;
+          div.className = "";
+          div.classList.add('number')
+          return div
+        }
+      },
+      {
+        headerName: "2018",
+        width: 120,
+        cellRenderer: function (params) {
+          const div = document.createElement("div");
+          let value = (params.data.Values[params.data.Values.length - 1] || {})
+            .Value
+            ? formatNumber(
+              (params.data.Values[params.data.Values.length - 1] || {})
+                .Value / Math.pow(10, 9),
+              1,
+              true
+            )
+            : "";
+          div.innerHTML = value;
+          div.className = "";
+          div.classList.add('number')
+          return div;
+        }
+      },
+      {
+        headerName: 'Su dung von',
+        field: '',
+        pinnedRowCellRenderer: function (params) {
+          console.log(params, 508)
+          return 'pinned'
+        },
+        cellRenderer: function (params) {
+          if ([10102, 10105, , 3010103, 3010111, 30102, 30201, 2, 4].indexOf(params.data.ID) > -1) return null
+          const div = document.createElement("div");
+          let value1 = (params.data.Values[params.data.Values.length - 1] || {})
+            .Value
+          let value2 = (params.data.Values[params.data.Values.length - 2] || {})
+            .Value
+          let value = value1 - value2
+          div.innerHTML = value ? formatNumber(value / Math.pow(10, 9), 1, true) : "";
+          div.className = "";
+          div.classList.add('number')
+          return div;
+        }
+      },
+      {
+        headerName: 'nguon von',
+        field: '',
+        cellRenderer: function (params) {
+          if ([10101, 10103, 10104, 102, 3010101, 3010113, 30202, 2, 4].indexOf(params.data.ID) > -1) return null
+          const div = document.createElement("div");
+          let value1 = (params.data.Values[params.data.Values.length - 1] || {})
+            .Value
+          let value2 = (params.data.Values[params.data.Values.length - 2] || {})
+            .Value
+          let value = value2 - value1
+          div.innerHTML = value ? formatNumber(value / Math.pow(10, 9), 1, true) : "";
+          div.className = "";
+          div.classList.add('number')
+          return div;
+        }
+      }
     ]
 
     this.columnDefs_quarter = [
@@ -565,13 +656,14 @@ export default class BusinessSummary extends React.Component {
       case businessSummaryTypes.KET_QUA_KINH_DOANH:
         return <div>
           <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.DEFAULT)}>Default</Button>
-          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_1)}>Chieu ngang</Button>
-          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_2)}>Chieu doc</Button>
+          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_1)}>ANALYSIS_1 - Chieu ngang</Button>
+          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_2)}>ANALYSIS_2 - Chieu doc</Button>
         </div>
       case businessSummaryTypes.CAN_DOI_KE_TOAN:
         return <div>
           <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.DEFAULT)}>Default</Button>
-          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_3)}>phan tich 1</Button>
+          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_3)}>ANALYSIS_3</Button>
+          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_4)}>ANALYSIS_4</Button>
         </div>
       case businessSummaryTypes.LUU_CHUYEN_TIEN_TE_TRUC_TIEP:
         return null
@@ -592,11 +684,15 @@ export default class BusinessSummary extends React.Component {
         break;
       case analysisTypes.ANALYSIS_2:
         this.gridApi.setColumnDefs(this.columnDefs_year.concat(this.columnDefs_analysis_2))
-        this.gridApi.setRowData(mapDataBusinessSummary(this.rootData, this.typeBusinessSummary, analysisTypes.ANALYSIS_2))
+        this.gridApi.setRowData(mapDataBusinessSummary(this.rootData, analysisTypes.ANALYSIS_2))
         break;
       case analysisTypes.ANALYSIS_3:
         this.gridApi.setColumnDefs(this.columnDefs_year.concat(this.columnDefs_analysis_3))
-        this.gridApi.setRowData(mapDataBusinessSummary(this.rootData, this.typeBusinessSummary, analysisTypes.ANALYSIS_3))
+        this.gridApi.setRowData(mapDataBusinessSummary(this.rootData, analysisTypes.ANALYSIS_3))
+        break;
+      case analysisTypes.ANALYSIS_4:
+        this.gridApi.setColumnDefs(this.columnDefs_analysis_4)
+        this.gridApi.setRowData(mapDataBusinessSummary(this.rootData, analysisTypes.ANALYSIS_4))
         break;
       default:
         this.gridApi.setColumnDefs(this.columnDefs_year);
@@ -688,7 +784,7 @@ export default class BusinessSummary extends React.Component {
         console.log(response);
         this.rootData = response.data
         this.gridApi.setRowData(
-          mapDataBusinessSummary(this.rootData, this.typeBusinessSummary, analysisTypes.ANALYSIS_1)
+          mapDataBusinessSummary(this.rootData, analysisTypes.ANALYSIS_1)
         );
         this.gridApi.setColumnDefs(
           index === durationReportEnums.YEAR
