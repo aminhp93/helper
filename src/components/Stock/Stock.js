@@ -10,7 +10,8 @@ import {
   updateAllStocksDatabase,
   getAllStocksUrl,
   deleteAllStocks,
-  getFilteredStocksUrl
+  getFilteredStocksUrl,
+  getUpdateStockUrl
 } from "../../helpers/requests";
 import {
   BarChart,
@@ -23,8 +24,7 @@ import {
 } from "recharts";
 import Button from "@material-ui/core/Button";
 import CustomedAgGridReact from "../_customedComponents/CustomedAgGridReact";
-import moment from "moment";
-import io from 'socket.io-client';
+
 class Stock extends Component {
   constructor(props) {
     super(props);
@@ -286,12 +286,10 @@ class Stock extends Component {
           .get(getAllStocksUrl())
           .then(response => {
             console.log(response);
-            // setTimeout(() => {
             this.setState({
               rowData: response.data.stocks,
               loading: false
             });
-            // });
           })
           .catch(error => {
             console.log(error);
@@ -304,6 +302,7 @@ class Stock extends Component {
   }
 
   componentDidMount() {
+    const that = this
     let Volume_min = 10000;
     let RSI_14_max = 70;
     let RSI_14_min = 60;
@@ -364,24 +363,47 @@ class Stock extends Component {
 
     // Listen for messages
     socket.addEventListener('message', function (event) {
-      console.log(event.data);
-      let A = event.data.M && event.data.M[0].A
+      // console.log(event.data);
+      let data = event.data
+      let M_0 = JSON.parse(data).M && (JSON.parse(data).M)[0]
+      let A = M_0 && M_0.A && M_0.A[0]
       if (A && A.length) {
         for (let i = 0; i < A.length; i++) {
-          if (A[i].S = 'D2D') {
+          let index = that.state.rowData.indexOf(A[i].S)
+          if (index > -1) {
+            let update = false
             console.log(A[i])
-            let Volume = A[i].TV
-            let Close = A[i].P
-            let newRowData = {...this.state.rowData[0], Close, Volume}
-            this.setState({
-              rowData: [newRowData]
-            })
+            const obj = A[i]
+            let Symbol = that.state.rowData[index].Symbol
+            let Volume = that.state.rowData[index].Volume
+            let Close = that.state.rowData[index].Close
+            if (obj.hasOwnProperty('TV')) {
+              Volume = obj.TV
+              update = true
+            }
+            if (obj.hasOwnProperty('P')) {
+              Close = obj.P
+              update = true
+            }
+            if (update) {
+              let newRowData = { ...that.state.rowData[index], Close, Volume }
+              that.setState({
+                rowData: [newRowData]
+              }, () => update = false)
+            }
+
+            // Update in db
+            axios.post(getUpdateStockUrl(), { Volume, Close, Symbol })
+              .then(response => {
+                console.log(response)
+              })
+              .catch(error => {
+                console.log(error)
+              })
           }
         }
       }
-
     });
-
   }
 }
 
