@@ -29,6 +29,7 @@ class App extends Component {
         <li>
           <Link to="/checklist">CheckList</Link>
         </li>
+        <div id="output"></div>
       </ul>
     );
   }
