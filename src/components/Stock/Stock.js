@@ -24,7 +24,7 @@ import {
 import Button from "@material-ui/core/Button";
 import CustomedAgGridReact from "../_customedComponents/CustomedAgGridReact";
 import moment from "moment";
-
+import io from 'socket.io-client';
 class Stock extends Component {
   constructor(props) {
     super(props);
@@ -38,7 +38,7 @@ class Stock extends Component {
           headerName: "TodayCapitalization",
           field: "today_capitalization",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             return (params.data.today_capitalization / Math.pow(10, 9)).toFixed(
               0
             );
@@ -48,7 +48,7 @@ class Stock extends Component {
           headerName: "% Change in Price",
           field: "percentage_change_in_price",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.percentage_change_in_price) {
               return (params.data.percentage_change_in_price * 100).toFixed(2);
             }
@@ -58,7 +58,7 @@ class Stock extends Component {
           headerName: "Close",
           field: "Close",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.Close) {
               return params.data.Close.toFixed(0);
             }
@@ -68,7 +68,7 @@ class Stock extends Component {
           headerName: "% Change in Volume",
           field: "percentage_change_in_volume",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.percentage_change_in_volume) {
               return (params.data.percentage_change_in_volume * 100).toFixed(2);
             }
@@ -83,7 +83,7 @@ class Stock extends Component {
           headerName: "ROE",
           field: "ROE",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.ROE) {
               return params.data.ROE.toFixed(0);
             }
@@ -93,7 +93,7 @@ class Stock extends Component {
           headerName: "EPS",
           field: "EPS",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.EPS) {
               return params.data.EPS.toFixed(0);
             }
@@ -113,7 +113,7 @@ class Stock extends Component {
           headerName: "MarketCapitalization",
           field: "MarketCapitalization",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.MarketCapitalization) {
               return params.data.MarketCapitalization.toFixed(0);
             }
@@ -342,6 +342,18 @@ class Stock extends Component {
       .catch(error => {
         console.log(error);
       });
+    io.set('origins', '*:*')
+    const socket = io('wss://www.fireant.vn/signalr/connect?transport=webSockets&clientProtocol=1.5&SessionID=ubjd4qzzvyjzmiisz0infqw3&connectionToken=65Io4MIjtEg35eA6eCpaoEuVEa%2Bq0dXWmCKk9iXItWBq5wv4%2Bx3nN87hxatafb2iwwRe9YEl5LeWdZQsqulAhWC%2FDtl%2FkVIcVB4FEynbjpTtMxsH%2BOkMOpSyrAdbOjjNMoeB%2BQ%3D%3D&connectionData=%5B%7B%22name%22%3A%22compressedappquotehub%22%7D%5D&tid=1')
+    socket.on('connect', function (data) {
+      console.log('connect', data)
+    })
+    socket.on('disconnect', function (data) {
+      console.log('disconnect', data)
+    })
+    socket.on('event', function (data) {
+      console.log('event', data)
+    })
+
   }
 }
 
