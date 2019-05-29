@@ -32,6 +32,23 @@ class CustomedAgGridReact extends React.Component {
     };
   }
 
+  canslimFilter() {
+    let today_capitalization_min = 5000000000;
+    let percentage_change_in_price_min = 0
+    axios
+      .post(getFilteredStocksUrl(), {
+        today_capitalization_min,
+        percentage_change_in_price_min
+      })
+      .then(response => {
+        console.log(response);
+        this.gridApi.setRowData(response.data.stocks);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
   setQuickFilter() {
     let Volume_min = 10000;
     let RSI_14_max = 70;
@@ -81,6 +98,14 @@ class CustomedAgGridReact extends React.Component {
             >
               Watching Stocks
             </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.canslimFilter.bind(this)}
+            >
+              Canslim filter
+            </Button>
+
           </div>
         );
       default:
