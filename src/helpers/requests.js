@@ -18,7 +18,7 @@ const UPCOM_stocks = "A32,ABC,ABI,ABR,AC4,ACE,ACS,ACV,ADP,AFC,AFX,AG1,AGP,AGX,AM
   ","
 );
 const endDay = moment()
-  .subtract(1, "days")
+  .subtract(0, "days")
   .format("YYYY-MM-DD");
 
 export function getAllNotesUrl() {

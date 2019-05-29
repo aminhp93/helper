@@ -88,7 +88,7 @@ class CustomPieChart extends Component {
             this.state.data.length &&
             this.state.data[0].Symbol}
         </div>
-        <div onClick={e => this.handleOnClick(e)}>Find</div>
+        {/* <div onClick={e => this.handleOnClick(e)}>Find</div> */}
         <Input
           value={this.state.timeValue}
           onChange={e => this.handleOnChangeTime(e)}
