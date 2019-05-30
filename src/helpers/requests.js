@@ -19,9 +19,9 @@ const UPCOM_stocks = "A32,ABC,ABI,ABR,AC4,ACE,ACS,ACV,ADP,AFC,AFX,AG1,AGP,AGX,AM
 );
 let time = moment()
 let subtract = 0
-if (time.format('hh') < 16) {
-  subtract = 1
-}
+// if (time.format('hh') < 16) {
+//   subtract = 1
+// }
 const endDay = time
   .subtract(subtract, "days")
   .format("YYYY-MM-DD");
@@ -194,6 +194,7 @@ async function getLastestFinancialInfo(resolve, item) {
       today_capitalization,
       percentage_change_in_volume,
       percentage_change_in_price,
+      yesterday_Close: calculateRSI_result.yesterday_Close,
       Close: lastDay && lastDay.Close,
       Volume: lastDay && lastDay.Volume,
       RSI_14: calculateRSI_result.RSI_14,

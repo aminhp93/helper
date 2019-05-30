@@ -9,7 +9,8 @@ import { Input } from "@material-ui/core";
 import axios from "axios";
 import {
   getFilteredStocksUrl,
-  getWatchingStocksUrl
+  getWatchingStocksUrl,
+  getUpdateStockUrl
 } from "../../../helpers/requests";
 import { RowNode } from "ag-grid-community";
 
@@ -73,13 +74,13 @@ class CustomedAgGridReact extends React.Component {
           // console.log(index, dataStocks, A[i].S)
           if (index > -1) {
             let update = false
-            // console.log(A[i])
+            console.log(A[i])
             const obj = A[i]
             let old_Symbol = dataStocks[index].Symbol
             let old_Volume = dataStocks[index].Volume
             let old_Close = dataStocks[index].Close
-            let new_Volume
-            let new_Close
+            let new_Volume = old_Volume
+            let new_Close = old_Close
             if (obj.hasOwnProperty('TV')) {
               new_Volume = obj.TV
               update = true
@@ -89,32 +90,27 @@ class CustomedAgGridReact extends React.Component {
               update = true
             }
             if (update) {
-              console.log(index, that.gridApi.getDisplayedRowAtIndex(index))
-              let rowNode = that.gridApi.getDisplayedRowAtIndex(index)
-              // rowNode.setDataValue('Volume', Volume)
-              // rowNode.setDataValue('Close', Close)
-              console.log((new_Volume - old_Volume) / old_Volume)
-              if (new_Volume && rowNode) rowNode.setDataValue('percentage_change_in_volume', (new_Volume - old_Volume) / old_Volume)
-              if (new_Close && rowNode) rowNode.setDataValue('percentage_change_in_price', (new_Close - old_Close) / old_Close)
-              let filter_1 = that.gridApi.getFilterInstance('percentage_change_in_price')
-              filter_1.setModel({
-                type: 'greaterThan',
-                filter: 0.03,
-                fitlerTo: null
-              })
-              that.gridApi.onFilterChanged()
-
+              console.log(index)
               update = false
+              let dataUpdate = {}
+              dataUpdate.Symbol = old_Symbol
+              dataUpdate.Volume = new_Volume
+              dataUpdate.Close = new_Close
+              dataUpdate.today_capitalization = new_Volume * new_Close
+              dataUpdate.percentage_change_in_price = (new_Close - dataStocks[index].yesterday_Close) / dataStocks[index].yesterday_Close
+              // Update in db
+
+              axios.post(getUpdateStockUrl(), dataUpdate)
+                .then(response => {
+                  console.log(response)
+                  that.gridApi.setRowData(response.data.stocks)
+                })
+                .catch(error => {
+                  console.log(error)
+                })
             }
 
-            // Update in db
-            // axios.post(getUpdateStockUrl(), { Volume, Close, Symbol })
-            //   .then(response => {
-            //     console.log(response)
-            //   })
-            //   .catch(error => {
-            //     console.log(error)
-            //   })
+
           }
         }
       }
