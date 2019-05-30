@@ -217,15 +217,27 @@ class CustomedAgGridReact extends React.Component {
     this.setState({ open: false });
   };
 
+  searchSymbol(e) {
+    let Symbol_search = (e.target.value + '').toUpperCase()
+    axios
+      .post(getFilteredStocksUrl(), {
+        Symbol_search
+      })
+      .then(response => {
+        console.log(response);
+        this.gridApi.setRowData(response.data.stocks);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
   render() {
     return (
       <div className="ag-theme-balham customedAgGrid">
         <div className="header">
           <Input
-            onChange={e => {
-              console.log(e.target.value);
-              this.gridApi.setQuickFilter(e.target.value);
-            }}
+            onChange={e => this.searchSymbol(e)}
           />
           {this.renderQuickFilterButton()}
         </div>
