@@ -210,11 +210,10 @@ class CustomedAgGridReact extends React.Component {
   }
 
   handleOnRowClicked = params => {
-    this.setState({ open: true, symbol: params.data.Symbol });
+
   };
 
   handleClose = () => {
-    this.setState({ open: false });
   };
 
   searchSymbol(e) {
@@ -250,17 +249,6 @@ class CustomedAgGridReact extends React.Component {
             onRowClicked={this.handleOnRowClicked.bind(this)}
           />
         </div>
-
-        <Modal
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          open={this.state.open}
-          onClose={this.handleClose}
-        >
-          <div style={getModalStyle()}>
-            <StockDetail symbol={this.state.symbol} />
-          </div>
-        </Modal>
       </div>
     );
   }

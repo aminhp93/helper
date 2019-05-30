@@ -96,6 +96,10 @@ export function getDataHistoryUrl(symbol, resolution, fromDate, toDate) {
   );
 }
 
+export function deleteSymbolWatchlistUrl(symbol) {
+  return `https://watchlist-api.vndirect.com.vn/api/watchlists/5cea9628838fae3176909129/symbols/${symbol}`
+}
+
 export function getAllLayoutsUrl() {
   return "https://chart-api.vndirect.com.vn/1.1/charts?client=vnds_trading_view&user=vnds-0001813109";
 }
