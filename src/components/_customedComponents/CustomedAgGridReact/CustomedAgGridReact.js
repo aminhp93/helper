@@ -34,7 +34,7 @@ class CustomedAgGridReact extends React.Component {
 
   canslimFilter() {
     let today_capitalization_min = 5000000000;
-    let percentage_change_in_price_min = 0
+    let percentage_change_in_price_min = 0.01;
     axios
       .post(getFilteredStocksUrl(), {
         today_capitalization_min,
@@ -105,7 +105,6 @@ class CustomedAgGridReact extends React.Component {
             >
               Canslim filter
             </Button>
-
           </div>
         );
       default:

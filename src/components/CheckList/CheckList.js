@@ -176,7 +176,8 @@ class CheckList extends Component {
 
   handleCbCheckBox(is_done, id) {
     const url = getUpdateNoteUrl();
-    let data = { id, is_done };
+    let done_time = new Date().getTime();
+    let data = is_done ? { id, is_done, done_time } : { id, is_done };
     axios
       .post(url, data)
       .then(response => {
