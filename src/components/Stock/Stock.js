@@ -354,56 +354,7 @@ class Stock extends Component {
         console.log(error);
       });
 
-    const socket = new WebSocket('wss://www.fireant.vn/signalr/connect?transport=webSockets&clientProtocol=1.5&SessionID=ubjd4qzzvyjzmiisz0infqw3&connectionToken=65Io4MIjtEg35eA6eCpaoEuVEa%2Bq0dXWmCKk9iXItWBq5wv4%2Bx3nN87hxatafb2iwwRe9YEl5LeWdZQsqulAhWC%2FDtl%2FkVIcVB4FEynbjpTtMxsH%2BOkMOpSyrAdbOjjNMoeB%2BQ%3D%3D&connectionData=%5B%7B%22name%22%3A%22compressedappquotehub%22%7D%5D&tid=1');
 
-    // Connection opened
-    socket.addEventListener('open', function (event) {
-      socket.send('Hello Server!');
-    });
-
-    // Listen for messages
-    socket.addEventListener('message', function (event) {
-      // console.log(event.data);
-      let data = event.data
-      let M_0 = JSON.parse(data).M && (JSON.parse(data).M)[0]
-      let A = M_0 && M_0.A && M_0.A[0]
-      if (A && A.length) {
-        for (let i = 0; i < A.length; i++) {
-          let index = that.state.rowData.indexOf(A[i].S)
-          if (index > -1) {
-            let update = false
-            console.log(A[i])
-            const obj = A[i]
-            let Symbol = that.state.rowData[index].Symbol
-            let Volume = that.state.rowData[index].Volume
-            let Close = that.state.rowData[index].Close
-            if (obj.hasOwnProperty('TV')) {
-              Volume = obj.TV
-              update = true
-            }
-            if (obj.hasOwnProperty('P')) {
-              Close = obj.P
-              update = true
-            }
-            if (update) {
-              let newRowData = { ...that.state.rowData[index], Close, Volume }
-              that.setState({
-                rowData: [newRowData]
-              }, () => update = false)
-            }
-
-            // Update in db
-            axios.post(getUpdateStockUrl(), { Volume, Close, Symbol })
-              .then(response => {
-                console.log(response)
-              })
-              .catch(error => {
-                console.log(error)
-              })
-          }
-        }
-      }
-    });
   }
 }
 

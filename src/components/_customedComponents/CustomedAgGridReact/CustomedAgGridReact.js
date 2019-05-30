@@ -11,6 +11,7 @@ import {
   getFilteredStocksUrl,
   getWatchingStocksUrl
 } from "../../../helpers/requests";
+import { RowNode } from "ag-grid-community";
 
 function getModalStyle() {
   return {
@@ -28,13 +29,14 @@ class CustomedAgGridReact extends React.Component {
     this.defaultColDef = {
       sortable: true,
       filter: true,
-      resizable: true
+      resizable: true,
+      enableCellChangeFlash: true
     };
   }
 
   canslimFilter() {
     let today_capitalization_min = 5000000000;
-    let percentage_change_in_price_min = 0
+    let percentage_change_in_price_min = 0.01
     axios
       .post(getFilteredStocksUrl(), {
         today_capitalization_min,
@@ -43,10 +45,80 @@ class CustomedAgGridReact extends React.Component {
       .then(response => {
         console.log(response);
         this.gridApi.setRowData(response.data.stocks);
+        this.startRealtimeSocket(response.data.stocks)
       })
       .catch(error => {
         console.log(error);
       });
+  }
+
+  startRealtimeSocket(dataStocks) {
+    const that = this
+    const socket = new WebSocket('wss://www.fireant.vn/signalr/connect?transport=webSockets&clientProtocol=1.5&SessionID=ubjd4qzzvyjzmiisz0infqw3&connectionToken=65Io4MIjtEg35eA6eCpaoEuVEa%2Bq0dXWmCKk9iXItWBq5wv4%2Bx3nN87hxatafb2iwwRe9YEl5LeWdZQsqulAhWC%2FDtl%2FkVIcVB4FEynbjpTtMxsH%2BOkMOpSyrAdbOjjNMoeB%2BQ%3D%3D&connectionData=%5B%7B%22name%22%3A%22compressedappquotehub%22%7D%5D&tid=1');
+
+    // Connection opened
+    socket.addEventListener('open', function (event) {
+      socket.send('Hello Server!');
+    });
+
+    // Listen for messages
+    socket.addEventListener('message', function (event) {
+      // console.log(event.data);
+      let data = event.data
+      let M_0 = JSON.parse(data).M && (JSON.parse(data).M)[0]
+      let A = M_0 && M_0.A && M_0.A[0]
+      if (A && A.length) {
+        for (let i = 0; i < A.length; i++) {
+          let index = dataStocks.findIndex(item => item.Symbol === A[i].S)
+          // console.log(index, dataStocks, A[i].S)
+          if (index > -1) {
+            let update = false
+            // console.log(A[i])
+            const obj = A[i]
+            let old_Symbol = dataStocks[index].Symbol
+            let old_Volume = dataStocks[index].Volume
+            let old_Close = dataStocks[index].Close
+            let new_Volume
+            let new_Close
+            if (obj.hasOwnProperty('TV')) {
+              new_Volume = obj.TV
+              update = true
+            }
+            if (obj.hasOwnProperty('P')) {
+              new_Close = obj.P
+              update = true
+            }
+            if (update) {
+              console.log(index, that.gridApi.getDisplayedRowAtIndex(index))
+              let rowNode = that.gridApi.getDisplayedRowAtIndex(index)
+              // rowNode.setDataValue('Volume', Volume)
+              // rowNode.setDataValue('Close', Close)
+              console.log((new_Volume - old_Volume) / old_Volume)
+              if (new_Volume && rowNode) rowNode.setDataValue('percentage_change_in_volume', (new_Volume - old_Volume) / old_Volume)
+              if (new_Close && rowNode) rowNode.setDataValue('percentage_change_in_price', (new_Close - old_Close) / old_Close)
+              let filter_1 = that.gridApi.getFilterInstance('percentage_change_in_price')
+              filter_1.setModel({
+                type: 'greaterThan',
+                filter: 0.03,
+                fitlerTo: null
+              })
+              that.gridApi.onFilterChanged()
+
+              update = false
+            }
+
+            // Update in db
+            // axios.post(getUpdateStockUrl(), { Volume, Close, Symbol })
+            //   .then(response => {
+            //     console.log(response)
+            //   })
+            //   .catch(error => {
+            //     console.log(error)
+            //   })
+          }
+        }
+      }
+    });
   }
 
   setQuickFilter() {
