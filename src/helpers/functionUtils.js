@@ -111,7 +111,8 @@ export function calculateRSI(data) {
         (data[data.length - 1].Volume - sum_volume / 15) / (sum_volume / 15),
       percentage_change_in_price:
         (data[data.length - 1].Close - data[data.length - 2].Close) /
-        data[data.length - 2].Close
+        data[data.length - 2].Close,
+      yesterday_Close: data[data.length - 2].Close
     };
   }
   return {};
@@ -225,8 +226,8 @@ export function roundFloat(numberFloat, length) {
     arrNumber = arrNumber.replace(/^(-?)/, "$1" + "0".repeat(length));
     let result = Number(
       arrNumber.substring(0, arrNumber.length - length) +
-        "." +
-        arrNumber.substr(-length)
+      "." +
+      arrNumber.substr(-length)
     );
     return result;
   } catch (e) {

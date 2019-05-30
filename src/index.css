@@ -78,7 +78,9 @@ input {
 .learning .menu {
   background: lightblue;
 }
-
+.stock .symbolCellContainer {
+  display:flex;
+}
 .stock .chartContainer {
   display: flex;
 }

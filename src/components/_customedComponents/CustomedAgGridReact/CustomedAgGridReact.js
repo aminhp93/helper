@@ -9,8 +9,10 @@ import { Input } from "@material-ui/core";
 import axios from "axios";
 import {
   getFilteredStocksUrl,
-  getWatchingStocksUrl
+  getWatchingStocksUrl,
+  getUpdateStockUrl
 } from "../../../helpers/requests";
+import { RowNode } from "ag-grid-community";
 
 function getModalStyle() {
   return {
@@ -28,7 +30,8 @@ class CustomedAgGridReact extends React.Component {
     this.defaultColDef = {
       sortable: true,
       filter: true,
-      resizable: true
+      resizable: true,
+      enableCellChangeFlash: true
     };
   }
 
@@ -43,10 +46,78 @@ class CustomedAgGridReact extends React.Component {
       .then(response => {
         console.log(response);
         this.gridApi.setRowData(response.data.stocks);
+        this.startRealtimeSocket(response.data.stocks);
       })
       .catch(error => {
         console.log(error);
       });
+  }
+
+  startRealtimeSocket(dataStocks) {
+    const that = this;
+    const socket = new WebSocket(
+      "wss://www.fireant.vn/signalr/connect?transport=webSockets&clientProtocol=1.5&SessionID=ubjd4qzzvyjzmiisz0infqw3&connectionToken=65Io4MIjtEg35eA6eCpaoEuVEa%2Bq0dXWmCKk9iXItWBq5wv4%2Bx3nN87hxatafb2iwwRe9YEl5LeWdZQsqulAhWC%2FDtl%2FkVIcVB4FEynbjpTtMxsH%2BOkMOpSyrAdbOjjNMoeB%2BQ%3D%3D&connectionData=%5B%7B%22name%22%3A%22compressedappquotehub%22%7D%5D&tid=1"
+    );
+
+    // Connection opened
+    socket.addEventListener("open", function(event) {
+      socket.send("Hello Server!");
+    });
+
+    // Listen for messages
+    socket.addEventListener("message", function(event) {
+      // console.log(event.data);
+      let data = event.data;
+      let M_0 = JSON.parse(data).M && JSON.parse(data).M[0];
+      let A = M_0 && M_0.A && M_0.A[0];
+      if (A && A.length) {
+        for (let i = 0; i < A.length; i++) {
+          let index = dataStocks.findIndex(item => item.Symbol === A[i].S);
+          // console.log(index, dataStocks, A[i].S)
+          if (index > -1) {
+            let update = false;
+            console.log(A[i]);
+            const obj = A[i];
+            let old_Symbol = dataStocks[index].Symbol;
+            let old_Volume = dataStocks[index].Volume;
+            let old_Close = dataStocks[index].Close;
+            let new_Volume = old_Volume;
+            let new_Close = old_Close;
+            if (obj.hasOwnProperty("TV")) {
+              new_Volume = obj.TV;
+              update = true;
+            }
+            if (obj.hasOwnProperty("P")) {
+              new_Close = obj.P;
+              update = true;
+            }
+            if (update) {
+              console.log(index);
+              update = false;
+              let dataUpdate = {};
+              dataUpdate.Symbol = old_Symbol;
+              dataUpdate.Volume = new_Volume;
+              dataUpdate.Close = new_Close;
+              dataUpdate.today_capitalization = new_Volume * new_Close;
+              dataUpdate.percentage_change_in_price =
+                (new_Close - dataStocks[index].yesterday_Close) /
+                dataStocks[index].yesterday_Close;
+              // Update in db
+
+              axios
+                .post(getUpdateStockUrl(), dataUpdate)
+                .then(response => {
+                  console.log(response);
+                  that.gridApi.setRowData(response.data.stocks);
+                })
+                .catch(error => {
+                  console.log(error);
+                });
+            }
+          }
+        }
+      }
+    });
   }
 
   setQuickFilter() {
@@ -140,24 +211,30 @@ class CustomedAgGridReact extends React.Component {
       });
   }
 
-  handleOnRowClicked = params => {
-    this.setState({ open: true, symbol: params.data.Symbol });
-  };
+  handleOnRowClicked = params => {};
 
-  handleClose = () => {
-    this.setState({ open: false });
-  };
+  handleClose = () => {};
+
+  searchSymbol(e) {
+    let Symbol_search = (e.target.value + "").toUpperCase();
+    axios
+      .post(getFilteredStocksUrl(), {
+        Symbol_search
+      })
+      .then(response => {
+        console.log(response);
+        this.gridApi.setRowData(response.data.stocks);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
 
   render() {
     return (
       <div className="ag-theme-balham customedAgGrid">
         <div className="header">
-          <Input
-            onChange={e => {
-              console.log(e.target.value);
-              this.gridApi.setQuickFilter(e.target.value);
-            }}
-          />
+          <Input onChange={e => this.searchSymbol(e)} />
           {this.renderQuickFilterButton()}
         </div>
         <div className="agGridReactRoot">
@@ -169,17 +246,6 @@ class CustomedAgGridReact extends React.Component {
             onRowClicked={this.handleOnRowClicked.bind(this)}
           />
         </div>
-
-        <Modal
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          open={this.state.open}
-          onClose={this.handleClose}
-        >
-          <div style={getModalStyle()}>
-            <StockDetail symbol={this.state.symbol} />
-          </div>
-        </Modal>
       </div>
     );
   }

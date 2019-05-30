@@ -4,8 +4,8 @@
     left: 8px !important;
 }
 .header-chart-panel .header-chart-panel-sizer{
-    background-color: #131722;
-    border: 2px solid #758696;
+    /* background-color: #131722; */
+    /* border: 2px solid #758696; */
 }
 .chart-top-toolbar .space-single, .header-chart-panel .space-single{
 padding: 0px;
@@ -111,7 +111,7 @@ span.apply-common-tooltip{
     background-color: #171B28;
 }
 .feature-no-touch .header-chart-panel .button.disabled:active, .feature-touch .header-chart-panel .button.disabled:active, .header-chart-panel .button.disabled, .header-chart-panel .button.disabled.active{
-    background: #131722 !important;
+    /* background: #131722 !important; */
     opacity: 0.3;
     padding: 10px 6px 4px 6px;
 }
@@ -123,10 +123,10 @@ span.apply-common-tooltip{
     background: #3f4c5d !important;            
 }
 .symbol-search-dialog input, input.symbol-edit{
-    color: #BABFC3 !important;
+    /* color: #BABFC3 !important;
     border: none;
     border-right: 1px solid #758696;
-    background-color: #171B28;
+    background-color: #171B28; */
     height: 35px; 
 }
 .chart-controls-bar-buttons a{
@@ -173,7 +173,7 @@ span.apply-common-tooltip{
     left: 54px;
 }
     .tv-dialog.js-dialog.tv-insert-indicator-dialog.i-minimized.tv-dialog--popup.i-focused.ui-draggable{
-        background-color: #131722
+        /* background-color: #131722 */
     }
     /*Disable handle toolbar*/
     a.tv-close-panel.left, span.tv-close-panel.top{

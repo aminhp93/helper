@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import Modal from "@material-ui/core/Modal";
+import StockDetail from "../StockDetail";
+import { RowNode } from "ag-grid-community";
+
 import axios from "axios";
 import CustomedPieChart from "./../_customedComponents/CustomedPieChart";
 import CustomedButton from "./../_customedComponents/CustomedButton";
@@ -10,8 +14,10 @@ import {
   updateAllStocksDatabase,
   getAllStocksUrl,
   deleteAllStocks,
+  getUpdateStockUrl,
   getFilteredStocksUrl,
-  getUpdateStockUrl
+  deleteSymbolWatchlistUrl,
+  getWatchingStocksUrl
 } from "../../helpers/requests";
 import {
   BarChart,
@@ -25,14 +31,44 @@ import {
 import Button from "@material-ui/core/Button";
 import CustomedAgGridReact from "../_customedComponents/CustomedAgGridReact";
 
+function getModalStyle() {
+  return {
+    top: `5px`,
+    left: `5px`
+  };
+}
+
 class Stock extends Component {
   constructor(props) {
     super(props);
+    const that = this;
     this.state = {
       columnDefs: [
         {
           headerName: "Symbol",
-          field: "Symbol"
+          field: "Symbol",
+          cellRenderer: function (params) {
+            const div = document.createElement('div')
+            div.className = 'symbolCellContainer'
+            const content = document.createElement('div')
+            const detail = document.createElement('div')
+            const deleteButton = document.createElement('div')
+            content.innerHTML = params.data.Symbol
+            detail.innerHTML = 'detail'
+            detail.addEventListener('click', function () {
+              that.openModal(params)
+            })
+            deleteButton.innerHTML = 'delete'
+            deleteButton.addEventListener('click', function () {
+              console.log('delete')
+              that.deleteSymbolWatchlist(params)
+            })
+            div.appendChild(content)
+            div.appendChild(detail)
+            div.appendChild(deleteButton)
+
+            return div
+          }
         },
         {
           headerName: "TodayCapitalization",
@@ -120,8 +156,51 @@ class Stock extends Component {
           }
         }
       ],
-      rowData: []
+      rowData: [],
+      open: false
     };
+  }
+
+  async getWatchingStocks() {
+    let watching_stocks;
+    await axios
+      .get(getWatchingStocksUrl())
+      .then(response => {
+        console.log(response);
+        let index = response.data.findIndex(
+          item => item.id === "5cea9628838fae3176909129"
+        );
+        if (index > -1) {
+          watching_stocks = response.data[index].symbols;
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    if (!watching_stocks) return;
+    await axios
+      .post(getFilteredStocksUrl(), { watching_stocks })
+      .then(response => {
+        console.log(response);
+        this.setState({
+          rowData: response.data.stocks
+        })
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  deleteSymbolWatchlist(params) {
+    const url = deleteSymbolWatchlistUrl(params.data.Symbol)
+    axios.delete(url)
+      .then(response => {
+        console.log(response)
+        this.getWatchingStocks()
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   render() {
@@ -166,6 +245,16 @@ class Stock extends Component {
             <Bar dataKey="unchangedStockNumbers" fill="grey" />
           </BarChart>
         </div>
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={this.state.open}
+          onClose={this.closeModal.bind(this)}
+        >
+          <div style={getModalStyle()}>
+            <StockDetail symbol={this.state.symbol} />
+          </div>
+        </Modal>
         <div className="updateButtons">
           <Button
             variant="contained"
@@ -235,6 +324,14 @@ class Stock extends Component {
     );
   }
 
+  openModal(params) {
+    console.log(params)
+    this.setState({ open: true, symbol: params.data.Symbol });
+  }
+
+  closeModal() {
+    this.setState({ open: false });
+  }
   getAllStocks() {
     // axios.get('https://finfo-api.vndirect.com.vn/stocks?status=all')
     //   .then(response => {
@@ -354,56 +451,7 @@ class Stock extends Component {
         console.log(error);
       });
 
-    const socket = new WebSocket('wss://www.fireant.vn/signalr/connect?transport=webSockets&clientProtocol=1.5&SessionID=ubjd4qzzvyjzmiisz0infqw3&connectionToken=65Io4MIjtEg35eA6eCpaoEuVEa%2Bq0dXWmCKk9iXItWBq5wv4%2Bx3nN87hxatafb2iwwRe9YEl5LeWdZQsqulAhWC%2FDtl%2FkVIcVB4FEynbjpTtMxsH%2BOkMOpSyrAdbOjjNMoeB%2BQ%3D%3D&connectionData=%5B%7B%22name%22%3A%22compressedappquotehub%22%7D%5D&tid=1');
 
-    // Connection opened
-    socket.addEventListener('open', function (event) {
-      socket.send('Hello Server!');
-    });
-
-    // Listen for messages
-    socket.addEventListener('message', function (event) {
-      // console.log(event.data);
-      let data = event.data
-      let M_0 = JSON.parse(data).M && (JSON.parse(data).M)[0]
-      let A = M_0 && M_0.A && M_0.A[0]
-      if (A && A.length) {
-        for (let i = 0; i < A.length; i++) {
-          let index = that.state.rowData.indexOf(A[i].S)
-          if (index > -1) {
-            let update = false
-            console.log(A[i])
-            const obj = A[i]
-            let Symbol = that.state.rowData[index].Symbol
-            let Volume = that.state.rowData[index].Volume
-            let Close = that.state.rowData[index].Close
-            if (obj.hasOwnProperty('TV')) {
-              Volume = obj.TV
-              update = true
-            }
-            if (obj.hasOwnProperty('P')) {
-              Close = obj.P
-              update = true
-            }
-            if (update) {
-              let newRowData = { ...that.state.rowData[index], Close, Volume }
-              that.setState({
-                rowData: [newRowData]
-              }, () => update = false)
-            }
-
-            // Update in db
-            axios.post(getUpdateStockUrl(), { Volume, Close, Symbol })
-              .then(response => {
-                console.log(response)
-              })
-              .catch(error => {
-                console.log(error)
-              })
-          }
-        }
-      }
-    });
   }
 }
 
