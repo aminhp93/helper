@@ -35,10 +35,21 @@ class CustomedAgGridReact extends React.Component {
     };
   }
 
-  canslimFilter() {
+  async canslimFilter() {
     let today_capitalization_min = 5000000000;
     let percentage_change_in_price_min = 0.01;
-    axios
+    let allData = []
+    await axios
+      .post(getFilteredStocksUrl(), {})
+      .then(response => {
+        console.log(response);
+        this.startRealtimeSocket(response.data.stocks);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    await axios
       .post(getFilteredStocksUrl(), {
         today_capitalization_min,
         percentage_change_in_price_min
@@ -46,26 +57,25 @@ class CustomedAgGridReact extends React.Component {
       .then(response => {
         console.log(response);
         this.gridApi.setRowData(response.data.stocks);
-        this.startRealtimeSocket(response.data.stocks);
       })
       .catch(error => {
         console.log(error);
       });
   }
 
-  startRealtimeSocket(dataStocks) {
+  startRealtimeSocket(dataStocks, updateOnly) {
     const that = this;
     const socket = new WebSocket(
       "wss://www.fireant.vn/signalr/connect?transport=webSockets&clientProtocol=1.5&SessionID=ubjd4qzzvyjzmiisz0infqw3&connectionToken=65Io4MIjtEg35eA6eCpaoEuVEa%2Bq0dXWmCKk9iXItWBq5wv4%2Bx3nN87hxatafb2iwwRe9YEl5LeWdZQsqulAhWC%2FDtl%2FkVIcVB4FEynbjpTtMxsH%2BOkMOpSyrAdbOjjNMoeB%2BQ%3D%3D&connectionData=%5B%7B%22name%22%3A%22compressedappquotehub%22%7D%5D&tid=1"
     );
 
     // Connection opened
-    socket.addEventListener("open", function(event) {
+    socket.addEventListener("open", function (event) {
       socket.send("Hello Server!");
     });
 
     // Listen for messages
-    socket.addEventListener("message", function(event) {
+    socket.addEventListener("message", function (event) {
       // console.log(event.data);
       let data = event.data;
       let M_0 = JSON.parse(data).M && JSON.parse(data).M[0];
@@ -108,7 +118,13 @@ class CustomedAgGridReact extends React.Component {
                 .post(getUpdateStockUrl(), dataUpdate)
                 .then(response => {
                   console.log(response);
-                  that.gridApi.setRowData(response.data.stocks);
+                  if (updateOnly) {
+                    let new_stock = response.data.stock
+                    dataStocks[index] = { ...dataStocks[index], new_stock }
+                    that.gridApi.setRowData(dataStocks)
+                  } else {
+                    that.gridApi.setRowData(response.data.stocks);
+                  }
                 })
                 .catch(error => {
                   console.log(error);
@@ -205,15 +221,17 @@ class CustomedAgGridReact extends React.Component {
       .then(response => {
         console.log(response);
         this.gridApi.setRowData(response.data.stocks);
+        this.startRealtimeSocket(response.data.stocks, true)
       })
       .catch(error => {
         console.log(error);
       });
+
   }
 
-  handleOnRowClicked = params => {};
+  handleOnRowClicked = params => { };
 
-  handleClose = () => {};
+  handleClose = () => { };
 
   searchSymbol(e) {
     let Symbol_search = (e.target.value + "").toUpperCase();
