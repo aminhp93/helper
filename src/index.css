@@ -80,6 +80,16 @@ input {
 }
 .stock .symbolCellContainer {
   display:flex;
+  justify-content: space-between;
+}
+
+.stock .container {
+  display: flex;
+}
+
+.stock .detail,
+.stock .deleteButton {
+  cursor: pointer;
 }
 .stock .chartContainer {
   display: flex;
@@ -158,4 +168,16 @@ input {
 
 .businessSummary .number {
   text-align: right;
+}
+
+.stock .deleteButton {
+  display: none;
+}
+
+.stock .ag-row-hover .deleteButton {
+  display: block;
+}
+
+.stock .content {
+  min-width: 30px;
 }
