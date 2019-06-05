@@ -118,6 +118,7 @@ class CustomedAgGridReact extends React.Component {
                 .post(getUpdateStockUrl(), dataUpdate)
                 .then(response => {
                   // console.log(response);
+                  if (!response.data.stock) return
                   if (updateOnly) {
                     let new_stock = response.data.stock
                     // console.log(new_stock, that.gridApi, index)
