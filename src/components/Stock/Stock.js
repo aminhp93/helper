@@ -4,7 +4,6 @@ import Modal from "@material-ui/core/Modal";
 import StockDetail from "../StockDetail";
 import axios from "axios";
 import CustomedPieChart from "./../_customedComponents/CustomedPieChart";
-import CustomedButton from "./../_customedComponents/CustomedButton";
 import Icon from '@material-ui/core/Icon';
 import {
   mapStockData
@@ -172,7 +171,6 @@ class Stock extends Component {
   async canslimFilter() {
     let today_capitalization_min = 5000000000;
     let percentage_change_in_price_min = 0.01;
-    let allData = []
     await axios
       .post(getFilteredStocksUrl(), {})
       .then(response => {
@@ -327,36 +325,6 @@ class Stock extends Component {
             </Button>
       </div>
     )
-  }
-
-  async getWatchingStocks() {
-    let watching_stocks;
-    await axios
-      .get(getWatchingStocksUrl())
-      .then(response => {
-        console.log(response);
-        let index = response.data.findIndex(
-          item => item.id === "5cea9628838fae3176909129"
-        );
-        if (index > -1) {
-          watching_stocks = response.data[index].symbols;
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    if (!watching_stocks) return;
-    await axios
-      .post(getFilteredStocksUrl(), { watching_stocks })
-      .then(response => {
-        console.log(response);
-        this.gridApi.setRowData(response.data.stocks);
-        this.startRealtimeSocket(response.data.stocks, true)
-      })
-      .catch(error => {
-        console.log(error);
-      });
-
   }
 
   async getWatchingStocks() {

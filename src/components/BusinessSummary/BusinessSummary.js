@@ -509,7 +509,7 @@ export default class BusinessSummary extends React.Component {
           return 'pinned'
         },
         cellRenderer: function (params) {
-          if ([10102, 10105, , 3010103, 3010111, 30102, 30201, 2, 4].indexOf(params.data.ID) > -1) return null
+          if ([10102, 10105, 3010103, 3010111, 30102, 30201, 2, 4].indexOf(params.data.ID) > -1) return null
           const div = document.createElement("div");
           let value1 = (params.data.Values[params.data.Values.length - 1] || {})
             .Value

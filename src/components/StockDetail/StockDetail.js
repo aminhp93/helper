@@ -8,7 +8,6 @@ import Typography from "@material-ui/core/Typography";
 import BusinessSummary from "../BusinessSummary";
 import ChartTV from "../ChartTV";
 import businessSummaryTypes from '../../constants/businessSummaryTypes'
-import analysisTypes from '../../constants/analysisTypes'
 
 function TabContainer(props) {
   return (

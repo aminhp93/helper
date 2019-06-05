@@ -1,4 +1,3 @@
-import businessSummaryTypes from "../constants/businessSummaryTypes";
 import analysisTypes from "../constants/analysisTypes";
 
 export function calculateClose(data, timeValue, percentValue = 0) {

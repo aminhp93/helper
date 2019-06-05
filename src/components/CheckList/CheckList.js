@@ -1,4 +1,3 @@
-"use strict";
 import ReactDOM from "react-dom";
 import React, { Component } from "react";
 import { AgGridReact } from "ag-grid-react";
@@ -22,7 +21,7 @@ class CheckList extends Component {
         {
           field: "id",
           rowDrag: true,
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             const div = document.createElement("div");
             div.className = "actionButtons";
             const deleteRowButton = document.createElement("div");
@@ -42,7 +41,7 @@ class CheckList extends Component {
         {
           field: "content",
           width: 500,
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             const div = document.createElement("div");
             ReactDOM.render(
               <CustomedInput
@@ -57,7 +56,7 @@ class CheckList extends Component {
         {
           field: "is_done",
           width: 50,
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             const div = document.createElement("div");
             ReactDOM.render(
               <CustomedCheckBox
@@ -72,7 +71,7 @@ class CheckList extends Component {
         {
           field: "default_cost",
           width: 100,
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             const div = document.createElement("div");
             ReactDOM.render(
               <CustomedInput
@@ -90,7 +89,7 @@ class CheckList extends Component {
         {
           field: "actual_cost",
           width: 100,
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             const div = document.createElement("div");
             ReactDOM.render(
               <CustomedInput
@@ -107,7 +106,7 @@ class CheckList extends Component {
         },
         {
           field: "scheduled_time",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             const div = document.createElement("div");
             ReactDOM.render(
               <CustomedInput

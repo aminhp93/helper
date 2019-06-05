@@ -2,7 +2,6 @@ import moment from "moment";
 import axios from "axios";
 import { calculateRSI, msToTime } from "../helpers/functionUtils";
 import config from "./../config";
-import { func } from "prop-types";
 import durationReportEnums from "../constants/durationReportEnums";
 
 let domain = config.isProduction
@@ -25,7 +24,6 @@ let subtract = 0
 const endDay = time
   .subtract(subtract, "days")
   .format("YYYY-MM-DD");
-console.log(subtract, endDay)
 
 export function getAllNotesUrl() {
   return domain + "posts/all";
