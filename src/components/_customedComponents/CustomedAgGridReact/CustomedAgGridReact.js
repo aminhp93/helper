@@ -86,7 +86,7 @@ class CustomedAgGridReact extends React.Component {
           // console.log(index, dataStocks, A[i].S)
           if (index > -1) {
             let update = false;
-            console.log(A[i]);
+            // console.log(A[i]);
             const obj = A[i];
             let old_Symbol = dataStocks[index].Symbol;
             let old_Volume = dataStocks[index].Volume;
@@ -102,7 +102,7 @@ class CustomedAgGridReact extends React.Component {
               update = true;
             }
             if (update) {
-              console.log(index);
+              // console.log(index);
               update = false;
               let dataUpdate = {};
               dataUpdate.Symbol = old_Symbol;
@@ -117,11 +117,20 @@ class CustomedAgGridReact extends React.Component {
               axios
                 .post(getUpdateStockUrl(), dataUpdate)
                 .then(response => {
-                  console.log(response);
+                  // console.log(response);
                   if (updateOnly) {
                     let new_stock = response.data.stock
-                    dataStocks[index] = { ...dataStocks[index], new_stock }
-                    that.gridApi.setRowData(dataStocks)
+                    // console.log(new_stock, that.gridApi, index)
+                    that.gridApi.forEachNode(function (node) {
+                      if (node.data.id === new_stock.id) {
+                        console.log(node.data)
+                        node.setData({ ...node.data, new_stock })
+                      }
+                      return
+                    })
+
+                    // dataStocks[index] = { ...dataStocks[index], new_stock }
+                    // that.gridApi.setData(dataStocks)
                   } else {
                     that.gridApi.setRowData(response.data.stocks);
                   }
