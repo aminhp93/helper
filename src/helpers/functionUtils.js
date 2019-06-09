@@ -225,8 +225,8 @@ export function roundFloat(numberFloat, length) {
     arrNumber = arrNumber.replace(/^(-?)/, "$1" + "0".repeat(length));
     let result = Number(
       arrNumber.substring(0, arrNumber.length - length) +
-      "." +
-      arrNumber.substr(-length)
+        "." +
+        arrNumber.substr(-length)
     );
     return result;
   } catch (e) {
@@ -316,7 +316,7 @@ export function mapStockData(data) {
 }
 
 export function mapDataBusinessSummary(data, analysisType) {
-  console.log(data, analysisType);
+  // console.log(data, analysisType);
   if (analysisType === analysisTypes.ANALYSIS_1) {
     const addItem = {};
     addItem.Expanded = true;
@@ -396,10 +396,304 @@ export function mapDataBusinessSummary(data, analysisType) {
     data = newArray;
   }
 
-  console.log(data);
+  // console.log(data);
   return data;
 }
 
 export function strcmp(a, b) {
   return a < b ? -1 : a > b ? 1 : 0;
+}
+
+export function getColumnDefs_year() {
+  let result = [
+    {
+      headerName: "Name",
+      field: "Name",
+      width: 200,
+      cellRenderer: function(params) {
+        const div = document.createElement("div");
+        div.title = params.data.Name;
+        div.innerHTML = params.data.Name;
+        return div;
+      }
+    }
+  ];
+  let periods = ["2014", "2015", "2016", "2017", "2018"];
+  for (let i = 0; i < periods.length; i++) {
+    let item = {
+      headerName: periods[i],
+      width: 120,
+      cellRenderer: function(params) {
+        const div = document.createElement("div");
+        let value = (params.data.Values[i] || {}).Value
+          ? formatNumber(
+              (params.data.Values[i] || {}).Value / Math.pow(10, 9),
+              1,
+              true
+            )
+          : "";
+        div.innerHTML = value;
+        div.className = "";
+        div.classList.add("number");
+        return div;
+      }
+    };
+    result.push(item);
+  }
+  return result;
+}
+
+export function getColumnDefs_quarter() {
+  let result = [
+    {
+      headerName: "Name",
+      field: "Name",
+      width: 200
+    }
+  ];
+  let periods = ["Q1 2018", "Q2 2018", "Q3 2018", "Q4 2018", "Q1 2019"];
+  for (let i = 0; i < periods.length; i++) {
+    let item = {
+      headerName: periods[i],
+      field: "",
+      width: 120,
+      cellRenderer: function(params) {
+        return (params.data.Values[i] || {}).Value
+          ? formatNumber((params.data.Values[i] || {}).Value / 1000000, 1, true)
+          : "";
+      }
+    };
+    result.push(item);
+  }
+  return result;
+}
+
+export function getColumnDefs_analysis_1() {
+  let result = [];
+  let periods_1 = ["2016-2015", "2017-2016", "2018-2017"];
+  for (let i = 0; i < periods_1.length; i++) {
+    let item = {
+      headerName: periods_1[i],
+      field: "",
+      width: 120,
+      cellRenderer: function(params) {
+        let value_1 = (params.data.Values[i + 2] || {}).Value;
+
+        let value_2 = (params.data.Values[i + 1] || {}).Value;
+        const div = document.createElement("div");
+        div.innerHTML = formatNumber(
+          (value_1 - value_2) / Math.pow(10, 9),
+          1,
+          true
+        );
+        div.className =
+          [1, 5, 110, 15].indexOf(params.data.ID) > -1 ? "highlight" : "";
+        div.classList.add("number");
+        return div;
+      }
+    };
+    result.push(item);
+  }
+
+  let periods_2 = ["2016/2015", "2017/2016", "2018/2017"];
+  for (let i = 0; i < periods_2.length; i++) {
+    let item = {
+      headerName: periods_2[i],
+      field: "",
+      width: 120,
+      cellRenderer: function(params) {
+        let value_1 = (params.data.Values[i + 2] || {}).Value;
+
+        let value_2 = (params.data.Values[i + 1] || {}).Value;
+        const div = document.createElement("div");
+        let value = ((value_1 / value_2 - 1) * 100).toFixed(2) + "%";
+        div.innerHTML = value;
+        div.className =
+          params.data.ID === 1 || params.data.ID === 5 ? "highlight" : "";
+        div.classList.add("number");
+        return div;
+      }
+    };
+    result.push(item);
+  }
+  return result;
+}
+
+export function getColumnDefs_analysis_2() {
+  let result = [];
+  let periods_1 = ["2015", "2016", "2017", "2018"];
+  for (let i = 0; i < periods_1.length; i++) {
+    let item = {
+      headerName: periods_1[i],
+      field: "",
+      cellStyle: { "background-color": "gray" },
+      cellRenderer: function(params) {
+        const div = document.createElement("div");
+        div.className = "";
+        div.classList.add("number");
+        if (params.data.ANALYSIS_2) {
+          div.innerHTML = (params.data.ANALYSIS_2[i] || {}).Value + "%";
+        }
+        return div;
+      }
+    };
+    result.push(item);
+  }
+
+  let periods_2 = ["2016-2015", "2017-2016", "2018-2017"];
+  for (let i = 0; i < periods_2.length; i++) {
+    let item = {
+      headerName: periods_2[i],
+      field: "",
+      cellRenderer: function(params) {
+        const div = document.createElement("div");
+        div.className = "";
+        div.classList.add("number");
+        if (params.data.ANALYSIS_2) {
+          div.innerHTML =
+            (
+              (params.data.ANALYSIS_2[i + 2] || {}).Value -
+              (params.data.ANALYSIS_2[i + 1] || {}).Value
+            ).toFixed(2) + "%";
+        }
+        return div;
+      }
+    };
+    result.push(item);
+  }
+  return result;
+}
+
+export function getColumnDefs_analysis_3() {
+  let result = [];
+  let periods = ["2014", "2015", "2016", "2017", "2018"];
+  for (let i = 0; i < periods.length; i++) {
+    let item = {
+      headerName: periods[i],
+      field: "",
+      cellStyle: { "background-color": "gray" },
+      cellRenderer: function(params) {
+        const div = document.createElement("div");
+        div.className =
+          [301, 302, 30101].indexOf(params.data.ID) > -1 ? "highlight" : "";
+        div.classList.add("number");
+        if (params.data.ANALYSIS_3) {
+          let value = (params.data.ANALYSIS_3[i] || {}).Value;
+          if (typeof value === "undefined" || value === "0.00") return null;
+          div.innerHTML = value + "%";
+        }
+        return div;
+      }
+    };
+    result.push(item);
+  }
+  return result;
+}
+
+export function getColumnDefs_analysis_4() {
+  return [
+    {
+      headerName: "Name",
+      field: "Name",
+      width: 200,
+      cellRenderer: function(params) {
+        const div = document.createElement("div");
+        div.title = params.data.Name;
+        div.innerHTML = params.data.Name;
+        return div;
+      }
+    },
+    {
+      headerName: "2017",
+      width: 120,
+      cellRenderer: function(params) {
+        const div = document.createElement("div");
+        let value = (params.data.Values[params.data.Values.length - 2] || {})
+          .Value
+          ? formatNumber(
+              (params.data.Values[params.data.Values.length - 2] || {}).Value /
+                Math.pow(10, 9),
+              1,
+              true
+            )
+          : "";
+        div.innerHTML = value;
+        div.className = "";
+        div.classList.add("number");
+        return div;
+      }
+    },
+    {
+      headerName: "2018",
+      width: 120,
+      cellRenderer: function(params) {
+        const div = document.createElement("div");
+        let value = (params.data.Values[params.data.Values.length - 1] || {})
+          .Value
+          ? formatNumber(
+              (params.data.Values[params.data.Values.length - 1] || {}).Value /
+                Math.pow(10, 9),
+              1,
+              true
+            )
+          : "";
+        div.innerHTML = value;
+        div.className = "";
+        div.classList.add("number");
+        return div;
+      }
+    },
+    {
+      headerName: "Su dung von",
+      field: "",
+      pinnedRowCellRenderer: function(params) {
+        console.log(params, 508);
+        return "pinned";
+      },
+      cellRenderer: function(params) {
+        if (
+          [10102, 10105, 3010103, 3010111, 30102, 30201, 2, 4].indexOf(
+            params.data.ID
+          ) > -1
+        )
+          return null;
+        const div = document.createElement("div");
+        let value1 = (params.data.Values[params.data.Values.length - 1] || {})
+          .Value;
+        let value2 = (params.data.Values[params.data.Values.length - 2] || {})
+          .Value;
+        let value = value1 - value2;
+        div.innerHTML = value
+          ? formatNumber(value / Math.pow(10, 9), 1, true)
+          : "";
+        div.className = "";
+        div.classList.add("number");
+        return div;
+      }
+    },
+    {
+      headerName: "nguon von",
+      field: "",
+      cellRenderer: function(params) {
+        if (
+          [10101, 10103, 10104, 102, 3010101, 3010113, 30202, 2, 4].indexOf(
+            params.data.ID
+          ) > -1
+        )
+          return null;
+        const div = document.createElement("div");
+        let value1 = (params.data.Values[params.data.Values.length - 1] || {})
+          .Value;
+        let value2 = (params.data.Values[params.data.Values.length - 2] || {})
+          .Value;
+        let value = value2 - value1;
+        div.innerHTML = value
+          ? formatNumber(value / Math.pow(10, 9), 1, true)
+          : "";
+        div.className = "";
+        div.classList.add("number");
+        return div;
+      }
+    }
+  ];
 }
