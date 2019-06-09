@@ -79,7 +79,7 @@ input {
   background: lightblue;
 }
 .stock .symbolCellContainer {
-  display:flex;
+  display: flex;
   justify-content: space-between;
 }
 
@@ -180,4 +180,19 @@ input {
 
 .stock .content {
   min-width: 30px;
+}
+
+.modalContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100% - 200px);
+  background: lightblue;
+  margin: 100px;
+}
+
+.businessSummary .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

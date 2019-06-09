@@ -1,0 +1,6 @@
+{
+  "name": "RepeatedCard",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./RepeatedCard.js"
+}

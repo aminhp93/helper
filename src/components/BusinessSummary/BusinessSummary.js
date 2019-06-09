@@ -6,28 +6,34 @@ import {
   mapDataBusinessSummary,
   strcmp
 } from "../../helpers/functionUtils";
-import { getLastestFinancialReports } from '../../helpers/requests';
+import { getLastestFinancialReports } from "../../helpers/requests";
 import Button from "@material-ui/core/Button";
-import businessSummaryTypes from '../../constants/businessSummaryTypes'
-import analysisTypes from '../../constants/analysisTypes'
-import durationReportEnums from '../../constants/durationReportEnums'
+import businessSummaryTypes from "../../constants/businessSummaryTypes";
+import analysisTypes from "../../constants/analysisTypes";
+import durationReportEnums from "../../constants/durationReportEnums";
 import { Input } from "@material-ui/core";
+import ToggleButton from "@material-ui/lab/ToggleButton";
+import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
+// import CustomHeader from "./CustomHeader";
 
 export default class BusinessSummary extends React.Component {
   constructor(props) {
     super(props);
+
+    // this.frameworkComponents = { agColumnHeader: CustomHeader };
     this.state = {
-      symbol: props.symbol || "FPT"
+      period: durationReportEnums.YEAR
     };
-    this.durationReport = props.durationReport || durationReportEnums.YEAR;
-    this.typeBusinessSummary = props.typeBusinessSummary || businessSummaryTypes.KET_QUA_KINH_DOANH;
+    this.symbol = props.symbol;
+    this.typeBusinessSummary =
+      props.typeBusinessSummary || businessSummaryTypes.KET_QUA_KINH_DOANH;
 
     this.columnDefs_year = [
       {
         headerName: "Name",
         field: "Name",
         width: 200,
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           const div = document.createElement("div");
           div.title = params.data.Name;
           div.innerHTML = params.data.Name;
@@ -37,102 +43,102 @@ export default class BusinessSummary extends React.Component {
       {
         headerName: "2014",
         width: 120,
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           const div = document.createElement("div");
           let value = (params.data.Values[params.data.Values.length - 5] || {})
             .Value
             ? formatNumber(
-              (params.data.Values[params.data.Values.length - 5] || {})
-                .Value / Math.pow(10, 9),
-              1,
-              true
-            )
+                (params.data.Values[params.data.Values.length - 5] || {})
+                  .Value / Math.pow(10, 9),
+                1,
+                true
+              )
             : "";
           div.innerHTML = value;
           div.className = "";
-          div.classList.add('number')
-          return div
+          div.classList.add("number");
+          return div;
         }
       },
       {
         headerName: "2015",
         width: 120,
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           const div = document.createElement("div");
           let value = (params.data.Values[params.data.Values.length - 4] || {})
             .Value
             ? formatNumber(
-              (params.data.Values[params.data.Values.length - 4] || {})
-                .Value / Math.pow(10, 9),
-              1,
-              true
-            )
+                (params.data.Values[params.data.Values.length - 4] || {})
+                  .Value / Math.pow(10, 9),
+                1,
+                true
+              )
             : "";
           div.innerHTML = value;
           div.className = "";
-          div.classList.add('number')
+          div.classList.add("number");
           return div;
         }
       },
       {
         headerName: "2016",
         width: 120,
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           const div = document.createElement("div");
           let value = (params.data.Values[params.data.Values.length - 3] || {})
             .Value
             ? formatNumber(
-              (params.data.Values[params.data.Values.length - 3] || {})
-                .Value / Math.pow(10, 9),
-              1,
-              true
-            )
+                (params.data.Values[params.data.Values.length - 3] || {})
+                  .Value / Math.pow(10, 9),
+                1,
+                true
+              )
             : "";
           div.innerHTML = value;
           div.className = "";
-          div.classList.add('number')
+          div.classList.add("number");
           return div;
         }
       },
       {
         headerName: "2017",
         width: 120,
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           const div = document.createElement("div");
           let value = (params.data.Values[params.data.Values.length - 2] || {})
             .Value
             ? formatNumber(
-              (params.data.Values[params.data.Values.length - 2] || {})
-                .Value / Math.pow(10, 9),
-              1,
-              true
-            )
+                (params.data.Values[params.data.Values.length - 2] || {})
+                  .Value / Math.pow(10, 9),
+                1,
+                true
+              )
             : "";
           div.innerHTML = value;
           div.className =
             [5, 15, 110].indexOf(params.data.ID) > -1 ? "highlight" : "";
-          div.classList.add('number')
+          div.classList.add("number");
           return div;
         }
       },
       {
         headerName: "2018",
         width: 120,
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           const div = document.createElement("div");
           let value = (params.data.Values[params.data.Values.length - 1] || {})
             .Value
             ? formatNumber(
-              (params.data.Values[params.data.Values.length - 1] || {})
-                .Value / Math.pow(10, 9),
-              1,
-              true
-            )
+                (params.data.Values[params.data.Values.length - 1] || {})
+                  .Value / Math.pow(10, 9),
+                1,
+                true
+              )
             : "";
           div.innerHTML = value;
           div.className =
             [5, 15, 110].indexOf(params.data.ID) > -1 ? "highlight" : "";
-          div.classList.add('number')
+          div.classList.add("number");
           return div;
         }
       }
@@ -142,7 +148,7 @@ export default class BusinessSummary extends React.Component {
       {
         headerName: "2016-2015",
         field: "",
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           let value_2016 = (
             params.data.Values[params.data.Values.length - 3] || {}
           ).Value;
@@ -157,14 +163,14 @@ export default class BusinessSummary extends React.Component {
             true
           );
           div.className = "";
-          div.classList.add('number')
+          div.classList.add("number");
           return div;
         }
       },
       {
         headerName: "2017-2016",
         field: "",
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           let value_2017 = (
             params.data.Values[params.data.Values.length - 2] || {}
           ).Value;
@@ -180,14 +186,14 @@ export default class BusinessSummary extends React.Component {
           );
           div.className =
             [1, 5].indexOf(params.data.ID) > -1 ? "highlight" : "";
-          div.classList.add('number')
+          div.classList.add("number");
           return div;
         }
       },
       {
         headerName: "2018-2017",
         field: "",
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           let value_2018 = (
             params.data.Values[params.data.Values.length - 1] || {}
           ).Value;
@@ -203,14 +209,14 @@ export default class BusinessSummary extends React.Component {
           );
           div.className =
             [1, 5, 110, 15].indexOf(params.data.ID) > -1 ? "highlight" : "";
-          div.classList.add('number')
+          div.classList.add("number");
           return div;
         }
       },
       {
         headerName: "2016/2015",
         field: "",
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           let value_2016 = (
             params.data.Values[params.data.Values.length - 3] || {}
           ).Value;
@@ -223,14 +229,14 @@ export default class BusinessSummary extends React.Component {
           div.innerHTML = value;
           div.className =
             params.data.ID === 1 || params.data.ID === 5 ? "highlight" : "";
-          div.classList.add('number')
+          div.classList.add("number");
           return div;
         }
       },
       {
         headerName: "2017/2016",
         field: "",
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           let value_2017 = (
             params.data.Values[params.data.Values.length - 2] || {}
           ).Value;
@@ -243,14 +249,14 @@ export default class BusinessSummary extends React.Component {
           div.innerHTML = value;
           div.className =
             [1, 5].indexOf(params.data.ID) > -1 ? "highlight" : "";
-          div.classList.add('number')
+          div.classList.add("number");
           return div;
         }
       },
       {
         headerName: "2018/2017",
         field: "",
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           let value_2018 = (
             params.data.Values[params.data.Values.length - 1] || {}
           ).Value;
@@ -263,198 +269,251 @@ export default class BusinessSummary extends React.Component {
           div.innerHTML = value;
           div.className =
             params.data.ID === 1 || params.data.ID === 5 ? "highlight" : "";
-          div.classList.add('number')
+          div.classList.add("number");
           return div;
         }
       }
-    ]
+    ];
 
     this.columnDefs_analysis_2 = [
       {
         headerName: "2015",
         field: "",
-        cellStyle: { 'background-color': 'gray' },
-        cellRenderer: function (params) {
+        cellStyle: { "background-color": "gray" },
+        cellRenderer: function(params) {
           const div = document.createElement("div");
-          div.className = ''
-          div.classList.add('number')
+          div.className = "";
+          div.classList.add("number");
           if (params.data.ANALYSIS_2) {
-            div.innerHTML = (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 4] || {}).Value + '%'
+            div.innerHTML =
+              (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 4] || {})
+                .Value + "%";
           }
-          return div
+          return div;
         }
       },
       {
         headerName: "2016",
         field: "",
-        cellStyle: { 'background-color': 'gray' },
-        cellRenderer: function (params) {
+        cellStyle: { "background-color": "gray" },
+        cellRenderer: function(params) {
           const div = document.createElement("div");
-          div.className = ''
-          div.classList.add('number')
+          div.className = "";
+          div.classList.add("number");
           if (params.data.ANALYSIS_2) {
-            div.innerHTML = (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 3] || {}).Value + '%'
+            div.innerHTML =
+              (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 3] || {})
+                .Value + "%";
           }
-          return div
+          return div;
         }
       },
       {
         headerName: "2017",
         field: "",
-        cellStyle: { 'background-color': 'gray' },
-        cellRenderer: function (params) {
+        cellStyle: { "background-color": "gray" },
+        cellRenderer: function(params) {
           const div = document.createElement("div");
-          div.className = ''
-          div.classList.add('number')
+          div.className = "";
+          div.classList.add("number");
           if (params.data.ANALYSIS_2) {
-            div.innerHTML = (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 2] || {}).Value + '%'
+            div.innerHTML =
+              (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 2] || {})
+                .Value + "%";
           }
-          return div
+          return div;
         }
       },
       {
         headerName: "2018",
         field: "",
-        cellStyle: { 'background-color': 'gray' },
-        cellRenderer: function (params) {
+        cellStyle: { "background-color": "gray" },
+        cellRenderer: function(params) {
           const div = document.createElement("div");
-          div.className = ''
-          div.classList.add('number')
+          div.className = "";
+          div.classList.add("number");
           if (params.data.ANALYSIS_2) {
-            div.innerHTML = (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 1] || {}).Value + '%'
+            div.innerHTML =
+              (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 1] || {})
+                .Value + "%";
           }
-          return div
+          return div;
         }
       },
       {
         headerName: "2016-2015",
         field: "",
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           const div = document.createElement("div");
-          div.className = ''
-          div.classList.add('number')
+          div.className = "";
+          div.classList.add("number");
           if (params.data.ANALYSIS_2) {
-            div.innerHTML = ((params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 3] || {}).Value - (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 4] || {}).Value).toFixed(2) + '%'
+            div.innerHTML =
+              (
+                (
+                  params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 3] ||
+                  {}
+                ).Value -
+                (
+                  params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 4] ||
+                  {}
+                ).Value
+              ).toFixed(2) + "%";
           }
-          return div
+          return div;
         }
       },
       {
         headerName: "2017-2016",
         field: "",
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           const div = document.createElement("div");
-          div.className = ''
-          div.classList.add('number')
+          div.className = "";
+          div.classList.add("number");
           if (params.data.ANALYSIS_2) {
-            div.innerHTML = ((params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 2] || {}).Value - (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 3] || {}).Value).toFixed(2) + '%'
+            div.innerHTML =
+              (
+                (
+                  params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 2] ||
+                  {}
+                ).Value -
+                (
+                  params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 3] ||
+                  {}
+                ).Value
+              ).toFixed(2) + "%";
           }
-          return div
+          return div;
         }
       },
       {
         headerName: "2018-2017",
         field: "",
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           const div = document.createElement("div");
-          div.className = ''
-          div.classList.add('number')
+          div.className = "";
+          div.classList.add("number");
           if (params.data.ANALYSIS_2) {
-            div.innerHTML = ((params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 1] || {}).Value - (params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 2] || {}).Value).toFixed(2) + '%'
+            div.innerHTML =
+              (
+                (
+                  params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 1] ||
+                  {}
+                ).Value -
+                (
+                  params.data.ANALYSIS_2[params.data.ANALYSIS_2.length - 2] ||
+                  {}
+                ).Value
+              ).toFixed(2) + "%";
           }
-          return div
+          return div;
         }
       }
-    ]
+    ];
 
     this.columnDefs_analysis_3 = [
       {
-        headerName: '2014',
-        field: '',
-        cellStyle: { 'background-color': 'gray' },
-        cellRenderer: function (params) {
+        headerName: "2014",
+        field: "",
+        cellStyle: { "background-color": "gray" },
+        cellRenderer: function(params) {
           const div = document.createElement("div");
-          div.className = [301, 302, 30101].indexOf(params.data.ID) > -1 ? 'highlight' : ''
-          div.classList.add('number')
+          div.className =
+            [301, 302, 30101].indexOf(params.data.ID) > -1 ? "highlight" : "";
+          div.classList.add("number");
           if (params.data.ANALYSIS_3) {
-            let value = (params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 5] || {}).Value
-            if (typeof value === 'undefined' || value === '0.00') return null
-            div.innerHTML = value + '%'
+            let value = (
+              params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 5] || {}
+            ).Value;
+            if (typeof value === "undefined" || value === "0.00") return null;
+            div.innerHTML = value + "%";
           }
-          return div
+          return div;
         }
       },
       {
-        headerName: '2015',
-        field: '',
-        cellStyle: { 'background-color': 'gray' },
-        cellRenderer: function (params) {
+        headerName: "2015",
+        field: "",
+        cellStyle: { "background-color": "gray" },
+        cellRenderer: function(params) {
           const div = document.createElement("div");
-          div.className = [301, 302, 30101].indexOf(params.data.ID) > -1 ? 'highlight' : ''
-          div.classList.add('number')
+          div.className =
+            [301, 302, 30101].indexOf(params.data.ID) > -1 ? "highlight" : "";
+          div.classList.add("number");
           if (params.data.ANALYSIS_3) {
-            let value = (params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 4] || {}).Value
-            if (typeof value === 'undefined' || value === '0.00') return null
-            div.innerHTML = value + '%'
+            let value = (
+              params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 4] || {}
+            ).Value;
+            if (typeof value === "undefined" || value === "0.00") return null;
+            div.innerHTML = value + "%";
           }
-          return div
+          return div;
         }
       },
       {
-        headerName: '2016',
-        field: '',
-        cellStyle: { 'background-color': 'gray' },
-        cellRenderer: function (params) {
+        headerName: "2016",
+        field: "",
+        cellStyle: { "background-color": "gray" },
+        cellRenderer: function(params) {
           const div = document.createElement("div");
-          div.className = [301, 302, 30101].indexOf(params.data.ID) > -1 ? 'highlight' : ''
-          div.classList.add('number')
+          div.className =
+            [301, 302, 30101].indexOf(params.data.ID) > -1 ? "highlight" : "";
+          div.classList.add("number");
           if (params.data.ANALYSIS_3) {
-            let value = (params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 3] || {}).Value
-            if (typeof value === 'undefined' || value === '0.00') return null
-            div.innerHTML = value + '%'
+            let value = (
+              params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 3] || {}
+            ).Value;
+            if (typeof value === "undefined" || value === "0.00") return null;
+            div.innerHTML = value + "%";
           }
-          return div
+          return div;
         }
       },
       {
-        headerName: '2017',
-        field: '',
-        cellStyle: { 'background-color': 'gray' },
-        cellRenderer: function (params) {
+        headerName: "2017",
+        field: "",
+        cellStyle: { "background-color": "gray" },
+        cellRenderer: function(params) {
           const div = document.createElement("div");
-          div.className = [301, 302, 30101].indexOf(params.data.ID) > -1 ? 'highlight' : ''
-          div.classList.add('number')
+          div.className =
+            [301, 302, 30101].indexOf(params.data.ID) > -1 ? "highlight" : "";
+          div.classList.add("number");
           if (params.data.ANALYSIS_3) {
-            let value = (params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 2] || {}).Value
-            if (typeof value === 'undefined' || value === '0.00') return null
-            div.innerHTML = value + '%'
+            let value = (
+              params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 2] || {}
+            ).Value;
+            if (typeof value === "undefined" || value === "0.00") return null;
+            div.innerHTML = value + "%";
           }
-          return div
+          return div;
         }
       },
       {
-        headerName: '2018',
-        field: '',
-        cellStyle: { 'background-color': 'gray' },
-        cellRenderer: function (params) {
+        headerName: "2018",
+        field: "",
+        cellStyle: { "background-color": "gray" },
+        cellRenderer: function(params) {
           const div = document.createElement("div");
-          div.className = [301, 302, 30101].indexOf(params.data.ID) > -1 ? 'highlight' : ''
-          div.classList.add('number')
+          div.className =
+            [301, 302, 30101].indexOf(params.data.ID) > -1 ? "highlight" : "";
+          div.classList.add("number");
           if (params.data.ANALYSIS_3) {
-            let value = (params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 1] || {}).Value
-            if (typeof value === 'undefined' || value === '0.00') return null
-            div.innerHTML = value + '%'
+            let value = (
+              params.data.ANALYSIS_3[params.data.ANALYSIS_3.length - 1] || {}
+            ).Value;
+            if (typeof value === "undefined" || value === "0.00") return null;
+            div.innerHTML = value + "%";
           }
-          return div
+          return div;
         }
       }
-    ]
+    ];
     this.columnDefs_analysis_4 = [
       {
         headerName: "Name",
         field: "Name",
         width: 200,
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           const div = document.createElement("div");
           div.title = params.data.Name;
           div.innerHTML = params.data.Name;
@@ -464,160 +523,98 @@ export default class BusinessSummary extends React.Component {
       {
         headerName: "2017",
         width: 120,
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           const div = document.createElement("div");
           let value = (params.data.Values[params.data.Values.length - 2] || {})
             .Value
             ? formatNumber(
-              (params.data.Values[params.data.Values.length - 2] || {})
-                .Value / Math.pow(10, 9),
-              1,
-              true
-            )
+                (params.data.Values[params.data.Values.length - 2] || {})
+                  .Value / Math.pow(10, 9),
+                1,
+                true
+              )
             : "";
           div.innerHTML = value;
           div.className = "";
-          div.classList.add('number')
-          return div
+          div.classList.add("number");
+          return div;
         }
       },
       {
         headerName: "2018",
         width: 120,
-        cellRenderer: function (params) {
+        cellRenderer: function(params) {
           const div = document.createElement("div");
           let value = (params.data.Values[params.data.Values.length - 1] || {})
             .Value
             ? formatNumber(
-              (params.data.Values[params.data.Values.length - 1] || {})
-                .Value / Math.pow(10, 9),
-              1,
-              true
-            )
+                (params.data.Values[params.data.Values.length - 1] || {})
+                  .Value / Math.pow(10, 9),
+                1,
+                true
+              )
             : "";
           div.innerHTML = value;
           div.className = "";
-          div.classList.add('number')
+          div.classList.add("number");
           return div;
         }
       },
       {
-        headerName: 'Su dung von',
-        field: '',
-        pinnedRowCellRenderer: function (params) {
-          console.log(params, 508)
-          return 'pinned'
+        headerName: "Su dung von",
+        field: "",
+        pinnedRowCellRenderer: function(params) {
+          console.log(params, 508);
+          return "pinned";
         },
-        cellRenderer: function (params) {
-          if ([10102, 10105, 3010103, 3010111, 30102, 30201, 2, 4].indexOf(params.data.ID) > -1) return null
+        cellRenderer: function(params) {
+          if (
+            [10102, 10105, 3010103, 3010111, 30102, 30201, 2, 4].indexOf(
+              params.data.ID
+            ) > -1
+          )
+            return null;
           const div = document.createElement("div");
           let value1 = (params.data.Values[params.data.Values.length - 1] || {})
-            .Value
+            .Value;
           let value2 = (params.data.Values[params.data.Values.length - 2] || {})
-            .Value
-          let value = value1 - value2
-          div.innerHTML = value ? formatNumber(value / Math.pow(10, 9), 1, true) : "";
+            .Value;
+          let value = value1 - value2;
+          div.innerHTML = value
+            ? formatNumber(value / Math.pow(10, 9), 1, true)
+            : "";
           div.className = "";
-          div.classList.add('number')
+          div.classList.add("number");
           return div;
         }
       },
       {
-        headerName: 'nguon von',
-        field: '',
-        cellRenderer: function (params) {
-          if ([10101, 10103, 10104, 102, 3010101, 3010113, 30202, 2, 4].indexOf(params.data.ID) > -1) return null
+        headerName: "nguon von",
+        field: "",
+        cellRenderer: function(params) {
+          if (
+            [10101, 10103, 10104, 102, 3010101, 3010113, 30202, 2, 4].indexOf(
+              params.data.ID
+            ) > -1
+          )
+            return null;
           const div = document.createElement("div");
           let value1 = (params.data.Values[params.data.Values.length - 1] || {})
-            .Value
+            .Value;
           let value2 = (params.data.Values[params.data.Values.length - 2] || {})
-            .Value
-          let value = value2 - value1
-          div.innerHTML = value ? formatNumber(value / Math.pow(10, 9), 1, true) : "";
+            .Value;
+          let value = value2 - value1;
+          div.innerHTML = value
+            ? formatNumber(value / Math.pow(10, 9), 1, true)
+            : "";
           div.className = "";
-          div.classList.add('number')
+          div.classList.add("number");
           return div;
-        }
-      }
-    ]
-
-    this.columnDefs_quarter = [
-      {
-        headerName: "Name",
-        field: "Name",
-        width: 200
-      },
-      {
-        headerName: "Q2 2017",
-        field: "Q2 2017",
-        width: 120,
-        cellRenderer: function (params) {
-          return (params.data.Values[0] || {}).Value
-            ? formatNumber(
-              (params.data.Values[0] || {}).Value / 1000000,
-              1,
-              true
-            )
-            : "";
-        }
-      },
-      {
-        headerName: "Q3 2017",
-        field: "Q3 2017",
-        width: 120,
-        cellRenderer: function (params) {
-          return (params.data.Values[1] || {}).Value
-            ? formatNumber(
-              (params.data.Values[1] || {}).Value / 1000000,
-              1,
-              true
-            )
-            : "";
-        }
-      },
-      {
-        headerName: "Q4 2017",
-        field: "Q4 2017",
-        width: 120,
-        cellRenderer: function (params) {
-          return (params.data.Values[2] || {}).Value
-            ? formatNumber(
-              (params.data.Values[2] || {}).Value / 1000000,
-              1,
-              true
-            )
-            : "";
-        }
-      },
-      {
-        headerName: "Q1 2018",
-        field: "Q1 2018",
-        width: 120,
-        cellRenderer: function (params) {
-          return (params.data.Values[3] || {}).Value
-            ? formatNumber(
-              (params.data.Values[3] || {}).Value / 1000000,
-              1,
-              true
-            )
-            : "";
-        }
-      },
-      {
-        headerName: "Q2 2018",
-        field: "Q2 2018",
-        width: 120,
-        cellRenderer: function (params) {
-          return (params.data.Values[4] || {}).Value
-            ? formatNumber(
-              (params.data.Values[4] || {}).Value / 1000000,
-              0,
-              true
-            )
-            : "";
         }
       }
     ];
+
+    this.columnDefs_quarter = this.getColumnDefs_quarter();
 
     this.defaultColDef = {
       width: 120,
@@ -633,7 +630,7 @@ export default class BusinessSummary extends React.Component {
         suppressCount: true,
         checkbox: true
       },
-      comparator: function (valueA, valueB) {
+      comparator: function(valueA, valueB) {
         if (valueA == null || valueB == null) return valueA - valueB;
         if (!valueA.substring || !valueB.substring) return valueA - valueB;
         if (valueA.length < 1 || valueB.length < 1) return valueA - valueB;
@@ -645,62 +642,155 @@ export default class BusinessSummary extends React.Component {
     };
   }
 
+  getColumnDefs_quarter() {
+    let result = [
+      {
+        headerName: "Name",
+        field: "Name",
+        width: 200
+      }
+    ];
+    let periods = ["Q1 2018", "Q2 2018", "Q3 2018", "Q4 2018", "Q1 2019"];
+    for (let i = 0; i < periods.length; i++) {
+      let item = {
+        headerName: periods[i],
+        field: "",
+        width: 120,
+        cellRenderer: function(params) {
+          return (params.data.Values[i] || {}).Value
+            ? formatNumber(
+                (params.data.Values[i] || {}).Value / 1000000,
+                1,
+                true
+              )
+            : "";
+        }
+      };
+      result.push(item);
+    }
+    return result;
+  }
+
   onGridReady(params) {
     this.gridApi = params.api;
   }
 
-  onRowClicked(row) { }
+  onRowClicked(row) {}
 
   renderAnalysisOptions() {
     switch (this.typeBusinessSummary) {
       case businessSummaryTypes.KET_QUA_KINH_DOANH:
-        return <div>
-          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.DEFAULT)}>Default</Button>
-          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_1)}>ANALYSIS_1 - Chieu ngang</Button>
-          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_2)}>ANALYSIS_2 - Chieu doc</Button>
-        </div>
+        return (
+          <div>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => this.handleAnalyse(analysisTypes.DEFAULT)}
+            >
+              Default
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_1)}
+            >
+              ANALYSIS_1 - Chieu ngang
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_2)}
+            >
+              ANALYSIS_2 - Chieu doc
+            </Button>
+          </div>
+        );
       case businessSummaryTypes.CAN_DOI_KE_TOAN:
-        return <div>
-          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.DEFAULT)}>Default</Button>
-          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_3)}>ANALYSIS_3</Button>
-          <Button variant="contained" color="primary" onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_4)}>ANALYSIS_4</Button>
-        </div>
+        return (
+          <div>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => this.handleAnalyse(analysisTypes.DEFAULT)}
+            >
+              Default
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_3)}
+            >
+              ANALYSIS_3
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => this.handleAnalyse(analysisTypes.ANALYSIS_4)}
+            >
+              ANALYSIS_4
+            </Button>
+          </div>
+        );
       case businessSummaryTypes.LUU_CHUYEN_TIEN_TE_TRUC_TIEP:
-        return null
+        return null;
       case businessSummaryTypes.LUU_CHUYEN_TIEN_TE_GIAN_TIEP:
-        return null
+        return null;
       default:
-        return null
+        return null;
     }
   }
 
   handleAnalyse(index) {
     switch (index) {
       case analysisTypes.DEFAULT:
-        this.gridApi.setColumnDefs(this.columnDefs_year)
-        this.gridApi.setRowData(this.rootData)
+        this.gridApi.setColumnDefs(this.columnDefs_year);
+        this.gridApi.setRowData(this.rootData);
         break;
       case analysisTypes.ANALYSIS_1:
-        this.gridApi.setColumnDefs(this.columnDefs_year.concat(this.columnDefs_analysis_1))
+        this.gridApi.setColumnDefs(
+          this.columnDefs_year.concat(this.columnDefs_analysis_1)
+        );
         break;
       case analysisTypes.ANALYSIS_2:
-        this.gridApi.setColumnDefs(this.columnDefs_year.concat(this.columnDefs_analysis_2))
-        this.gridApi.setRowData(mapDataBusinessSummary(this.rootData, analysisTypes.ANALYSIS_2))
+        this.gridApi.setColumnDefs(
+          this.columnDefs_year.concat(this.columnDefs_analysis_2)
+        );
+        this.gridApi.setRowData(
+          mapDataBusinessSummary(this.rootData, analysisTypes.ANALYSIS_2)
+        );
         break;
       case analysisTypes.ANALYSIS_3:
-        this.gridApi.setColumnDefs(this.columnDefs_year.concat(this.columnDefs_analysis_3))
-        this.gridApi.setRowData(mapDataBusinessSummary(this.rootData, analysisTypes.ANALYSIS_3))
+        this.gridApi.setColumnDefs(
+          this.columnDefs_year.concat(this.columnDefs_analysis_3)
+        );
+        this.gridApi.setRowData(
+          mapDataBusinessSummary(this.rootData, analysisTypes.ANALYSIS_3)
+        );
         break;
       case analysisTypes.ANALYSIS_4:
-        this.gridApi.setColumnDefs(this.columnDefs_analysis_4)
-        this.gridApi.setRowData(mapDataBusinessSummary(this.rootData, analysisTypes.ANALYSIS_4))
+        this.gridApi.setColumnDefs(this.columnDefs_analysis_4);
+        this.gridApi.setRowData(
+          mapDataBusinessSummary(this.rootData, analysisTypes.ANALYSIS_4)
+        );
         break;
       default:
         this.gridApi.setColumnDefs(this.columnDefs_year);
         break;
     }
 
-    this.gridApi.sizeColumnsToFit()
+    this.gridApi.sizeColumnsToFit();
+  }
+
+  handleChangePeriod(event, newPeriod) {
+    if (!newPeriod) return;
+    this.setState(
+      {
+        period: newPeriod
+      },
+      () => {
+        this.getDataBusinessSummary();
+      }
+    );
   }
 
   render() {
@@ -711,19 +801,32 @@ export default class BusinessSummary extends React.Component {
           height: "500px"
         }}
       >
-        <Input
-          onChange={e => {
-            console.log(e.target.value);
-            this.gridApi.setQuickFilter(e.target.value);
-          }}
-        />
-        {this.renderAnalysisOptions()}
+        <div className="header">
+          <Input
+            onChange={e => {
+              console.log(e.target.value);
+              this.gridApi.setQuickFilter(e.target.value);
+            }}
+          />
+          <ToggleButtonGroup
+            value={this.state.period}
+            exclusive
+            onChange={this.handleChangePeriod.bind(this)}
+          >
+            <ToggleButton value={durationReportEnums.QUARTER}>
+              Quarterly
+            </ToggleButton>
+            <ToggleButton value={durationReportEnums.YEAR}>Yearly</ToggleButton>
+          </ToggleButtonGroup>
+          {this.renderAnalysisOptions()}
+        </div>
         <AgGridReact
           columnDefs={
-            this.durationReport === durationReportEnums.YEAR
+            this.state.period === durationReportEnums.YEAR
               ? this.columnDefs_year
               : this.columnDefs_quarter
           }
+          // frameworkComponents={this.frameworkComponents}
           defaultColDef={this.defaultColDef}
           onGridReady={this.onGridReady.bind(this)}
           enableSorting={true}
@@ -736,46 +839,12 @@ export default class BusinessSummary extends React.Component {
     );
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (
-      (nextProps.symbol && nextProps.symbol !== this.state.symbol) ||
-      (nextProps.durationReport &&
-        nextProps.durationReport !== this.durationReport) ||
-      (nextProps.typeBusinessSummary &&
-        nextProps.typeBusinessSummary !== this.typeBusinessSummary)
-    ) {
-      if (
-        nextProps.typeBusinessSummary &&
-        nextProps.typeBusinessSummary !== this.typeBusinessSummary
-      ) {
-        this.typeBusinessSummary = nextProps.typeBusinessSummary;
-      }
-
-      if (
-        nextProps.durationReport &&
-        nextProps.durationReport !== this.durationReport
-      ) {
-        this.durationReport = nextProps.durationReport;
-      }
-      if (
-        nextProps.durationReport &&
-        nextProps.durationReport === durationReportEnums.YEAR
-      ) {
-        this.getDataBusinessSummary(nextProps.symbol, durationReportEnums.YEAR);
-      } else {
-        this.getDataBusinessSummary(
-          nextProps.symbol,
-          durationReportEnums.QUARTER
-        );
-      }
-    }
-  }
-
-  getDataBusinessSummary(symbol, index) {
+  getDataBusinessSummary() {
+    if (!this.symbol) return;
     const url = getLastestFinancialReports(
       this.typeBusinessSummary,
-      symbol,
-      index === durationReportEnums.YEAR
+      this.symbol,
+      this.state.period === durationReportEnums.YEAR
         ? durationReportEnums.YEAR
         : durationReportEnums.QUARTER
     );
@@ -783,12 +852,12 @@ export default class BusinessSummary extends React.Component {
       .get(url)
       .then(response => {
         console.log(response);
-        this.rootData = response.data
+        this.rootData = response.data;
         this.gridApi.setRowData(
           mapDataBusinessSummary(this.rootData, analysisTypes.ANALYSIS_1)
         );
         this.gridApi.setColumnDefs(
-          index === durationReportEnums.YEAR
+          this.state.period === durationReportEnums.YEAR
             ? this.columnDefs_year
             : this.columnDefs_quarter
         );
@@ -800,7 +869,6 @@ export default class BusinessSummary extends React.Component {
   }
 
   componentDidMount() {
-    if (!this.state.symbol) return;
-    this.getDataBusinessSummary(this.state.symbol, this.durationReport);
+    this.getDataBusinessSummary();
   }
 }

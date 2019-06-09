@@ -10,6 +10,7 @@ import {
 } from "../../helpers/requests";
 import CustomedCheckBox from "../_customedComponents/CustomedCheckBox";
 import CustomedInput from "../_customedComponents/CustomedInput";
+import RepeatedCard from "../RepeatedCard";
 
 class CheckList extends Component {
   constructor(props) {
@@ -21,7 +22,7 @@ class CheckList extends Component {
         {
           field: "id",
           rowDrag: true,
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             const div = document.createElement("div");
             div.className = "actionButtons";
             const deleteRowButton = document.createElement("div");
@@ -41,7 +42,7 @@ class CheckList extends Component {
         {
           field: "content",
           width: 500,
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             const div = document.createElement("div");
             ReactDOM.render(
               <CustomedInput
@@ -56,7 +57,7 @@ class CheckList extends Component {
         {
           field: "is_done",
           width: 50,
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             const div = document.createElement("div");
             ReactDOM.render(
               <CustomedCheckBox
@@ -69,9 +70,18 @@ class CheckList extends Component {
           }
         },
         {
+          headerName: "Repeated card",
+          field: "",
+          cellRenderer: function(params) {
+            const div = document.createElement("div");
+            ReactDOM.render(<RepeatedCard />, div);
+            return div;
+          }
+        },
+        {
           field: "default_cost",
           width: 100,
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             const div = document.createElement("div");
             ReactDOM.render(
               <CustomedInput
@@ -89,7 +99,7 @@ class CheckList extends Component {
         {
           field: "actual_cost",
           width: 100,
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             const div = document.createElement("div");
             ReactDOM.render(
               <CustomedInput
@@ -106,7 +116,7 @@ class CheckList extends Component {
         },
         {
           field: "scheduled_time",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             const div = document.createElement("div");
             ReactDOM.render(
               <CustomedInput
@@ -125,7 +135,9 @@ class CheckList extends Component {
       defaultColDef: {
         width: 150,
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true,
+        enableCellChangeFlash: true
       },
       rowData: []
     };
@@ -269,7 +281,7 @@ class CheckList extends Component {
             rowData={this.state.rowData}
             onRowDragEnd={this.onRowDragEnd.bind(this)}
             onRowDragStart={this.onRowDragStart.bind(this)}
-            headerHeight={0}
+            // headerHeight={0}
             rowHeight={50}
           />
         </div>

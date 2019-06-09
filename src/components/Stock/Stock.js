@@ -4,10 +4,8 @@ import Modal from "@material-ui/core/Modal";
 import StockDetail from "../StockDetail";
 import axios from "axios";
 import CustomedPieChart from "./../_customedComponents/CustomedPieChart";
-import Icon from '@material-ui/core/Icon';
-import {
-  mapStockData
-} from "./../../helpers/functionUtils";
+import Icon from "@material-ui/core/Icon";
+import { mapStockData } from "./../../helpers/functionUtils";
 import {
   updateAllStocksDatabase,
   getAllStocksUrl,
@@ -28,8 +26,7 @@ import {
 } from "recharts";
 import Button from "@material-ui/core/Button";
 import CustomedAgGridReact from "../_customedComponents/CustomedAgGridReact";
-import ReactDOM from 'react-dom'
-// import { AccessAlarm, ThreeDRotation } from '@material-ui/icons';
+import ReactDOM from "react-dom";
 
 function getModalStyle() {
   return {
@@ -47,41 +44,41 @@ class Stock extends Component {
         {
           headerName: "Symbol",
           field: "Symbol",
-          cellRenderer: function (params) {
-            const div = document.createElement('div')
-            div.className = 'symbolCellContainer'
-            const container = document.createElement('div')
-            const content = document.createElement('div')
-            const detail = document.createElement('div')
-            const deleteButton = document.createElement('div')
+          cellRenderer: function(params) {
+            const div = document.createElement("div");
+            div.className = "symbolCellContainer";
+            const container = document.createElement("div");
+            const content = document.createElement("div");
+            const detail = document.createElement("div");
+            const deleteButton = document.createElement("div");
 
-            container.className = 'container'
-            content.innerHTML = params.data.Symbol
-            content.className = 'content'
-            detail.className = 'detail'
-            ReactDOM.render(<Icon>info</Icon>, detail)
-            detail.addEventListener('click', function () {
-              that.openModal(params)
-            })
-            ReactDOM.render(<Icon>delete</Icon>, deleteButton)
-            deleteButton.className = 'deleteButton'
-            deleteButton.addEventListener('click', function () {
-              that.deleteSymbolWatchlist(params)
-            })
+            container.className = "container";
+            content.innerHTML = params.data.Symbol;
+            content.className = "content";
+            detail.className = "detail";
+            ReactDOM.render(<Icon>info</Icon>, detail);
+            detail.addEventListener("click", function() {
+              that.openModal(params);
+            });
+            ReactDOM.render(<Icon>delete</Icon>, deleteButton);
+            deleteButton.className = "deleteButton";
+            deleteButton.addEventListener("click", function() {
+              that.deleteSymbolWatchlist(params);
+            });
 
-            container.appendChild(content)
-            container.appendChild(detail)
-            div.appendChild(container)
-            div.appendChild(deleteButton)
+            container.appendChild(content);
+            container.appendChild(detail);
+            div.appendChild(container);
+            div.appendChild(deleteButton);
 
-            return div
+            return div;
           }
         },
         {
           headerName: "TodayCapitalization",
           field: "today_capitalization",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             return (params.data.today_capitalization / Math.pow(10, 9)).toFixed(
               0
             );
@@ -91,7 +88,7 @@ class Stock extends Component {
           headerName: "% Change in Price",
           field: "percentage_change_in_price",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.percentage_change_in_price) {
               return (params.data.percentage_change_in_price * 100).toFixed(2);
             }
@@ -101,7 +98,7 @@ class Stock extends Component {
           headerName: "Close",
           field: "Close",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.Close) {
               return params.data.Close.toFixed(0);
             }
@@ -111,7 +108,7 @@ class Stock extends Component {
           headerName: "% Change in Volume",
           field: "percentage_change_in_volume",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.percentage_change_in_volume) {
               return (params.data.percentage_change_in_volume * 100).toFixed(2);
             }
@@ -126,7 +123,7 @@ class Stock extends Component {
           headerName: "ROE",
           field: "ROE",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.ROE) {
               return params.data.ROE.toFixed(0);
             }
@@ -136,7 +133,7 @@ class Stock extends Component {
           headerName: "EPS",
           field: "EPS",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.EPS) {
               return params.data.EPS.toFixed(0);
             }
@@ -156,7 +153,7 @@ class Stock extends Component {
           headerName: "MarketCapitalization",
           field: "MarketCapitalization",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.MarketCapitalization) {
               return params.data.MarketCapitalization.toFixed(0);
             }
@@ -164,24 +161,15 @@ class Stock extends Component {
         }
       ],
       rowData: [],
-      open: false
+      open: false,
+      loading: true
     };
   }
 
-  async canslimFilter() {
+  canslimFilter() {
     let today_capitalization_min = 5000000000;
     let percentage_change_in_price_min = 0.01;
-    await axios
-      .post(getFilteredStocksUrl(), {})
-      .then(response => {
-        console.log(response);
-        this.startRealtimeSocket(response.data.stocks);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-
-    await axios
+    axios
       .post(getFilteredStocksUrl(), {
         today_capitalization_min,
         percentage_change_in_price_min
@@ -202,12 +190,12 @@ class Stock extends Component {
     );
 
     // Connection opened
-    socket.addEventListener("open", function (event) {
+    socket.addEventListener("open", function(event) {
       socket.send("Hello Server!");
     });
 
     // Listen for messages
-    socket.addEventListener("message", function (event) {
+    socket.addEventListener("message", function(event) {
       // console.log(event.data);
       let data = event.data;
       let M_0 = JSON.parse(data).M && JSON.parse(data).M[0];
@@ -249,17 +237,17 @@ class Stock extends Component {
                 .post(getUpdateStockUrl(), dataUpdate)
                 .then(response => {
                   // console.log(response);
-                  if (!response.data.stock) return
+                  if (!response.data.stock) return;
                   if (updateOnly) {
-                    let new_stock = response.data.stock
+                    let new_stock = response.data.stock;
                     // console.log(new_stock, that.gridApi, index)
-                    that.gridApi.forEachNode(function (node) {
+                    that.gridApi.forEachNode(function(node) {
                       if (node.data.id === new_stock.id) {
-                        console.log(node.data)
-                        node.setData({ ...node.data, new_stock })
+                        console.log(node.data);
+                        node.setData({ ...node.data, new_stock });
                       }
-                      return
-                    })
+                      return;
+                    });
                   } else {
                     that.gridApi.setRowData(response.data.stocks);
                   }
@@ -305,26 +293,29 @@ class Stock extends Component {
         <Button
           variant="contained"
           color="primary"
+          disabled={this.state.loading}
           onClick={this.setQuickFilter.bind(this)}
         >
           Quick filter(EPS > 3000, ROE > 17, VOLUME > 10000, ROI > 60)
-            </Button>
+        </Button>
         <Button
           variant="contained"
           color="primary"
+          disabled={this.state.loading}
           onClick={this.getWatchingStocks.bind(this)}
         >
           Watching Stocks
-            </Button>
+        </Button>
         <Button
           variant="contained"
           color="primary"
+          disabled={this.state.loading}
           onClick={this.canslimFilter.bind(this)}
         >
           Canslim filter
-            </Button>
+        </Button>
       </div>
-    )
+    );
   }
 
   async getWatchingStocks() {
@@ -350,7 +341,7 @@ class Stock extends Component {
         console.log(response);
         this.setState({
           rowData: response.data.stocks
-        })
+        });
       })
       .catch(error => {
         console.log(error);
@@ -358,15 +349,16 @@ class Stock extends Component {
   }
 
   deleteSymbolWatchlist(params) {
-    const url = deleteSymbolWatchlistUrl(params.data.Symbol)
-    axios.delete(url)
+    const url = deleteSymbolWatchlistUrl(params.data.Symbol);
+    axios
+      .delete(url)
       .then(response => {
-        console.log(response)
-        this.getWatchingStocks()
+        console.log(response);
+        this.getWatchingStocks();
       })
       .catch(error => {
-        console.log(error)
-      })
+        console.log(error);
+      });
   }
 
   searchSymbol(e) {
@@ -385,7 +377,7 @@ class Stock extends Component {
   }
 
   onGridReadyCb(params) {
-    this.gridApi = params.api
+    this.gridApi = params.api;
   }
 
   render() {
@@ -517,7 +509,6 @@ class Stock extends Component {
   }
 
   openModal(params) {
-    console.log(params)
     this.setState({ open: true, symbol: params.data.Symbol });
   }
 
@@ -526,7 +517,6 @@ class Stock extends Component {
   }
 
   getAllDatabase() {
-
     this.setState(
       {
         loading: true
@@ -552,6 +542,21 @@ class Stock extends Component {
   }
 
   componentDidMount() {
+    axios
+      .post(getFilteredStocksUrl(), {})
+      .then(response => {
+        console.log(response);
+        this.setState({
+          loading: false
+        });
+        this.startRealtimeSocket(response.data.stocks);
+      })
+      .catch(error => {
+        this.setState({
+          loading: false
+        });
+        console.log(error);
+      });
   }
 }
 
