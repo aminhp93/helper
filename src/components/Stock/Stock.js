@@ -27,6 +27,8 @@ import {
 import Button from "@material-ui/core/Button";
 import CustomedAgGridReact from "../_customedComponents/CustomedAgGridReact";
 import ReactDOM from "react-dom";
+import CustomedToggleButtonGroup from "../_customedComponents/CustomedToggleButtonGroup";
+import filterButtonsEnums from "../../constants/filterButtonsEnums";
 
 function getModalStyle() {
   return {
@@ -34,6 +36,22 @@ function getModalStyle() {
     left: `5px`
   };
 }
+
+const filterButtonsOptions = [
+  {
+    value: filterButtonsEnums.CANSLIM_STOCKS,
+    display_value: "Canslim Stocks"
+  },
+  {
+    value: filterButtonsEnums.QUICK_FILTER_STOCKS,
+    display_value:
+      "Quick filter(EPS > 3000, ROE > 17, VOLUME > 10000, ROI > 60)"
+  },
+  {
+    value: filterButtonsEnums.WATCHING_STOCKS,
+    display_value: "Watching Stocks"
+  }
+];
 
 class Stock extends Component {
   constructor(props) {
@@ -287,35 +305,20 @@ class Stock extends Component {
       });
   }
 
-  renderQuickFilterButton() {
-    return (
-      <div>
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={this.state.loading}
-          onClick={this.setQuickFilter.bind(this)}
-        >
-          Quick filter(EPS > 3000, ROE > 17, VOLUME > 10000, ROI > 60)
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={this.state.loading}
-          onClick={this.getWatchingStocks.bind(this)}
-        >
-          Watching Stocks
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={this.state.loading}
-          onClick={this.canslimFilter.bind(this)}
-        >
-          Canslim filter
-        </Button>
-      </div>
-    );
+  handleCbCustomedToggleButtonGroup(index) {
+    switch (index) {
+      case filterButtonsEnums.QUICK_FILTER_STOCKS:
+        this.setQuickFilter();
+        break;
+      case filterButtonsEnums.WATCHING_STOCKS:
+        this.getWatchingStocks();
+        break;
+      case filterButtonsEnums.CANSLIM_STOCKS:
+        this.canslimFilter();
+        break;
+      default:
+        break;
+    }
   }
 
   async getWatchingStocks() {
@@ -388,7 +391,10 @@ class Stock extends Component {
           <div className="ag-theme-balham customedAgGrid">
             <div className="header">
               <Input onChange={e => this.searchSymbol(e)} />
-              {this.renderQuickFilterButton()}
+              <CustomedToggleButtonGroup
+                options={filterButtonsOptions}
+                cb={this.handleCbCustomedToggleButtonGroup.bind(this)}
+              />
             </div>
             <CustomedAgGridReact
               title="stock"
@@ -541,8 +547,8 @@ class Stock extends Component {
     );
   }
 
-  componentDidMount() {
-    axios
+  async componentDidMount() {
+    await axios
       .post(getFilteredStocksUrl(), {})
       .then(response => {
         console.log(response);
@@ -557,6 +563,7 @@ class Stock extends Component {
         });
         console.log(error);
       });
+    await this.canslimFilter();
   }
 }
 

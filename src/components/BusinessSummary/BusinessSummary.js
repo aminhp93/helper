@@ -2,9 +2,7 @@ import React from "react";
 import axios from "axios";
 import { AgGridReact } from "ag-grid-react";
 import {
-  formatNumber,
   mapDataBusinessSummary,
-  strcmp,
   getColumnDefs_quarter,
   getColumnDefs_year,
   getColumnDefs_analysis_1,
@@ -107,13 +105,6 @@ export default class BusinessSummary extends React.Component {
   }
 
   onRowClicked(row) {}
-
-  handleChangeAnalysis(e, newAnalysis) {
-    if (!newAnalysis) return;
-    this.setState({
-      analysis: newAnalysis
-    });
-  }
 
   renderAnalysisOptions() {
     switch (this.typeBusinessSummary) {
