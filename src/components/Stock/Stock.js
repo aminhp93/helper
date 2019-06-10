@@ -62,7 +62,7 @@ class Stock extends Component {
         {
           headerName: "Symbol",
           field: "Symbol",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             const div = document.createElement("div");
             div.className = "symbolCellContainer";
             const container = document.createElement("div");
@@ -75,12 +75,12 @@ class Stock extends Component {
             content.className = "content";
             detail.className = "detail";
             ReactDOM.render(<Icon>info</Icon>, detail);
-            detail.addEventListener("click", function() {
+            detail.addEventListener("click", function () {
               that.openModal(params);
             });
             ReactDOM.render(<Icon>delete</Icon>, deleteButton);
             deleteButton.className = "deleteButton";
-            deleteButton.addEventListener("click", function() {
+            deleteButton.addEventListener("click", function () {
               that.deleteSymbolWatchlist(params);
             });
 
@@ -96,7 +96,7 @@ class Stock extends Component {
           headerName: "TodayCapitalization",
           field: "today_capitalization",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             return (params.data.today_capitalization / Math.pow(10, 9)).toFixed(
               0
             );
@@ -106,7 +106,7 @@ class Stock extends Component {
           headerName: "% Change in Price",
           field: "percentage_change_in_price",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.percentage_change_in_price) {
               return (params.data.percentage_change_in_price * 100).toFixed(2);
             }
@@ -116,7 +116,7 @@ class Stock extends Component {
           headerName: "Close",
           field: "Close",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.Close) {
               return params.data.Close.toFixed(0);
             }
@@ -126,7 +126,7 @@ class Stock extends Component {
           headerName: "% Change in Volume",
           field: "percentage_change_in_volume",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.percentage_change_in_volume) {
               return (params.data.percentage_change_in_volume * 100).toFixed(2);
             }
@@ -141,7 +141,7 @@ class Stock extends Component {
           headerName: "ROE",
           field: "ROE",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.ROE) {
               return params.data.ROE.toFixed(0);
             }
@@ -151,7 +151,7 @@ class Stock extends Component {
           headerName: "EPS",
           field: "EPS",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.EPS) {
               return params.data.EPS.toFixed(0);
             }
@@ -171,7 +171,7 @@ class Stock extends Component {
           headerName: "MarketCapitalization",
           field: "MarketCapitalization",
           filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.MarketCapitalization) {
               return params.data.MarketCapitalization.toFixed(0);
             }
@@ -182,6 +182,8 @@ class Stock extends Component {
       open: false,
       loading: true
     };
+
+    this.toggleButton = filterButtonsEnums.QUICK_FILTER_STOCKS
   }
 
   canslimFilter() {
@@ -201,20 +203,21 @@ class Stock extends Component {
       });
   }
 
-  startRealtimeSocket(dataStocks, updateOnly) {
+  startRealtimeSocket(dataStocks) {
     const that = this;
     const socket = new WebSocket(
       "wss://www.fireant.vn/signalr/connect?transport=webSockets&clientProtocol=1.5&SessionID=ubjd4qzzvyjzmiisz0infqw3&connectionToken=65Io4MIjtEg35eA6eCpaoEuVEa%2Bq0dXWmCKk9iXItWBq5wv4%2Bx3nN87hxatafb2iwwRe9YEl5LeWdZQsqulAhWC%2FDtl%2FkVIcVB4FEynbjpTtMxsH%2BOkMOpSyrAdbOjjNMoeB%2BQ%3D%3D&connectionData=%5B%7B%22name%22%3A%22compressedappquotehub%22%7D%5D&tid=1"
     );
 
     // Connection opened
-    socket.addEventListener("open", function(event) {
+    socket.addEventListener("open", function (event) {
       socket.send("Hello Server!");
     });
 
     // Listen for messages
-    socket.addEventListener("message", function(event) {
+    socket.addEventListener("message", function (event) {
       // console.log(event.data);
+
       let data = event.data;
       let M_0 = JSON.parse(data).M && JSON.parse(data).M[0];
       let A = M_0 && M_0.A && M_0.A[0];
@@ -255,19 +258,19 @@ class Stock extends Component {
                 .post(getUpdateStockUrl(), dataUpdate)
                 .then(response => {
                   // console.log(response);
-                  if (!response.data.stock) return;
-                  if (updateOnly) {
+                  if (!response.data.stock) return
+                  if (that.toggleButton === filterButtonsEnums.CANSLIM_STOCKS) {
+                    that.gridApi.setRowData(response.data.stocks);
+                  } else {
                     let new_stock = response.data.stock;
                     // console.log(new_stock, that.gridApi, index)
-                    that.gridApi.forEachNode(function(node) {
+                    that.gridApi.forEachNode(function (node) {
                       if (node.data.id === new_stock.id) {
                         console.log(node.data);
                         node.setData({ ...node.data, new_stock });
                       }
                       return;
                     });
-                  } else {
-                    that.gridApi.setRowData(response.data.stocks);
                   }
                 })
                 .catch(error => {
@@ -306,6 +309,7 @@ class Stock extends Component {
   }
 
   handleCbCustomedToggleButtonGroup(index) {
+    this.toggleButton = index
     switch (index) {
       case filterButtonsEnums.QUICK_FILTER_STOCKS:
         this.setQuickFilter();
