@@ -30,13 +30,6 @@ import ReactDOM from "react-dom";
 import CustomedToggleButtonGroup from "../_customedComponents/CustomedToggleButtonGroup";
 import filterButtonsEnums from "../../constants/filterButtonsEnums";
 
-function getModalStyle() {
-  return {
-    top: `5px`,
-    left: `5px`
-  };
-}
-
 const filterButtonsOptions = [
   {
     value: filterButtonsEnums.CANSLIM_STOCKS,
@@ -395,6 +388,7 @@ class Stock extends Component {
         <div className="stockTable">
           <div className="ag-theme-balham customedAgGrid">
             <div className="header">
+              <div>{this.props.symbol}</div>
               <Input onChange={e => this.searchSymbol(e)} />
               <CustomedToggleButtonGroup
                 options={filterButtonsOptions}
@@ -441,13 +435,14 @@ class Stock extends Component {
           </BarChart>
         </div>
         <Modal
+          className='stockModal'
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
           open={this.state.open}
           onClose={this.closeModal.bind(this)}
         >
-          <div style={getModalStyle()}>
-            <StockDetail symbol={this.state.symbol} />
+          <div className='modalContent'>
+            <StockDetail closeStockDetail={this.handleCloseStockDetail.bind(this)} symbol={this.state.symbol} />
           </div>
         </Modal>
         <div className="updateButtons">
@@ -525,6 +520,11 @@ class Stock extends Component {
 
   closeModal() {
     this.setState({ open: false });
+  }
+
+  handleCloseStockDetail() {
+    console.log(531)
+    this.setState({ open: false })
   }
 
   getAllDatabase() {

@@ -11,7 +11,7 @@ import businessSummaryTypes from '../../constants/businessSummaryTypes'
 
 function TabContainer(props) {
   return (
-    <Typography component="div" style={{ padding: 8 * 3 }}>
+    <Typography component="div">
       {props.children}
     </Typography>
   );
@@ -46,7 +46,7 @@ class StockDetail extends React.Component {
     const { value } = this.state;
 
     return (
-      <div className={classes.root}>
+      <div className={'stockDetail'}>
         <AppBar position="static">
           <Tabs value={value} onChange={this.handleChange}>
             <Tab label="Chart" />
@@ -54,17 +54,20 @@ class StockDetail extends React.Component {
             <Tab label="Can doi ke toan" />
             <Tab label="Luu chuyen tien te - Truc tiep" />
             <Tab label="Luu chuyen tien te - Gian tiep" />
+            <Tab label="Close" onClick={() => this.props.closeStockDetail()} />
+            closeStockDetail
           </Tabs>
         </AppBar>
         {value === 0 && <TabContainer><ChartTV symbol={this.state.symbol} /></TabContainer>}
-        {value === 1 && <TabContainer>Ket qua kinh doanh | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary={businessSummaryTypes.KET_QUA_KINH_DOANH} /></TabContainer>}
-        {value === 2 && <TabContainer>Can doi ke toan | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary={businessSummaryTypes.CAN_DOI_KE_TOAN} /></TabContainer>}
+        {value === 1 && <TabContainer><BusinessSummary symbol={this.state.symbol} typeBusinessSummary={businessSummaryTypes.KET_QUA_KINH_DOANH} /></TabContainer>}
+        {value === 2 && <TabContainer><BusinessSummary symbol={this.state.symbol} typeBusinessSummary={businessSummaryTypes.CAN_DOI_KE_TOAN} /></TabContainer>}
         {value === 3 && (
-          <TabContainer>Luu chuyen tien te - Truc tiep | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary={businessSummaryTypes.LUU_CHUYEN_TIEN_TE_TRUC_TIEP} /></TabContainer>
+          <TabContainer><BusinessSummary symbol={this.state.symbol} typeBusinessSummary={businessSummaryTypes.LUU_CHUYEN_TIEN_TE_TRUC_TIEP} /></TabContainer>
         )}
         {value === 4 && (
-          <TabContainer>Luu chuyen tien te - Gian tiep | {this.state.symbol}<BusinessSummary symbol={this.state.symbol} typeBusinessSummary={businessSummaryTypes.LUU_CHUYEN_TIEN_TE_GIAN_TIEP} /></TabContainer>
+          <TabContainer><BusinessSummary symbol={this.state.symbol} typeBusinessSummary={businessSummaryTypes.LUU_CHUYEN_TIEN_TE_GIAN_TIEP} /></TabContainer>
         )}
+        {value === 5 && <TabContainer></TabContainer>}
       </div>
     );
   }

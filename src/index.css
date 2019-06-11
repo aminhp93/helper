@@ -100,7 +100,7 @@ input {
 }
 
 .chartTV {
-  height: 500px;
+  height: 100%;
 }
 
 .chartTV > iframe {
@@ -188,6 +188,31 @@ input {
 
 .stock .content {
   min-width: 30px;
+}
+
+
+.stockModal {
+  height: 100%;;
+}
+
+.stockModal .modalContent {
+  height: 100%;
+  margin: 0;
+}
+
+.stockDetail {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.stockDetail .MuiTypography-root {
+  flex: 1;
+}
+
+.stockDetail .businessSummary {
+  height: 100%;
 }
 
 .modalContent {

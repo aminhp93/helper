@@ -104,7 +104,7 @@ export default class BusinessSummary extends React.Component {
     this.gridApi = params.api;
   }
 
-  onRowClicked(row) {}
+  onRowClicked(row) { }
 
   renderAnalysisOptions() {
     switch (this.typeBusinessSummary) {
@@ -178,11 +178,7 @@ export default class BusinessSummary extends React.Component {
   render() {
     return (
       <div
-        className="ag-theme-balham businessSummary"
-        style={{
-          height: "500px"
-        }}
-      >
+        className="ag-theme-balham businessSummary">
         <div className="header">
           <Input onChange={e => this.gridApi.setQuickFilter(e.target.value)} />
           <CustomedToggleButtonGroup
