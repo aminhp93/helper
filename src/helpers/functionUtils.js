@@ -225,8 +225,8 @@ export function roundFloat(numberFloat, length) {
     arrNumber = arrNumber.replace(/^(-?)/, "$1" + "0".repeat(length));
     let result = Number(
       arrNumber.substring(0, arrNumber.length - length) +
-        "." +
-        arrNumber.substr(-length)
+      "." +
+      arrNumber.substr(-length)
     );
     return result;
   } catch (e) {
@@ -410,7 +410,7 @@ export function getColumnDefs_year() {
       headerName: "Name",
       field: "Name",
       width: 200,
-      cellRenderer: function(params) {
+      cellRenderer: function (params) {
         const div = document.createElement("div");
         div.title = params.data.Name;
         div.innerHTML = params.data.Name;
@@ -423,14 +423,14 @@ export function getColumnDefs_year() {
     let item = {
       headerName: periods[i],
       width: 120,
-      cellRenderer: function(params) {
+      cellRenderer: function (params) {
         const div = document.createElement("div");
         let value = (params.data.Values[i] || {}).Value
           ? formatNumber(
-              (params.data.Values[i] || {}).Value / Math.pow(10, 9),
-              1,
-              true
-            )
+            (params.data.Values[i] || {}).Value / Math.pow(10, 9),
+            1,
+            true
+          )
           : "";
         div.innerHTML = value;
         div.className = "";
@@ -451,13 +451,13 @@ export function getColumnDefs_quarter() {
       width: 200
     }
   ];
-  let periods = ["Q1 2018", "Q2 2018", "Q3 2018", "Q4 2018", "Q1 2019"];
+  let periods = ["Q2 2017", "Q3 2017", "Q4 2017", "Q1 2018", "Q2 2018", "Q3 2018", "Q4 2018", "Q1 2019"];
   for (let i = 0; i < periods.length; i++) {
     let item = {
       headerName: periods[i],
       field: "",
       width: 120,
-      cellRenderer: function(params) {
+      cellRenderer: function (params) {
         return (params.data.Values[i] || {}).Value
           ? formatNumber((params.data.Values[i] || {}).Value / 1000000, 1, true)
           : "";
@@ -476,7 +476,7 @@ export function getColumnDefs_analysis_1() {
       headerName: periods_1[i],
       field: "",
       width: 120,
-      cellRenderer: function(params) {
+      cellRenderer: function (params) {
         let value_1 = (params.data.Values[i + 2] || {}).Value;
 
         let value_2 = (params.data.Values[i + 1] || {}).Value;
@@ -501,7 +501,7 @@ export function getColumnDefs_analysis_1() {
       headerName: periods_2[i],
       field: "",
       width: 120,
-      cellRenderer: function(params) {
+      cellRenderer: function (params) {
         let value_1 = (params.data.Values[i + 2] || {}).Value;
 
         let value_2 = (params.data.Values[i + 1] || {}).Value;
@@ -527,7 +527,7 @@ export function getColumnDefs_analysis_2() {
       headerName: periods_1[i],
       field: "",
       cellStyle: { "background-color": "gray" },
-      cellRenderer: function(params) {
+      cellRenderer: function (params) {
         const div = document.createElement("div");
         div.className = "";
         div.classList.add("number");
@@ -545,7 +545,7 @@ export function getColumnDefs_analysis_2() {
     let item = {
       headerName: periods_2[i],
       field: "",
-      cellRenderer: function(params) {
+      cellRenderer: function (params) {
         const div = document.createElement("div");
         div.className = "";
         div.classList.add("number");
@@ -572,7 +572,7 @@ export function getColumnDefs_analysis_3() {
       headerName: periods[i],
       field: "",
       cellStyle: { "background-color": "gray" },
-      cellRenderer: function(params) {
+      cellRenderer: function (params) {
         const div = document.createElement("div");
         div.className =
           [301, 302, 30101].indexOf(params.data.ID) > -1 ? "highlight" : "";
@@ -596,7 +596,7 @@ export function getColumnDefs_analysis_4() {
       headerName: "Name",
       field: "Name",
       width: 200,
-      cellRenderer: function(params) {
+      cellRenderer: function (params) {
         const div = document.createElement("div");
         div.title = params.data.Name;
         div.innerHTML = params.data.Name;
@@ -606,16 +606,16 @@ export function getColumnDefs_analysis_4() {
     {
       headerName: "2017",
       width: 120,
-      cellRenderer: function(params) {
+      cellRenderer: function (params) {
         const div = document.createElement("div");
         let value = (params.data.Values[params.data.Values.length - 2] || {})
           .Value
           ? formatNumber(
-              (params.data.Values[params.data.Values.length - 2] || {}).Value /
-                Math.pow(10, 9),
-              1,
-              true
-            )
+            (params.data.Values[params.data.Values.length - 2] || {}).Value /
+            Math.pow(10, 9),
+            1,
+            true
+          )
           : "";
         div.innerHTML = value;
         div.className = "";
@@ -626,16 +626,16 @@ export function getColumnDefs_analysis_4() {
     {
       headerName: "2018",
       width: 120,
-      cellRenderer: function(params) {
+      cellRenderer: function (params) {
         const div = document.createElement("div");
         let value = (params.data.Values[params.data.Values.length - 1] || {})
           .Value
           ? formatNumber(
-              (params.data.Values[params.data.Values.length - 1] || {}).Value /
-                Math.pow(10, 9),
-              1,
-              true
-            )
+            (params.data.Values[params.data.Values.length - 1] || {}).Value /
+            Math.pow(10, 9),
+            1,
+            true
+          )
           : "";
         div.innerHTML = value;
         div.className = "";
@@ -646,11 +646,11 @@ export function getColumnDefs_analysis_4() {
     {
       headerName: "Su dung von",
       field: "",
-      pinnedRowCellRenderer: function(params) {
+      pinnedRowCellRenderer: function (params) {
         console.log(params, 508);
         return "pinned";
       },
-      cellRenderer: function(params) {
+      cellRenderer: function (params) {
         if (
           [10102, 10105, 3010103, 3010111, 30102, 30201, 2, 4].indexOf(
             params.data.ID
@@ -674,7 +674,7 @@ export function getColumnDefs_analysis_4() {
     {
       headerName: "nguon von",
       field: "",
-      cellRenderer: function(params) {
+      cellRenderer: function (params) {
         if (
           [10101, 10103, 10104, 102, 3010101, 3010113, 30202, 2, 4].indexOf(
             params.data.ID

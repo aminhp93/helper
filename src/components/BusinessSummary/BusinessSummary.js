@@ -49,12 +49,12 @@ const canDoiKeToanOptions = [
 
 const periodOptions = [
   {
-    value: durationReportEnums.QUARTER,
-    display_value: "Quarterly"
-  },
-  {
     value: durationReportEnums.YEAR,
     display_value: "Yearly"
+  },
+  {
+    value: durationReportEnums.QUARTER,
+    display_value: "Quarterly"
   }
 ];
 
