@@ -153,6 +153,14 @@ input {
   flex: 1;
 }
 
+.jobMarket .aggridContainer {
+  height: 500px;
+}
+
+.jobMarket .agGridReactRoot {
+  height: 100%;
+}
+
 .jobMarket .analysisContainer {
   display: flex;
 }

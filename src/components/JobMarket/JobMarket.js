@@ -34,7 +34,7 @@ class JobMarket extends Component {
         {
           headerName: "Company",
           field: "",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             return (
               params.rowIndex +
               " - " +
@@ -50,7 +50,7 @@ class JobMarket extends Component {
         {
           headerName: "Location",
           field: "locationIds",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             if (params.data.locationIds && params.data.locationIds.length) {
               return (
                 params.data.locationIds[0] + " - " + params.data.locations[0]
@@ -73,7 +73,7 @@ class JobMarket extends Component {
         {
           headerName: "Time Published",
           field: "timestamp",
-          cellRenderer: function(params) {
+          cellRenderer: function (params) {
             const time = params.data.timestamp;
             const year = time.slice(0, 4);
             const month = time.slice(4, 6);
@@ -113,10 +113,11 @@ class JobMarket extends Component {
         >
           Update jobs database
         </Button>
-        <div>
+        <div className='aggridContainer' >
           <CustomedAgGridReact
             columnDefs={this.state.columnDefs}
             rowData={this.state.rowData}
+            onGridReady={this.onGridReadyCb.bind(this)}
           />
         </div>
         <div className="analysisContainer">
@@ -138,7 +139,7 @@ class JobMarket extends Component {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="name"
-                //   tick={this.renderCustomAxisTick}
+              //   tick={this.renderCustomAxisTick}
               />
               <YAxis />
               <Tooltip />
@@ -154,6 +155,11 @@ class JobMarket extends Component {
   renderCustomAxisTick() {
     return <div>1</div>;
   }
+
+  onGridReadyCb(params) {
+    this.gridApi = params.api;
+  }
+
 
   search(querySearch) {
     let hitsPerPage = "1000";
@@ -226,7 +232,7 @@ class JobMarket extends Component {
       lastJob.job &&
       lastJob.job.id &&
       new Date(lastJob.job.timestamp).toDateString() ===
-        new Date().toDateString()
+      new Date().toDateString()
     ) {
       // update last job search
       jobData.id = lastJob.job.id;
