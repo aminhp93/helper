@@ -171,8 +171,7 @@ class CheckList extends Component {
   }
 
   handleDelete(id, params) {
-    console.log(params);
-    const url = getDeleteNoteUrl();
+    const url = getDeleteNoteUrl(id);
     const data = {
       id
     };
@@ -200,7 +199,7 @@ class CheckList extends Component {
 
   handleCbInput(data, id) {
     console.log(data, id);
-    const url = getUpdateNoteUrl();
+    const url = getUpdateNoteUrl(id);
     const objData = { ...data, id };
     axios
       .post(url, objData)
@@ -213,8 +212,7 @@ class CheckList extends Component {
   }
 
   handleCbCheckBox(checked_value, id, index) {
-    const that = this
-    const url = getUpdateNoteUrl();
+    const url = getUpdateNoteUrl(id);
     let done_time = new Date().getTime();
     let data = { id }
     if (index === 'is_done') {
@@ -228,22 +226,26 @@ class CheckList extends Component {
     axios
       .post(url, data)
       .then(response => {
-        // this.getAllNotes()
-        console.log(this.rowData, response.data.post)
-        let index = this.rowData.findIndex(item => item.id === response.data.post.id)
-        this.rowData[index] = response.data.post
-        console.log(this.rowData)
-        if (response.data.post.is_doing) {
-          this.rowData.map(item => {
-            if (item.id !== response.data.post.id) {
-              item.is_doing = false
+        const url1 = getAllNotesUrl();
+        axios
+          .get(url1)
+          .then(response => {
+            if (
+              response.data &&
+              response.data.posts &&
+              response.data.posts.length
+            ) {
+              // this.gridApi.setRowData(response.data.posts);
+              // this.gridApi.sizeColumnsToFit();
+
+              this.setState({
+                rowData: response.data.posts
+              })
             }
           })
-        }
-        console.log(this.rowData)
-        this.setState({
-          rowData: this.rowData
-        })
+          .catch(error => {
+            console.log(error);
+          });
       })
       .catch(error => {
         console.log(error);

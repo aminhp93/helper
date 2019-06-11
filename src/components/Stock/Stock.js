@@ -246,6 +246,7 @@ class Stock extends Component {
               // console.log(index);
               update = false;
               let dataUpdate = {};
+              dataUpdate.id = dataStocks[index].id
               dataUpdate.Symbol = old_Symbol;
               dataUpdate.Volume = new_Volume;
               dataUpdate.Close = new_Close;
@@ -255,7 +256,7 @@ class Stock extends Component {
                 dataStocks[index].yesterday_Close;
               // Update in db
               axios
-                .post(getUpdateStockUrl(), dataUpdate)
+                .post(getUpdateStockUrl(dataStocks[index].id), dataUpdate)
                 .then(response => {
                   // console.log(response);
                   if (!response.data.stock) return
@@ -266,7 +267,7 @@ class Stock extends Component {
                     // console.log(new_stock, that.gridApi, index)
                     that.gridApi.forEachNode(function (node) {
                       if (node.data.id === new_stock.id) {
-                        console.log(node.data);
+                        // console.log(node.data);
                         node.setData({ ...node.data, new_stock });
                       }
                       return;

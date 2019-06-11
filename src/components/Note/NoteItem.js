@@ -18,7 +18,8 @@ export default class NoteItem extends React.Component {
   }
 
   handleUpdateNote(data = {}) {
-    const url = getUpdateNoteUrl();
+    if (!data.id) return
+    const url = getUpdateNoteUrl(data.id);
     axios
       .post(url, data)
       .then(response => {
@@ -37,7 +38,7 @@ export default class NoteItem extends React.Component {
   }
 
   handleDeleteNote(id) {
-    const url = getDeleteNoteUrl();
+    const url = getDeleteNoteUrl(id);
     const data = {
       id: id
     };

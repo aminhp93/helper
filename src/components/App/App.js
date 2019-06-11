@@ -29,6 +29,9 @@ class App extends Component {
         <li>
           <Link to="/checklist">CheckList</Link>
         </li>
+        <li>
+          <Link to="/ecommerce">Delta Sport</Link>
+        </li>
         <div id="output"></div>
       </ul>
     );

@@ -25,59 +25,55 @@ const year = time.format("YYYY");
 const endDay = time.subtract(subtract, "days").format("YYYY-MM-DD");
 
 export function getAllNotesUrl() {
-  return domain + "posts/all";
+  return domain + "posts/";
 }
 
 export function getCreateNoteUrl() {
-  return domain + "post/create";
+  return domain + "posts/create/";
 }
 
-export function getUpdateNoteUrl() {
-  return domain + "post/update";
+export function getUpdateNoteUrl(id) {
+  return domain + `posts/${id}/update/`;
 }
 
-export function getDeleteNoteUrl() {
-  return domain + "post/delete";
-}
-
-export function getDeleteAllStocksUrl() {
-  return domain + "stock/delete/all";
-}
-
-export function getCreateStockUrl() {
-  return domain + "stock/create";
-}
-
-export function getUpdateStockUrl() {
-  return domain + "stock/update";
+export function getDeleteNoteUrl(id) {
+  return domain + `posts/${id}/delete/`;
 }
 
 export function getAllStocksUrl() {
-  return domain + "stocks/all";
+  return domain + "stocks/";
 }
 
-export function getQuickFilteredStocksUrl() {
-  return domain + "stocks/quickFilteredStocks";
+export function getCreateStockUrl() {
+  return domain + "stocks/create/";
+}
+
+export function getUpdateStockUrl(id) {
+  return domain + `stocks/${id}/update/`;
+}
+
+export function getDeleteAllStocksUrl() {
+  return domain + "stocks/delete/all/";
 }
 
 export function getFilteredStocksUrl() {
-  return domain + "stocks/filter";
+  return domain + "stocks/filter/";
 }
 
 export function getAllJobsUrl() {
-  return domain + "jobs/all";
+  return domain + "jobs/";
 }
 
 export function getCreateJobUrl() {
-  return domain + "job/create";
+  return domain + "jobs/create/";
+}
+
+export function getUpdateJobUrl(id) {
+  return domain + `jobs/${id}/update/`;
 }
 
 export function getLastJobUrl() {
-  return domain + "job/lastjob";
-}
-
-export function getUpdateJobUrl() {
-  return domain + "job/update";
+  return domain + "jobs/last/";
 }
 
 export function getDataHistoryUrl(symbol, resolution, fromDate, toDate) {
@@ -112,7 +108,7 @@ export function getWatchingStocksUrl() {
 export function getLastestFinancialReports(type, symbol, index) {
   return `https://www.fireant.vn/api/Data/Finance/LastestFinancialReports?symbol=${symbol}&type=${type}&year=${year}&quarter=${
     index === durationReportEnums.YEAR ? "0" : "4"
-  }&count=5`;
+    }&count=5`;
 }
 
 export async function updateAllStocksDatabase(floor, _this) {
@@ -202,7 +198,7 @@ async function getLastestFinancialInfo(resolve, item) {
       RSI_14_diff:
         calculateRSI_result.RSI_14 - calculateRSI_result.RSI_14_previous
     })
-    .then(response => {})
+    .then(response => { })
     .catch(error => {
       errorsList.push({
         error,
