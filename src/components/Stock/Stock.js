@@ -52,130 +52,130 @@ class Stock extends Component {
     super(props);
     const that = this;
     this.state = {
-      columnDefs: [
-        {
-          headerName: "Symbol",
-          field: "Symbol",
-          cellRenderer: function(params) {
-            const div = document.createElement("div");
-            div.className = "symbolCellContainer";
-            const container = document.createElement("div");
-            const content = document.createElement("div");
-            const detail = document.createElement("div");
-            const deleteButton = document.createElement("div");
-
-            container.className = "container";
-            content.innerHTML = params.data.Symbol;
-            content.className = "content";
-            detail.className = "detail";
-            ReactDOM.render(<Icon>info</Icon>, detail);
-            detail.addEventListener("click", function() {
-              that.openModal(params);
-            });
-            ReactDOM.render(<Icon>delete</Icon>, deleteButton);
-            deleteButton.className = "deleteButton";
-            deleteButton.addEventListener("click", function() {
-              that.deleteSymbolWatchlist(params);
-            });
-
-            container.appendChild(content);
-            container.appendChild(detail);
-            div.appendChild(container);
-            div.appendChild(deleteButton);
-
-            return div;
-          }
-        },
-        {
-          headerName: "TodayCapitalization",
-          field: "today_capitalization",
-          filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
-            return (params.data.today_capitalization / Math.pow(10, 9)).toFixed(
-              0
-            );
-          }
-        },
-        {
-          headerName: "% Change in Price",
-          field: "percentage_change_in_price",
-          filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
-            if (params.data.percentage_change_in_price) {
-              return (params.data.percentage_change_in_price * 100).toFixed(2);
-            }
-          }
-        },
-        {
-          headerName: "Close",
-          field: "Close",
-          filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
-            if (params.data.Close) {
-              return params.data.Close.toFixed(0);
-            }
-          }
-        },
-        {
-          headerName: "% Change in Volume",
-          field: "percentage_change_in_volume",
-          filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
-            if (params.data.percentage_change_in_volume) {
-              return (params.data.percentage_change_in_volume * 100).toFixed(2);
-            }
-          }
-        },
-        {
-          headerName: "Volume",
-          field: "Volume",
-          filter: "agNumberColumnFilter"
-        },
-        {
-          headerName: "ROE",
-          field: "ROE",
-          filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
-            if (params.data.ROE) {
-              return params.data.ROE.toFixed(0);
-            }
-          }
-        },
-        {
-          headerName: "EPS",
-          field: "EPS",
-          filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
-            if (params.data.EPS) {
-              return params.data.EPS.toFixed(0);
-            }
-          }
-        },
-        {
-          headerName: "RSI_14",
-          field: "RSI_14",
-          filter: "agNumberColumnFilter"
-        },
-        {
-          headerName: "RSI_14_diff",
-          field: "RSI_14_diff",
-          filter: "agNumberColumnFilter"
-        },
-        {
-          headerName: "MarketCapitalization",
-          field: "MarketCapitalization",
-          filter: "agNumberColumnFilter",
-          cellRenderer: function(params) {
-            if (params.data.MarketCapitalization) {
-              return params.data.MarketCapitalization.toFixed(0);
-            }
-          }
-        }
-      ],
-      rowData: [],
       open: false,
       loading: true
     };
+
+    this.columnDefs = [
+      {
+        headerName: "Symbol",
+        field: "Symbol",
+        cellRenderer: function(params) {
+          const div = document.createElement("div");
+          div.className = "symbolCellContainer";
+          const container = document.createElement("div");
+          const content = document.createElement("div");
+          const detail = document.createElement("div");
+          const deleteButton = document.createElement("div");
+
+          container.className = "container";
+          content.innerHTML = params.data.Symbol;
+          content.className = "content";
+          detail.className = "detail";
+          ReactDOM.render(<Icon>info</Icon>, detail);
+          detail.addEventListener("click", function() {
+            that.openModal(params);
+          });
+          ReactDOM.render(<Icon>delete</Icon>, deleteButton);
+          deleteButton.className = "deleteButton";
+          deleteButton.addEventListener("click", function() {
+            that.deleteSymbolWatchlist(params);
+          });
+
+          container.appendChild(content);
+          container.appendChild(detail);
+          div.appendChild(container);
+          div.appendChild(deleteButton);
+
+          return div;
+        }
+      },
+      {
+        headerName: "TodayCapitalization",
+        field: "today_capitalization",
+        filter: "agNumberColumnFilter",
+        cellRenderer: function(params) {
+          return (params.data.today_capitalization / Math.pow(10, 9)).toFixed(
+            0
+          );
+        }
+      },
+      {
+        headerName: "% Change in Price",
+        field: "percentage_change_in_price",
+        filter: "agNumberColumnFilter",
+        cellRenderer: function(params) {
+          if (params.data.percentage_change_in_price) {
+            return (params.data.percentage_change_in_price * 100).toFixed(2);
+          }
+        }
+      },
+      {
+        headerName: "Close",
+        field: "Close",
+        filter: "agNumberColumnFilter",
+        cellRenderer: function(params) {
+          if (params.data.Close) {
+            return params.data.Close.toFixed(0);
+          }
+        }
+      },
+      {
+        headerName: "% Change in Volume",
+        field: "percentage_change_in_volume",
+        filter: "agNumberColumnFilter",
+        cellRenderer: function(params) {
+          if (params.data.percentage_change_in_volume) {
+            return (params.data.percentage_change_in_volume * 100).toFixed(2);
+          }
+        }
+      },
+      {
+        headerName: "Volume",
+        field: "Volume",
+        filter: "agNumberColumnFilter"
+      },
+      {
+        headerName: "ROE",
+        field: "ROE",
+        filter: "agNumberColumnFilter",
+        cellRenderer: function(params) {
+          if (params.data.ROE) {
+            return params.data.ROE.toFixed(0);
+          }
+        }
+      },
+      {
+        headerName: "EPS",
+        field: "EPS",
+        filter: "agNumberColumnFilter",
+        cellRenderer: function(params) {
+          if (params.data.EPS) {
+            return params.data.EPS.toFixed(0);
+          }
+        }
+      },
+      {
+        headerName: "RSI_14",
+        field: "RSI_14",
+        filter: "agNumberColumnFilter"
+      },
+      {
+        headerName: "RSI_14_diff",
+        field: "RSI_14_diff",
+        filter: "agNumberColumnFilter"
+      },
+      {
+        headerName: "MarketCapitalization",
+        field: "MarketCapitalization",
+        filter: "agNumberColumnFilter",
+        cellRenderer: function(params) {
+          if (params.data.MarketCapitalization) {
+            return params.data.MarketCapitalization.toFixed(0);
+          }
+        }
+      }
+    ];
 
     this.toggleButton = filterButtonsEnums.QUICK_FILTER_STOCKS;
   }
@@ -341,9 +341,7 @@ class Stock extends Component {
       .post(getFilteredStocksUrl(), { watching_stocks })
       .then(response => {
         console.log(response);
-        this.setState({
-          rowData: response.data.stocks
-        });
+        this.gridApi.setRowData(response.data.stocks);
       })
       .catch(error => {
         console.log(error);
@@ -382,6 +380,41 @@ class Stock extends Component {
     this.gridApi = params.api;
   }
 
+  handleClickFinboxButton() {
+    axios
+      .get(getMarketDataUrl_finbox())
+      .then(response => {
+        console.log(response.data.sheet2);
+        const sheet2 = response.data && response.data.sheet2;
+        if (!sheet2) return;
+        const newRowDatas = [];
+        for (let i = 0; i < sheet2.length; i++) {
+          let item = sheet2[i].split("~");
+          if (item.length > 1) {
+            newRowDatas.push(item);
+          }
+        }
+        const finBoxColumnDefs = [];
+        for (let i = 0; i < 66; i++) {
+          finBoxColumnDefs.push({
+            headerName: `Test${i}`,
+            field: "",
+            width: 70,
+            cellRenderer: function(params) {
+              console.log(params);
+              return params.data[i];
+            }
+          });
+        }
+
+        this.gridApi.setRowData(newRowDatas);
+        this.gridApi.setColumnDefs(finBoxColumnDefs);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
   render() {
     return (
       <div className="stock">
@@ -395,11 +428,13 @@ class Stock extends Component {
                 options={filterButtonsOptions}
                 cb={this.handleCbCustomedToggleButtonGroup.bind(this)}
               />
+              <div onClick={this.handleClickFinboxButton.bind(this)}>
+                FinboxButton
+              </div>
             </div>
             <CustomedAgGridReact
               title="stock"
-              columnDefs={this.state.columnDefs}
-              rowData={mapStockData(this.state.rowData)}
+              columnDefs={this.columnDefs}
               onGridReady={this.onGridReadyCb.bind(this)}
             />
           </div>
@@ -541,8 +576,8 @@ class Stock extends Component {
           .get(getAllStocksUrl())
           .then(response => {
             console.log(response);
+            this.gridApi.setRowData(response.data.stocks);
             this.setState({
-              rowData: response.data.stocks,
               loading: false
             });
           })
@@ -557,14 +592,6 @@ class Stock extends Component {
   }
 
   async componentDidMount() {
-    axios
-      .get(getMarketDataUrl_finbox())
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.log(error);
-      });
     await axios
       .post(getFilteredStocksUrl(), {})
       .then(response => {
