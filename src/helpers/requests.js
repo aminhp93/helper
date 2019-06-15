@@ -76,6 +76,10 @@ export function getLastJobUrl() {
   return domain + "jobs/last/";
 }
 
+export function getMarketDataUrl_finbox() {
+  return "https://api.finbox.vn/api/app/getMarketData/";
+}
+
 export function getDataHistoryUrl(symbol, resolution, fromDate, toDate) {
   return (
     "https://dchart-api.vndirect.com.vn/dchart/history?symbol=" +
@@ -108,7 +112,7 @@ export function getWatchingStocksUrl() {
 export function getLastestFinancialReports(type, symbol, index) {
   return `https://www.fireant.vn/api/Data/Finance/LastestFinancialReports?symbol=${symbol}&type=${type}&year=${year}&quarter=${
     index === durationReportEnums.YEAR ? "0" : "4"
-    }&count=8`;
+  }&count=8`;
 }
 
 export async function updateAllStocksDatabase(floor, _this) {
@@ -198,7 +202,7 @@ async function getLastestFinancialInfo(resolve, item) {
       RSI_14_diff:
         calculateRSI_result.RSI_14 - calculateRSI_result.RSI_14_previous
     })
-    .then(response => { })
+    .then(response => {})
     .catch(error => {
       errorsList.push({
         error,

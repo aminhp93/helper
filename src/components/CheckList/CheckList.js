@@ -11,7 +11,7 @@ import {
 import CustomedCheckBox from "../_customedComponents/CustomedCheckBox";
 import CustomedInput from "../_customedComponents/CustomedInput";
 import RepeatedCard from "../RepeatedCard";
-import LinearProgress from '@material-ui/core/LinearProgress';
+import LinearProgress from "@material-ui/core/LinearProgress";
 import Icon from "@material-ui/core/Icon";
 
 class CheckList extends Component {
@@ -24,11 +24,11 @@ class CheckList extends Component {
         {
           field: "id",
           rowDrag: true,
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             const div = document.createElement("div");
             div.className = "actionButtons";
             const deleteRowButton = document.createElement("div");
-            const progressLinear = document.createElement('div');
+            const progressLinear = document.createElement("div");
             deleteRowButton.className = "deleteRowButton";
             ReactDOM.render(
               <div onClick={() => that.handleDelete(params.data.id, params)}>
@@ -39,9 +39,9 @@ class CheckList extends Component {
             // ReactDOM.render(
             //   <div>{params.data.is_doing ? <LinearProgress /> : null}</div>, progressLinear
             // )
-            progressLinear.className = 'progressLinear'
+            progressLinear.className = "progressLinear";
             div.innerText = params.data.id;
-            div.appendChild(progressLinear)
+            div.appendChild(progressLinear);
             div.appendChild(deleteRowButton);
 
             return div;
@@ -50,12 +50,14 @@ class CheckList extends Component {
         {
           field: "Done",
           width: 50,
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             const div = document.createElement("div");
             ReactDOM.render(
               <CustomedCheckBox
                 checked={params.data.is_done}
-                cb={data => that.handleCbCheckBox(data, params.data.id, 'is_done')}
+                cb={data =>
+                  that.handleCbCheckBox(data, params.data.id, "is_done")
+                }
               />,
               div
             );
@@ -65,7 +67,7 @@ class CheckList extends Component {
         {
           field: "content",
           width: 500,
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             const div = document.createElement("div");
             ReactDOM.render(
               <CustomedInput
@@ -80,17 +82,18 @@ class CheckList extends Component {
         {
           field: "In Progress",
           width: 70,
-          cellRenderer: function (params) {
-            console.log(84)
+          cellRenderer: function(params) {
+            console.log(84);
             const div = document.createElement("div");
             ReactDOM.render(
               <div>
                 <CustomedCheckBox
                   checked={params.data.is_doing}
-                  cb={data => that.handleCbCheckBox(data, params.data.id, 'is_doing')}
+                  cb={data =>
+                    that.handleCbCheckBox(data, params.data.id, "is_doing")
+                  }
                 />
-              </div>
-              ,
+              </div>,
               div
             );
             return div;
@@ -99,7 +102,7 @@ class CheckList extends Component {
         {
           headerName: "Repeated card",
           field: "",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             const div = document.createElement("div");
             ReactDOM.render(<RepeatedCard />, div);
             return div;
@@ -108,7 +111,7 @@ class CheckList extends Component {
         {
           field: "default_cost",
           width: 100,
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             const div = document.createElement("div");
             ReactDOM.render(
               <CustomedInput
@@ -126,7 +129,7 @@ class CheckList extends Component {
         {
           field: "actual_cost",
           width: 100,
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             const div = document.createElement("div");
             ReactDOM.render(
               <CustomedInput
@@ -143,7 +146,7 @@ class CheckList extends Component {
         },
         {
           field: "scheduled_time",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             const div = document.createElement("div");
             ReactDOM.render(
               <CustomedInput
@@ -214,38 +217,39 @@ class CheckList extends Component {
   handleCbCheckBox(checked_value, id, index) {
     const url = getUpdateNoteUrl(id);
     let done_time = new Date().getTime();
-    let data = { id }
-    if (index === 'is_done') {
-      data.is_done = checked_value
+    let data = { id };
+    if (index === "is_done") {
+      data.is_done = checked_value;
       if (checked_value) {
-        data.done_time = done_time
+        data.done_time = done_time;
       }
-    } else if (index === 'is_doing') {
-      data.is_doing = checked_value
+    } else if (index === "is_doing") {
+      data.is_doing = checked_value;
     }
     axios
       .post(url, data)
       .then(response => {
-        const url1 = getAllNotesUrl();
-        axios
-          .get(url1)
-          .then(response => {
-            if (
-              response.data &&
-              response.data.posts &&
-              response.data.posts.length
-            ) {
-              // this.gridApi.setRowData(response.data.posts);
-              // this.gridApi.sizeColumnsToFit();
+        console.log(response);
+        // const url1 = getAllNotesUrl();
+        // axios
+        //   .get(url1)
+        //   .then(response => {
+        //     if (
+        //       response.data &&
+        //       response.data.posts &&
+        //       response.data.posts.length
+        //     ) {
+        //       // this.gridApi.setRowData(response.data.posts);
+        //       // this.gridApi.sizeColumnsToFit();
 
-              this.setState({
-                rowData: response.data.posts
-              })
-            }
-          })
-          .catch(error => {
-            console.log(error);
-          });
+        //       this.setState({
+        //         rowData: response.data.posts
+        //       })
+        //     }
+        //   })
+        //   .catch(error => {
+        //     console.log(error);
+        //   });
       })
       .catch(error => {
         console.log(error);
@@ -267,7 +271,7 @@ class CheckList extends Component {
           this.rowData = response.data.posts;
           this.setState({
             rowData: response.data.posts
-          })
+          });
         }
       })
       .catch(error => {
@@ -295,8 +299,10 @@ class CheckList extends Component {
           response.data.data &&
           response.data.data === "Created successfully"
         ) {
-          this.rowData.unshift(response.data.post);
-          this.gridApi.setRowData(this.rowData);
+          const newItems = [response.data.post];
+          this.gridApi.updateRowData({
+            add: newItems
+          });
         }
       })
       .catch(error => {
@@ -323,7 +329,7 @@ class CheckList extends Component {
   }
 
   render() {
-    console.log('render')
+    console.log("render");
     return (
       <div className="checkList">
         <div onClick={e => this.handleCreate(e)}>Create</div>

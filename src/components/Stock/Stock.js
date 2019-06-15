@@ -13,7 +13,8 @@ import {
   getUpdateStockUrl,
   getFilteredStocksUrl,
   deleteSymbolWatchlistUrl,
-  getWatchingStocksUrl
+  getWatchingStocksUrl,
+  getMarketDataUrl_finbox
 } from "../../helpers/requests";
 import {
   BarChart,
@@ -55,7 +56,7 @@ class Stock extends Component {
         {
           headerName: "Symbol",
           field: "Symbol",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             const div = document.createElement("div");
             div.className = "symbolCellContainer";
             const container = document.createElement("div");
@@ -68,12 +69,12 @@ class Stock extends Component {
             content.className = "content";
             detail.className = "detail";
             ReactDOM.render(<Icon>info</Icon>, detail);
-            detail.addEventListener("click", function () {
+            detail.addEventListener("click", function() {
               that.openModal(params);
             });
             ReactDOM.render(<Icon>delete</Icon>, deleteButton);
             deleteButton.className = "deleteButton";
-            deleteButton.addEventListener("click", function () {
+            deleteButton.addEventListener("click", function() {
               that.deleteSymbolWatchlist(params);
             });
 
@@ -89,7 +90,7 @@ class Stock extends Component {
           headerName: "TodayCapitalization",
           field: "today_capitalization",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             return (params.data.today_capitalization / Math.pow(10, 9)).toFixed(
               0
             );
@@ -99,7 +100,7 @@ class Stock extends Component {
           headerName: "% Change in Price",
           field: "percentage_change_in_price",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.percentage_change_in_price) {
               return (params.data.percentage_change_in_price * 100).toFixed(2);
             }
@@ -109,7 +110,7 @@ class Stock extends Component {
           headerName: "Close",
           field: "Close",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.Close) {
               return params.data.Close.toFixed(0);
             }
@@ -119,7 +120,7 @@ class Stock extends Component {
           headerName: "% Change in Volume",
           field: "percentage_change_in_volume",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.percentage_change_in_volume) {
               return (params.data.percentage_change_in_volume * 100).toFixed(2);
             }
@@ -134,7 +135,7 @@ class Stock extends Component {
           headerName: "ROE",
           field: "ROE",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.ROE) {
               return params.data.ROE.toFixed(0);
             }
@@ -144,7 +145,7 @@ class Stock extends Component {
           headerName: "EPS",
           field: "EPS",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.EPS) {
               return params.data.EPS.toFixed(0);
             }
@@ -164,7 +165,7 @@ class Stock extends Component {
           headerName: "MarketCapitalization",
           field: "MarketCapitalization",
           filter: "agNumberColumnFilter",
-          cellRenderer: function (params) {
+          cellRenderer: function(params) {
             if (params.data.MarketCapitalization) {
               return params.data.MarketCapitalization.toFixed(0);
             }
@@ -176,7 +177,7 @@ class Stock extends Component {
       loading: true
     };
 
-    this.toggleButton = filterButtonsEnums.QUICK_FILTER_STOCKS
+    this.toggleButton = filterButtonsEnums.QUICK_FILTER_STOCKS;
   }
 
   canslimFilter() {
@@ -203,12 +204,12 @@ class Stock extends Component {
     );
 
     // Connection opened
-    socket.addEventListener("open", function (event) {
+    socket.addEventListener("open", function(event) {
       socket.send("Hello Server!");
     });
 
     // Listen for messages
-    socket.addEventListener("message", function (event) {
+    socket.addEventListener("message", function(event) {
       // console.log(event.data);
 
       let data = event.data;
@@ -239,7 +240,7 @@ class Stock extends Component {
               // console.log(index);
               update = false;
               let dataUpdate = {};
-              dataUpdate.id = dataStocks[index].id
+              dataUpdate.id = dataStocks[index].id;
               dataUpdate.Symbol = old_Symbol;
               dataUpdate.Volume = new_Volume;
               dataUpdate.Close = new_Close;
@@ -252,13 +253,13 @@ class Stock extends Component {
                 .post(getUpdateStockUrl(dataStocks[index].id), dataUpdate)
                 .then(response => {
                   // console.log(response);
-                  if (!response.data.stock) return
+                  if (!response.data.stock) return;
                   if (that.toggleButton === filterButtonsEnums.CANSLIM_STOCKS) {
                     that.gridApi.setRowData(response.data.stocks);
                   } else {
                     let new_stock = response.data.stock;
                     // console.log(new_stock, that.gridApi, index)
-                    that.gridApi.forEachNode(function (node) {
+                    that.gridApi.forEachNode(function(node) {
                       if (node.data.id === new_stock.id) {
                         // console.log(node.data);
                         node.setData({ ...node.data, new_stock });
@@ -303,7 +304,7 @@ class Stock extends Component {
   }
 
   handleCbCustomedToggleButtonGroup(index) {
-    this.toggleButton = index
+    this.toggleButton = index;
     switch (index) {
       case filterButtonsEnums.QUICK_FILTER_STOCKS:
         this.setQuickFilter();
@@ -435,14 +436,17 @@ class Stock extends Component {
           </BarChart>
         </div>
         <Modal
-          className='stockModal'
+          className="stockModal"
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
           open={this.state.open}
           onClose={this.closeModal.bind(this)}
         >
-          <div className='modalContent'>
-            <StockDetail closeStockDetail={this.handleCloseStockDetail.bind(this)} symbol={this.state.symbol} />
+          <div className="modalContent">
+            <StockDetail
+              closeStockDetail={this.handleCloseStockDetail.bind(this)}
+              symbol={this.state.symbol}
+            />
           </div>
         </Modal>
         <div className="updateButtons">
@@ -523,8 +527,8 @@ class Stock extends Component {
   }
 
   handleCloseStockDetail() {
-    console.log(531)
-    this.setState({ open: false })
+    console.log(531);
+    this.setState({ open: false });
   }
 
   getAllDatabase() {
@@ -553,10 +557,18 @@ class Stock extends Component {
   }
 
   async componentDidMount() {
+    axios
+      .get(getMarketDataUrl_finbox())
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
     await axios
       .post(getFilteredStocksUrl(), {})
       .then(response => {
-        console.log(response);
+        // console.log(response);
         this.setState({
           loading: false
         });
