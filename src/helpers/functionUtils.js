@@ -320,32 +320,56 @@ export function mapStockData(data) {
 export function mapDataBusinessSummary(data, analysisType) {
   // console.log(data, analysisType);
   if (analysisType === analysisTypes.ANALYSIS_1) {
-    const addItem = {};
-    addItem.Expanded = true;
-    addItem.Field = null;
-    addItem.ID = 110;
-    addItem.Level = 1;
-    addItem.Name = "110. Loi nhuan hoat dong kinh doanh chinh (5) - (9) - (10)";
-    addItem.ParentId = -1;
-    addItem.Values = [];
+    const addItem_1 = {
+      Expanded: true,
+      Field: null,
+      ID: 110,
+      Level: 1,
+      Name: "110. Loi nhuan hoat dong kinh doanh chinh (5) - (9) - (10)",
+      ParentId: -1,
+      Values: []
+    };
+
+    const addItem_2 = {
+      Expanded: true,
+      Field: null,
+      ID: 702,
+      Level: 1,
+      Name: "702. Loi nhuan hoat dong tai chinh (6) - (7)",
+      ParentId: -1,
+      Values: []
+    };
+
     for (let i = 0; i < data[4].Values.length; i++) {
       let loi_nhuan_gop_5 = data[4].Values[i].Value;
       let chi_phi_ban_hang_9 = data[9].Values[i].Value;
       let chi_phi_quan_ly_10 = data[10].Values[i].Value;
+      let doanh_thu_hoat_dong_tai_chinh_6 = data[5].Values[i].Value;
+      let chi_phi_tai_chinh_7 = data[6].Values[i].Value;
       let loi_nhuan_hoat_dong_kinh_doanh_chinh_110 =
         loi_nhuan_gop_5 - chi_phi_ban_hang_9 - chi_phi_quan_ly_10;
-      addItem.Values.push({
+      let loi_nhuan_hoat_dong_tai_chinh_702 =
+        doanh_thu_hoat_dong_tai_chinh_6 - chi_phi_tai_chinh_7;
+      addItem_1.Values.push({
         Period: data[4].Values[i].Period,
         Year: data[4].Values[i].Period,
         Quarter: data[4].Values[i].Period,
         Value: loi_nhuan_hoat_dong_kinh_doanh_chinh_110
       });
+
+      addItem_2.Values.push({
+        Period: data[4].Values[i].Period,
+        Year: data[4].Values[i].Period,
+        Quarter: data[4].Values[i].Period,
+        Value: loi_nhuan_hoat_dong_tai_chinh_702
+      });
     }
-    data.splice(12, 0, addItem);
+    data.splice(8, 0, addItem_2);
+    data.splice(13, 0, addItem_1);
   } else if (analysisType === analysisTypes.ANALYSIS_2) {
     for (let i = 0; i < data[4].Values.length; i++) {
       let doanh_thu_thuan_3 = data[2].Values[i].Value;
-      for (let j = 3; j < 23; j++) {
+      for (let j = 2; j < 24; j++) {
         if (!data[j].ANALYSIS_2) data[j].ANALYSIS_2 = [];
         data[j].ANALYSIS_2.push({
           Value: (
@@ -483,6 +507,11 @@ export function getColumnDefs_quarter() {
   return result;
 }
 
+export function getCellClass(data, length) {
+  if (data === 0) return "borderLeft";
+  if (data === length - 1) return "borderRight";
+}
+
 export function getColumnDefs_analysis_1() {
   let result = [];
   let periods_1 = [];
@@ -498,9 +527,9 @@ export function getColumnDefs_analysis_1() {
       headerName: periods_1[i],
       field: "",
       width: 120,
+      cellClass: getCellClass(i, periods_1.length),
       cellRenderer: function(params) {
         let value_1 = (params.data.Values[i + 1] || {}).Value;
-
         let value_2 = (params.data.Values[i] || {}).Value;
         if (!value_1 || !value_2) return "";
         const div = document.createElement("div");
@@ -509,9 +538,10 @@ export function getColumnDefs_analysis_1() {
           1,
           true
         );
-        div.className =
-          [1, 5, 110, 15].indexOf(params.data.ID) > -1 ? "highlight" : "";
+        // div.className =
+        // [1, 5, 110, 15].indexOf(params.data.ID) > -1 ? "highlight" : "";
         div.classList.add("number");
+
         return div;
       }
     };
@@ -538,9 +568,19 @@ export function getColumnDefs_analysis_1() {
         if (!value_1 || !value_2) return "";
         const div = document.createElement("div");
         let value = ((value_1 / value_2 - 1) * 100).toFixed(2) + "%";
+        div.className = "";
+        if ([1, 5, 702, 14, 110, 15].indexOf(params.data.ID) > -1) {
+          if (value_1 < value_2) {
+            div.classList.add("decrease");
+          }
+          if (value_1 > value_2) {
+            div.classList.add("increase");
+          }
+        }
+
         div.innerHTML = value;
-        div.className =
-          params.data.ID === 1 || params.data.ID === 5 ? "highlight" : "";
+        // div.className = [1, 5, 110, 15].indexOf(params.data.ID) > -1 ? "highlight" : "";
+
         div.classList.add("number");
         return div;
       }
@@ -561,13 +601,16 @@ export function getColumnDefs_analysis_2() {
     let item = {
       headerName: periods_1[i],
       field: "",
-      cellStyle: { "background-color": "gray" },
+      cellClass: getCellClass(i, periods_1.length),
       cellRenderer: function(params) {
         const div = document.createElement("div");
         div.className = "";
         div.classList.add("number");
         if (params.data.ANALYSIS_2) {
           div.innerHTML = (params.data.ANALYSIS_2[i] || {}).Value + "%";
+        }
+        if ([4, 9, 19, 110, 14].indexOf(params.data.ID) > -1) {
+          div.classList.add("highlight");
         }
         return div;
       }
@@ -593,6 +636,14 @@ export function getColumnDefs_analysis_2() {
         const value_2 = (params.data.ANALYSIS_2[i] || {}).Value;
         if (!value_1 || !value_2) return "";
         div.innerHTML = (value_1 - value_2).toFixed(2) + "%";
+        if ([19].indexOf(params.data.ID) > -1) {
+          if (Number(value_1) < Number(value_2)) {
+            div.classList.add("decrease");
+          }
+          if (Number(value_1) > Number(value_2)) {
+            div.classList.add("increase");
+          }
+        }
         return div;
       }
     };

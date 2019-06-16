@@ -177,7 +177,20 @@ input {
 .businessSummary .number {
   text-align: right;
 }
+.businessSummary .borderLeft {
+  border-left: 1px solid black !important;
+}
 
+.businessSummary .borderRight {
+  border-right: 1px solid black !important;
+}
+.businessSummary .decrease {
+  background: lightcoral;
+}
+
+.businessSummary .increase {
+  background: lightgreen;
+}
 .stock .deleteButton {
   display: none;
 }
@@ -190,9 +203,8 @@ input {
   min-width: 30px;
 }
 
-
 .stockModal {
-  height: 100%;;
+  height: 100%;
 }
 
 .stockModal .modalContent {
