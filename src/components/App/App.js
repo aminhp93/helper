@@ -32,7 +32,10 @@ class App extends Component {
         <li>
           <Link to="/ecommerce">Delta Sport</Link>
         </li>
-        <div id="output"></div>
+        <li>
+          <Link to="/test">Test</Link>
+        </li>
+        <div id="output" />
       </ul>
     );
   }

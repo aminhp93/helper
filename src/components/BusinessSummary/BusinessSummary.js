@@ -24,11 +24,11 @@ const ketQuaKinhDoanhOptions = [
   },
   {
     value: analysisTypes.ANALYSIS_1,
-    display_value: "ANALYSIS_1 - Chieu ngang"
+    display_value: "ANALYSIS_1 - Muc tang giam"
   },
   {
     value: analysisTypes.ANALYSIS_2,
-    display_value: "ANALYSIS_2 - Chieu doc"
+    display_value: "ANALYSIS_2 - % tang giam"
   }
 ];
 
@@ -81,30 +81,13 @@ export default class BusinessSummary extends React.Component {
       filter: true,
       resizable: true
     };
-
-    // this.autoGroupColumnDef = {
-    //   headerName: " CUSTOM! ",
-    //   cellRendererParams: {
-    //     suppressCount: true,
-    //     checkbox: true
-    //   },
-    //   comparator: function(valueA, valueB) {
-    //     if (valueA == null || valueB == null) return valueA - valueB;
-    //     if (!valueA.substring || !valueB.substring) return valueA - valueB;
-    //     if (valueA.length < 1 || valueB.length < 1) return valueA - valueB;
-    //     return strcmp(
-    //       valueA.substring(1, valueA.length),
-    //       valueB.substring(1, valueB.length)
-    //     );
-    //   }
-    // };
   }
 
   onGridReady(params) {
     this.gridApi = params.api;
   }
 
-  onRowClicked(row) { }
+  onRowClicked(row) {}
 
   renderAnalysisOptions() {
     switch (this.typeBusinessSummary) {
@@ -177,8 +160,7 @@ export default class BusinessSummary extends React.Component {
 
   render() {
     return (
-      <div
-        className="ag-theme-balham businessSummary">
+      <div className="ag-theme-balham businessSummary">
         <div className="header">
           <Input onChange={e => this.gridApi.setQuickFilter(e.target.value)} />
           <CustomedToggleButtonGroup

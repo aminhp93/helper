@@ -5,7 +5,6 @@ import StockDetail from "../StockDetail";
 import axios from "axios";
 import CustomedPieChart from "./../_customedComponents/CustomedPieChart";
 import Icon from "@material-ui/core/Icon";
-import { mapStockData } from "./../../helpers/functionUtils";
 import {
   updateAllStocksDatabase,
   getAllStocksUrl,

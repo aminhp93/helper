@@ -3,6 +3,7 @@ import axios from "axios";
 import { calculateRSI, msToTime } from "../helpers/functionUtils";
 import config from "./../config";
 import durationReportEnums from "../constants/durationReportEnums";
+import countValueEnums from "../constants/countValueEnums";
 
 let domain = config.isProduction
   ? "https://api-2019.herokuapp.com/"
@@ -21,7 +22,7 @@ let subtract = 0;
 // if (time.format('hh') < 16) {
 //   subtract = 1
 // }
-const year = time.format("YYYY");
+export const YEAR = time.format("YYYY");
 const endDay = time.subtract(subtract, "days").format("YYYY-MM-DD");
 
 export function getAllNotesUrl() {
@@ -110,9 +111,13 @@ export function getWatchingStocksUrl() {
 }
 
 export function getLastestFinancialReports(type, symbol, index) {
-  return `https://www.fireant.vn/api/Data/Finance/LastestFinancialReports?symbol=${symbol}&type=${type}&year=${year}&quarter=${
+  return `https://www.fireant.vn/api/Data/Finance/LastestFinancialReports?symbol=${symbol}&type=${type}&year=${YEAR}&quarter=${
     index === durationReportEnums.YEAR ? "0" : "4"
-  }&count=8`;
+  }&count=${
+    index === durationReportEnums.YEAR
+      ? countValueEnums.YEAR
+      : countValueEnums.QUARTER
+  }`;
 }
 
 export async function updateAllStocksDatabase(floor, _this) {
