@@ -35,6 +35,9 @@ class App extends Component {
         <li>
           <Link to="/test">Test</Link>
         </li>
+        <li>
+          <Link to="/chat">Chat</Link>
+        </li>
         <div id="output" />
       </ul>
     );
