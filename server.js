@@ -20,14 +20,17 @@ app.get("/", (req, res) => {
 });
 
 app.post("/users", (req, res) => {
-  const { username } = res.body;
+  const { username } = req.body;
   chatkit
     .createUser({
       id: username,
       name: username
     })
-    .then(() => res.sendStatus(201))
-    .cathc(error => {
+    .then(res1 => {
+      res.sendStatus(201);
+    })
+    .catch(error => {
+      console.log(error);
       if (error.error === "services/chatkit/user_already_exists") {
         res.sendStatus(200);
       } else {

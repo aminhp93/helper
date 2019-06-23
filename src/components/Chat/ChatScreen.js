@@ -1,14 +1,25 @@
 import React from "react";
 import Chatkit from "@pusher/chatkit-client";
+import MessageList from "./MessageList";
+import SendMessageForm from "./SendMessageForm";
 
 class ChatScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUser: {}
+      currentUser: {},
+      currentRoom: {},
+      messages: []
     };
+    this.sendMessage = this.sendMessage.bind(this);
   }
 
+  sendMessage(text) {
+    this.state.currentUser.sendMessage({
+      text,
+      roomId: this.state.currentRoom.id
+    });
+  }
   componentDidMount() {
     const chatManager = new Chatkit.ChatManager({
       instanceLocator: "v1:us1:c89d2d68-a0df-4ed6-82b0-ac8ea2d0d7f1",
@@ -22,6 +33,22 @@ class ChatScreen extends React.Component {
       .connect()
       .then(currentUser => {
         this.setState({ currentUser });
+        return currentUser
+          .subscribeToRoom({
+            roomId: "31230385",
+            messageLimit: 100,
+            hooks: {
+              onMessage: message => {
+                this.setState({
+                  messages: [...this.state.messages, message]
+                });
+              }
+            }
+          })
+          .then(currentRoom => {
+            console.log(currentRoom);
+            this.setState({ currentRoom });
+          });
       })
       .catch(error => console.log("error", error));
   }
@@ -59,7 +86,11 @@ class ChatScreen extends React.Component {
             <h2>Who's online PLACEHOLDER</h2>
           </aside>
           <section style={styles.chatListContainer}>
-            <h2>Chat PLACEHOLDER</h2>
+            <MessageList
+              messages={this.state.messages}
+              styles={styles.chatListContainer}
+            />
+            <SendMessageForm onSubmit={this.sendMessage} />
           </section>
         </div>
       </div>
