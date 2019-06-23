@@ -1,11 +1,13 @@
 import React from "react";
 import UsernameForm from "./UsernameForm";
+import ChatScreen from "./ChatScreen";
 
 class ChatApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUsername: ""
+      currentUsername: "",
+      currentScreen: "WhatIsYourUsernameScreen"
     };
     this.onUsernameSubmitted = this.onUsernameSubmitted.bind(this);
   }
@@ -20,7 +22,8 @@ class ChatApp extends React.Component {
     })
       .then(response => {
         this.setState({
-          currentUsername: username
+          currentUsername: username,
+          currentScreen: "ChatScreen"
         });
       })
       .catch(error => {
@@ -29,7 +32,13 @@ class ChatApp extends React.Component {
   }
 
   render() {
-    return <UsernameForm onSubmit={this.onUsernameSubmitted} />;
+    if (this.state.currentScreen === "WhatIsYourUsernameScreen") {
+      return <UsernameForm onSubmit={this.onUsernameSubmitted} />;
+    }
+
+    if (this.state.currentScreen === "ChatScreen") {
+      return <ChatScreen currentUsername={this.state.currentUsername} />;
+    }
   }
 }
 
