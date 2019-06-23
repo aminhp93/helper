@@ -1,14 +1,35 @@
 import React from "react";
-import { List, Avatar, Input } from "antd";
+import UsernameForm from "./UsernameForm";
 
 class ChatApp extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      currentUsername: ""
+    };
+    this.onUsernameSubmitted = this.onUsernameSubmitted.bind(this);
+  }
+
+  onUsernameSubmitted(username) {
+    fetch("http://localhost:3001/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ username })
+    })
+      .then(response => {
+        this.setState({
+          currentUsername: username
+        });
+      })
+      .catch(error => {
+        console.log("error", error);
+      });
   }
 
   render() {
-    return <div>Chatly</div>;
+    return <UsernameForm onSubmit={this.onUsernameSubmitted} />;
   }
 }
 
