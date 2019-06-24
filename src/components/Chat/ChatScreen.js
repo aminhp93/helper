@@ -2,6 +2,7 @@ import React from "react";
 import Chatkit from "@pusher/chatkit-client";
 import MessagesList from "./MessagesList";
 import SendMessagesForm from "./SendMessagesForm";
+import TypingIndicator from './TypingIndicator';
 
 class ChatScreen extends React.Component {
   constructor(props) {
@@ -9,11 +10,18 @@ class ChatScreen extends React.Component {
     this.state = {
       currentUser: {},
       currentRoom: {},
-      messages: []
+      messages: [],
+      usersWhoAreTyping: [],
     };
     this.sendMessage = this.sendMessage.bind(this);
+    this.sendTypingEvent = this.sendTypingEvent.bind(this);
   }
 
+  sendTypingEvent() {
+    this.state.currentUser
+      .isTypingIn({ roomId: this.state.currentRoom.id })
+      .catch(error => console.log('error', error))
+  }
   sendMessage(text) {
     this.state.currentUser.sendMessage({
       text,
@@ -42,8 +50,18 @@ class ChatScreen extends React.Component {
                 this.setState({
                   messages: [...this.state.messages, message]
                 });
+              },
+              onUserStartedTyping: user => {
+                this.setState({
+                  usersWhoAreTyping: [...this.state.usersWhoAreTyping, user.name],
+                })
+              },
+              onUserStoppedTyping: user => {
+                this.setState({
+                  usersWhoAreTyping: this.state.usersWhoAreTyping.filter(username => username !== user.name)
+                })
               }
-            }
+            },
           })
           .then(currentRoom => {
             console.log(currentRoom);
@@ -90,7 +108,8 @@ class ChatScreen extends React.Component {
               messages={this.state.messages}
               styles={styles.chatListContainer}
             />
-            <SendMessagesForm onSubmit={this.sendMessage} />
+            <TypingIndicator usersWhoAreTyping={this.state.usersWhoAreTyping} />
+            <SendMessagesForm onSubmit={this.sendMessage} onChange={this.sendTypingEvent} />
           </section>
         </div>
       </div>
