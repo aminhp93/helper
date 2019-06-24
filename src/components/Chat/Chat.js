@@ -1,6 +1,7 @@
 import React from "react";
 import UsernameForm from "./UsernameForm";
 import ChatScreen from "./ChatScreen";
+import config from './../../config'
 
 class ChatApp extends React.Component {
   constructor(props) {
@@ -13,7 +14,7 @@ class ChatApp extends React.Component {
   }
 
   onUsernameSubmitted(username) {
-    fetch("http://localhost:3001/users", {
+    fetch(`${config.isProduction ? 'https://helper-react.herokuapp.com' : 'http://localhost:3001'}/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

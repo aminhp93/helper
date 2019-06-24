@@ -4,6 +4,7 @@ import MessagesList from "./MessagesList";
 import SendMessagesForm from "./SendMessagesForm";
 import TypingIndicator from './TypingIndicator';
 import WhosOnlineList from './WhosOnlineList';
+import config from './../../config'
 
 class ChatScreen extends React.Component {
   constructor(props) {
@@ -34,7 +35,7 @@ class ChatScreen extends React.Component {
       instanceLocator: "v1:us1:c89d2d68-a0df-4ed6-82b0-ac8ea2d0d7f1",
       userId: this.props.currentUsername,
       tokenProvider: new Chatkit.TokenProvider({
-        url: "http://localhost:3001/authenticate"
+        url: `${config.isProduction ? 'https://helper-react.herokuapp.com' : 'http://localhost:3001'}/authenticate`
       })
     });
 
