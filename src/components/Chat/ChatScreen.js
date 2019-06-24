@@ -3,6 +3,7 @@ import Chatkit from "@pusher/chatkit-client";
 import MessagesList from "./MessagesList";
 import SendMessagesForm from "./SendMessagesForm";
 import TypingIndicator from './TypingIndicator';
+import WhosOnlineList from './WhosOnlineList';
 
 class ChatScreen extends React.Component {
   constructor(props) {
@@ -60,7 +61,8 @@ class ChatScreen extends React.Component {
                 this.setState({
                   usersWhoAreTyping: this.state.usersWhoAreTyping.filter(username => username !== user.name)
                 })
-              }
+              },
+              onPresenceChange: () => this.forceUpdate(),
             },
           })
           .then(currentRoom => {
@@ -101,7 +103,10 @@ class ChatScreen extends React.Component {
       <div style={styles.container}>
         <div style={styles.chatContainer}>
           <aside style={styles.whosOnlineListContainer}>
-            <h2>Who's online PLACEHOLDER</h2>
+            <WhosOnlineList
+              currentUser={this.state.currentUser}
+              users={this.state.currentRoom.users}
+            />
           </aside>
           <section style={styles.chatListContainer}>
             <MessagesList
