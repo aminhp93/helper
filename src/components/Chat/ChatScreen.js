@@ -1,7 +1,7 @@
 import React from "react";
 import Chatkit from "@pusher/chatkit-client";
-import MessageList from "./MessageList";
-import SendMessageForm from "./SendMessageForm";
+import MessagesList from "./MessagesList";
+import SendMessagesForm from "./SendMessagesForm";
 
 class ChatScreen extends React.Component {
   constructor(props) {
@@ -86,11 +86,11 @@ class ChatScreen extends React.Component {
             <h2>Who's online PLACEHOLDER</h2>
           </aside>
           <section style={styles.chatListContainer}>
-            <MessageList
+            <MessagesList
               messages={this.state.messages}
               styles={styles.chatListContainer}
             />
-            <SendMessageForm onSubmit={this.sendMessage} />
+            <SendMessagesForm onSubmit={this.sendMessage} />
           </section>
         </div>
       </div>
