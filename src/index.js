@@ -14,6 +14,7 @@ import CheckList from "./components/CheckList";
 import Ecommerce from "./components/Ecommerce";
 import Test from "./components/Test";
 import Chat from "./components/Chat";
+import ChatRoom from "./components/ChatRoom";
 
 ReactDOM.render(
   <Router>
@@ -28,6 +29,7 @@ ReactDOM.render(
     <Route path="/ecommerce" component={Ecommerce} />
     <Route path="/test" component={Test} />
     <Route path="/chat" component={Chat} />
+    <Route path="/chatroom" component={ChatRoom} />
   </Router>,
   document.getElementById("root")
 );

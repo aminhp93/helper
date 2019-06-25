@@ -14,7 +14,7 @@ class ChatApp extends React.Component {
   }
 
   onUsernameSubmitted(username) {
-    fetch(`${config.isProduction ? 'https://helper-react.herokuapp.com' : 'http://localhost:3001'}/users`, {
+    fetch(`${config.isProduction ? 'https://helper-react.herokuapp.com' : 'http://localhost:3333'}/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
