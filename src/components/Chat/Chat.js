@@ -1,7 +1,7 @@
 import React from "react";
 import UsernameForm from "./UsernameForm";
 import ChatScreen from "./ChatScreen";
-import config from './../../config'
+import config from "./../../config";
 
 class ChatApp extends React.Component {
   constructor(props) {
@@ -14,13 +14,20 @@ class ChatApp extends React.Component {
   }
 
   onUsernameSubmitted(username) {
-    fetch(`${config.isProduction ? 'https://helper-react.herokuapp.com' : 'http://localhost:3333'}/users`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ username })
-    })
+    fetch(
+      `${
+        config.isProduction
+          ? "https://helper-react.herokuapp.com"
+          : "http://localhost:3333"
+      }/users`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username })
+      }
+    )
       .then(response => {
         this.setState({
           currentUsername: username,

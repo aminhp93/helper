@@ -2,9 +2,9 @@ import React from "react";
 import Chatkit from "@pusher/chatkit-client";
 import MessagesList from "./MessagesList";
 import SendMessagesForm from "./SendMessagesForm";
-import TypingIndicator from './TypingIndicator';
-import WhosOnlineList from './WhosOnlineList';
-import config from './../../config'
+import TypingIndicator from "./TypingIndicator";
+import WhosOnlineList from "./WhosOnlineList";
+import config from "./../../config";
 
 class ChatScreen extends React.Component {
   constructor(props) {
@@ -13,7 +13,7 @@ class ChatScreen extends React.Component {
       currentUser: {},
       currentRoom: {},
       messages: [],
-      usersWhoAreTyping: [],
+      usersWhoAreTyping: []
     };
     this.sendMessage = this.sendMessage.bind(this);
     this.sendTypingEvent = this.sendTypingEvent.bind(this);
@@ -22,7 +22,7 @@ class ChatScreen extends React.Component {
   sendTypingEvent() {
     this.state.currentUser
       .isTypingIn({ roomId: this.state.currentRoom.id })
-      .catch(error => console.log('error', error))
+      .catch(error => console.log("error", error));
   }
   sendMessage(text) {
     this.state.currentUser.sendMessage({
@@ -32,10 +32,14 @@ class ChatScreen extends React.Component {
   }
   componentDidMount() {
     const chatManager = new Chatkit.ChatManager({
-      instanceLocator: "v1:us1:c89d2d68-a0df-4ed6-82b0-ac8ea2d0d7f1",
+      instanceLocator: config.instanceLocator,
       userId: this.props.currentUsername,
       tokenProvider: new Chatkit.TokenProvider({
-        url: `${config.isProduction ? 'https://helper-react.herokuapp.com' : 'http://localhost:3333'}/authenticate`
+        url: `${
+          config.isProduction
+            ? "https://helper-react.herokuapp.com"
+            : "http://localhost:3333"
+        }/authenticate`
       })
     });
 
@@ -55,16 +59,21 @@ class ChatScreen extends React.Component {
               },
               onUserStartedTyping: user => {
                 this.setState({
-                  usersWhoAreTyping: [...this.state.usersWhoAreTyping, user.name],
-                })
+                  usersWhoAreTyping: [
+                    ...this.state.usersWhoAreTyping,
+                    user.name
+                  ]
+                });
               },
               onUserStoppedTyping: user => {
                 this.setState({
-                  usersWhoAreTyping: this.state.usersWhoAreTyping.filter(username => username !== user.name)
-                })
+                  usersWhoAreTyping: this.state.usersWhoAreTyping.filter(
+                    username => username !== user.name
+                  )
+                });
               },
-              onPresenceChange: () => this.forceUpdate(),
-            },
+              onPresenceChange: () => this.forceUpdate()
+            }
           })
           .then(currentRoom => {
             console.log(currentRoom);
@@ -115,7 +124,10 @@ class ChatScreen extends React.Component {
               styles={styles.chatListContainer}
             />
             <TypingIndicator usersWhoAreTyping={this.state.usersWhoAreTyping} />
-            <SendMessagesForm onSubmit={this.sendMessage} onChange={this.sendTypingEvent} />
+            <SendMessagesForm
+              onSubmit={this.sendMessage}
+              onChange={this.sendTypingEvent}
+            />
           </section>
         </div>
       </div>
