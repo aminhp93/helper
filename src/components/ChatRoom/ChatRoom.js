@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useReducer } from "react";
 import UserHeader from "./UserHeader";
 import RoomList from "./RoomList";
 import RoomHeader from "./RoomHeader";
@@ -8,6 +8,7 @@ import CreateMessageForm from "./CreateMessageForm";
 import UserList from "./UserList";
 import JoinRoomScreen from "./JoinRoomScreen";
 import WelcomeScreen from "./WelcomeScreen";
+import CreateRoomForm from "./CreateRoomForm/index";
 
 import ChatManager from "./chatkit";
 import uuidv4 from "uuid/v4";
@@ -28,12 +29,12 @@ class ChatRoom extends React.Component {
       // --------------------------
       // Typing Indicators
       // --------------------------
-      isTyping: () => {},
-      notTyping: () => {},
+      isTyping: () => { },
+      notTyping: () => { },
       // --------------------------
       // Messages
       // --------------------------
-      addMessage: () => {},
+      addMessage: () => { },
       // --------------------------
       // Room
       // --------------------------
@@ -47,13 +48,25 @@ class ChatRoom extends React.Component {
       // --------------------------
       // Room
       // --------------------------
-      subscribeToRoom: () => {},
-      removeRoom: () => {},
-      joinRoom: () => {},
+      setRoom: room => {
+        this.state({ room, sidebarOpen: false })
+        // this.actions.scrollToEnd()
+      },
+      subscribeToRoom: room => {
+        !this.state.user.roomSubscriptions[room.id] && this.state.user.subscribeToRoom({
+          roomId: room.id,
+          hooks: { onMessage: this.actions.addMessage }
+        })
+      },
+      removeRoom: () => { },
+      joinRoom: room => {
+        this.actions.setRoom(room);
+        this.actions.subscribeToRoom(room);
+      },
       // --------------------------
       // Presence
       // --------------------------
-      setUserPresence: () => {}
+      setUserPresence: () => { }
     };
   }
 
@@ -83,11 +96,19 @@ class ChatRoom extends React.Component {
       userListOpen
     } = this.state;
     console.log(user);
+    const { createForm } = this.actions;
     return (
       <main>
         <aside>
-          <UserHeader />
-          <RoomList />
+          <UserHeader user={user} />
+          <RoomList
+            user={user}
+            rooms={user.rooms}
+            messages={messages}
+            typing={typing}
+            current={room}
+            actions={this.actions} />
+          {user.id && <CreateRoomForm submit={createForm} />}
         </aside>
         <section>
           <RoomHeader />
@@ -103,8 +124,8 @@ class ChatRoom extends React.Component {
           ) : user.id ? (
             <JoinRoomScreen />
           ) : (
-            <WelcomeScreen />
-          )}
+                <WelcomeScreen />
+              )}
         </section>
       </main>
     );
