@@ -10,16 +10,19 @@ class RoomList extends React.Component {
                 const latestMessage = messageKeys.length > 0 && messages[room.id][messageKeys.pop()]
                 const firstUser = room.users.find(x => x.id !== user.id)
                 return (
-                    <li>
+                    <li
+                        key={room.id}
+                        disabled={room.id === current.id}
+                        onClick={e => actions.joinRoom(room)}>
                         {
                             room.name.match(user.id) && firstUser
                                 ? <img src={firstUser.avatarUrl} alt={firstUser.id} />
                                 : (room.isPrivate ? 'lock' : 'public')
                         }
-                        <col>
+                        <div>
                             <p>{room.name.replace(user.id, '')}</p>
                             <span>{latestMessage && latestMessage.text}</span>
-                        </col>
+                        </div>
                         {
                             room.id !== current.id
                                 ? <label>unreadCount</label>

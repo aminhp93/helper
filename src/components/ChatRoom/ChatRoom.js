@@ -1,7 +1,7 @@
 import React, { useReducer } from "react";
 import UserHeader from "./UserHeader";
 import RoomList from "./RoomList";
-import RoomHeader from "./RoomHeader";
+import RoomHeader from "./RoomHeader/index";
 import MessageList from "./MessageList";
 import TypingIndicator from "./TypingIndicator";
 import CreateMessageForm from "./CreateMessageForm";
@@ -48,8 +48,9 @@ class ChatRoom extends React.Component {
       // --------------------------
       // Room
       // --------------------------
+      createRoom: options => this.state.user.createRoom(options).then(this.actions.joinRoom),
       setRoom: room => {
-        this.state({ room, sidebarOpen: false })
+        this.setState({ room, sidebarOpen: false })
         // this.actions.scrollToEnd()
       },
       subscribeToRoom: room => {
@@ -96,10 +97,10 @@ class ChatRoom extends React.Component {
       userListOpen
     } = this.state;
     console.log(user);
-    const { createForm } = this.actions;
+    const { createRoom } = this.actions;
     return (
       <main>
-        <aside>
+        <aside data-open={sidebarOpen}>
           <UserHeader user={user} />
           <RoomList
             user={user}
@@ -108,19 +109,19 @@ class ChatRoom extends React.Component {
             typing={typing}
             current={room}
             actions={this.actions} />
-          {user.id && <CreateRoomForm submit={createForm} />}
+          {user.id && <CreateRoomForm submit={createRoom} />}
         </aside>
         <section>
           <RoomHeader />
           {room.id ? (
-            <row>
-              <col>
+            <div>
+              <div>
                 <MessageList />
                 <TypingIndicator />
                 <CreateMessageForm />
-              </col>
+              </div>
               {userListOpen && <UserList />}
-            </row>
+            </div>
           ) : user.id ? (
             <JoinRoomScreen />
           ) : (
