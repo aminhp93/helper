@@ -2,16 +2,18 @@ import React, { useReducer } from "react";
 import UserHeader from "./UserHeader";
 import RoomList from "./RoomList";
 import RoomHeader from "./RoomHeader/index";
-import MessageList from "./MessageList";
+import MessagesList from "./MessagesList/index";
 import TypingIndicator from "./TypingIndicator";
-import CreateMessageForm from "./CreateMessageForm";
+import CreateMessageForm from "./CreateMessageForm/index";
 import UserList from "./UserList";
-import JoinRoomScreen from "./JoinRoomScreen";
+import JoinRoomScreen from "./JoinRoomScreen/index";
 import WelcomeScreen from "./WelcomeScreen";
 import CreateRoomForm from "./CreateRoomForm/index";
 
 import ChatManager from "./chatkit";
 import uuidv4 from "uuid/v4";
+
+const existingUser = window.localStorage.getItem('chatkit-user')
 
 class ChatRoom extends React.Component {
   constructor(props) {
@@ -54,6 +56,7 @@ class ChatRoom extends React.Component {
         // this.actions.scrollToEnd()
       },
       subscribeToRoom: room => {
+        console.log(room);
         !this.state.user.roomSubscriptions[room.id] && this.state.user.subscribeToRoom({
           roomId: room.id,
           hooks: { onMessage: this.actions.addMessage }
@@ -73,18 +76,24 @@ class ChatRoom extends React.Component {
 
   componentDidMount() {
     let new_user = String(uuidv4());
-    fetch("http://localhost:3333/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ username: new_user })
-    })
-      .then(response => {
-        console.log(response);
-        ChatManager(this, { id: new_user });
+    console.log(existingUser)
+    existingUser
+      ? ChatManager(this, JSON.parse(existingUser))
+      : fetch("http://localhost:3333/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username: new_user }),
       })
-      .catch(error => console.log(error));
+        // .then(response => response.json())
+        .then(res => {
+          // console.log(res.body);
+          window.localStorage.setItem('chatkit-user', JSON.stringify({ id: new_user }))
+          ChatManager(this, { id: new_user });
+        })
+        .catch(error => console.log(error));
+
   }
 
   render() {
@@ -112,13 +121,13 @@ class ChatRoom extends React.Component {
           {user.id && <CreateRoomForm submit={createRoom} />}
         </aside>
         <section>
-          <RoomHeader />
+          <RoomHeader state={this.state} actions={this.actions} />
           {room.id ? (
             <div>
               <div>
-                <MessageList />
+                <MessagesList user={user} messages={messages[room.id]} />
                 <TypingIndicator />
-                <CreateMessageForm />
+                <CreateMessageForm state={this.state} actions={this.actions} />
               </div>
               {userListOpen && <UserList />}
             </div>

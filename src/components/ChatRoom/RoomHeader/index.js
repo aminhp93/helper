@@ -5,6 +5,7 @@ class RoomHeader extends React.Component {
     render() {
         const { room, user, sidebarOpen, userListOpen } = this.props.state || {};
         const { setSidebar, setUserList } = this.props.actions || {};
+        console.log(room, user, sidebarOpen, userListOpen)
 
         return <header className={style.component}>
             <button onClick={e => setSidebar(!sidebarOpen)}>
