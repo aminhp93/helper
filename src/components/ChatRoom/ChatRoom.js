@@ -1,19 +1,20 @@
 import React, { useReducer } from "react";
-import UserHeader from "./UserHeader";
-import RoomList from "./RoomList";
+import UserHeader from "./UserHeader/index";
+import { RoomList } from "./RoomList/index";
 import RoomHeader from "./RoomHeader/index";
 import MessagesList from "./MessagesList/index";
-import TypingIndicator from "./TypingIndicator";
+import TypingIndicator from "./TypingIndicator/index";
 import CreateMessageForm from "./CreateMessageForm/index";
-import UserList from "./UserList";
+import UserList from "./UserList/index";
 import JoinRoomScreen from "./JoinRoomScreen/index";
-import WelcomeScreen from "./WelcomeScreen";
+import WelcomeScreen from "./WelcomeScreen/index";
 import CreateRoomForm from "./CreateRoomForm/index";
 
 import ChatManager from "./chatkit";
 import uuidv4 from "uuid/v4";
+import { message } from "antd";
 
-const existingUser = window.localStorage.getItem('chatkit-user')
+const existingUser = window.localStorage.getItem("chatkit-user");
 
 class ChatRoom extends React.Component {
   constructor(props) {
@@ -29,14 +30,39 @@ class ChatRoom extends React.Component {
 
     this.actions = {
       // --------------------------
+      // UI
+      // --------------------------
+      setUserList: userListOpen => this.setState({ userListOpen }),
+
+      // --------------------------
       // Typing Indicators
       // --------------------------
-      isTyping: () => { },
-      notTyping: () => { },
+      isTyping: () => {},
+      notTyping: () => {},
       // --------------------------
       // Messages
       // --------------------------
-      addMessage: () => { },
+      addMessage: payload => {
+        console.log(payload);
+        const roomId = payload.room.id;
+        const messageId = payload.id;
+        // Update local message cache with new message
+        this.setState(prevState => ({
+          messages: {
+            ...prevState.messages,
+            [roomId]: {
+              ...prevState.messages[roomId],
+              [messageId]: payload
+            }
+          }
+        }));
+
+        // Update cursor if the message was read
+
+        // Send notification
+      },
+
+      runCommand: () => {},
       // --------------------------
       // Room
       // --------------------------
@@ -50,50 +76,56 @@ class ChatRoom extends React.Component {
       // --------------------------
       // Room
       // --------------------------
-      createRoom: options => this.state.user.createRoom(options).then(this.actions.joinRoom),
+      createRoom: options =>
+        this.state.user.createRoom(options).then(this.actions.joinRoom),
       setRoom: room => {
-        this.setState({ room, sidebarOpen: false })
+        this.setState({ room, sidebarOpen: false });
         // this.actions.scrollToEnd()
       },
       subscribeToRoom: room => {
         console.log(room);
-        !this.state.user.roomSubscriptions[room.id] && this.state.user.subscribeToRoom({
-          roomId: room.id,
-          hooks: { onMessage: this.actions.addMessage }
-        })
+        !this.state.user.roomSubscriptions[room.id] &&
+          this.state.user.subscribeToRoom({
+            roomId: room.id,
+            hooks: { onMessage: this.actions.addMessage }
+          });
       },
-      removeRoom: () => { },
+      removeRoom: () => {},
       joinRoom: room => {
         this.actions.setRoom(room);
         this.actions.subscribeToRoom(room);
       },
+
+      createConvo: () => {},
       // --------------------------
       // Presence
       // --------------------------
-      setUserPresence: () => { }
+      setUserPresence: () => {}
     };
   }
 
   componentDidMount() {
     let new_user = String(uuidv4());
-    console.log(existingUser)
+    console.log(existingUser);
     existingUser
       ? ChatManager(this, JSON.parse(existingUser))
       : fetch("http://localhost:3333/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ username: new_user }),
-      })
-        // .then(response => response.json())
-        .then(res => {
-          // console.log(res.body);
-          window.localStorage.setItem('chatkit-user', JSON.stringify({ id: new_user }))
-          ChatManager(this, { id: new_user });
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ username: new_user })
         })
-        .catch(error => console.log(error));
-
+          // .then(response => response.json())
+          .then(res => {
+            // console.log(res.body);
+            window.localStorage.setItem(
+              "chatkit-user",
+              JSON.stringify({ id: new_user })
+            );
+            ChatManager(this, { id: new_user });
+          })
+          .catch(error => console.log(error));
   }
 
   render() {
@@ -106,7 +138,7 @@ class ChatRoom extends React.Component {
       userListOpen
     } = this.state;
     console.log(user);
-    const { createRoom } = this.actions;
+    const { createRoom, createConvo } = this.actions;
     return (
       <main>
         <aside data-open={sidebarOpen}>
@@ -117,7 +149,8 @@ class ChatRoom extends React.Component {
             messages={messages}
             typing={typing}
             current={room}
-            actions={this.actions} />
+            actions={this.actions}
+          />
           {user.id && <CreateRoomForm submit={createRoom} />}
         </aside>
         <section>
@@ -125,7 +158,11 @@ class ChatRoom extends React.Component {
           {room.id ? (
             <div>
               <div>
-                <MessagesList user={user} messages={messages[room.id]} />
+                <MessagesList
+                  user={user}
+                  messages={messages[room.id]}
+                  createConvo={createConvo}
+                />
                 <TypingIndicator />
                 <CreateMessageForm state={this.state} actions={this.actions} />
               </div>
@@ -134,8 +171,8 @@ class ChatRoom extends React.Component {
           ) : user.id ? (
             <JoinRoomScreen />
           ) : (
-                <WelcomeScreen />
-              )}
+            <WelcomeScreen />
+          )}
         </section>
       </main>
     );
