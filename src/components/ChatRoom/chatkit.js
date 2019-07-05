@@ -6,7 +6,11 @@ export default ({ state, actions }, { id, token }) =>
     instanceLocator: config.instanceLocator,
     userId: id,
     tokenProvider: new Chatkit.TokenProvider({
-      url: "http://localhost:3333/authenticate"
+      url: `${
+        config.isProduction
+          ? "https://helper-react.herokuapp.com"
+          : "http://localhost:3333"
+        }/api/authenticate`
     })
   })
     .connect({

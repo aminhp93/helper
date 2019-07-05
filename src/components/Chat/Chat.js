@@ -16,10 +16,10 @@ class ChatApp extends React.Component {
   onUsernameSubmitted(username) {
     fetch(
       `${
-        config.isProduction
-          ? "https://helper-react.herokuapp.com"
-          : "http://localhost:3333"
-      }/users`,
+      config.isProduction
+        ? "https://helper-react.herokuapp.com"
+        : "http://localhost:3333"
+      }/api/users`,
       {
         method: "POST",
         headers: {

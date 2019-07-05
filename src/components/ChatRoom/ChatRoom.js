@@ -9,6 +9,7 @@ import UserList from "./UserList/index";
 import JoinRoomScreen from "./JoinRoomScreen/index";
 import WelcomeScreen from "./WelcomeScreen/index";
 import CreateRoomForm from "./CreateRoomForm/index";
+import config from "./../../config";
 
 import ChatManager from "./chatkit";
 import uuidv4 from "uuid/v4";
@@ -152,13 +153,17 @@ class ChatRoom extends React.Component {
     console.log(existingUser);
     existingUser
       ? ChatManager(this, JSON.parse(existingUser))
-      : fetch("http://localhost:3333/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ username: new_user })
-      })
+      : fetch(`${
+        config.isProduction
+          ? "https://helper-react.herokuapp.com"
+          : "http://localhost:3333"
+        }/api/users`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ username: new_user })
+        })
         // .then(response => response.json())
         .then(res => {
           // console.log(res.body);

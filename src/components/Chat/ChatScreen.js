@@ -39,7 +39,7 @@ class ChatScreen extends React.Component {
           config.isProduction
             ? "https://helper-react.herokuapp.com"
             : "http://localhost:3333"
-        }/authenticate`
+          }/api/authenticate`
       })
     });
 

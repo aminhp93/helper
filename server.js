@@ -15,11 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get("/", (req, res) => {
-  return res.json({ test: "success" });
-});
-
-app.post("/users", (req, res) => {
+app.post("/api/users", (req, res) => {
   const { username } = req.body;
   chatkit
     .createUser({
@@ -40,7 +36,7 @@ app.post("/users", (req, res) => {
     });
 });
 
-app.post("/authenticate", (req, res) => {
+app.post("/api/authenticate", (req, res) => {
   const authData = chatkit.authenticate({ userId: req.query.user_id });
   res.status(authData.status).send(authData.body);
 });
