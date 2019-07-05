@@ -62,7 +62,20 @@ class ChatRoom extends React.Component {
         // Send notification
       },
 
-      runCommand: () => { },
+      runCommand: command => {
+        console.log(command);
+        const commands = {
+          invite: ([userId]) => this.actions.addUserToRoom({ userId }),
+          remove: ([userId]) => this.actions.removeUserFromRoom({ userId }),
+          leave: ([userId]) => this.actions.removeUserFromRoom({ userId: this.state.user.id })
+        }
+
+        const name = command.split(' ')[0]
+        const args = command.split(' ').slice(1)
+        const exec = commands[name]
+        exec && exec(args) && exec(args).catch(error => console.log('error', error))
+
+      },
       // --------------------------
       // Room
       // --------------------------
@@ -96,7 +109,37 @@ class ChatRoom extends React.Component {
         this.actions.subscribeToRoom(room);
       },
 
-      createConvo: () => { },
+      createConvo: options => {
+        console.log(options)
+        if (options.user.id !== this.state.user.id) {
+          const exists = this.state.user.rooms.find(
+            x => (x.name === options.user.id + this.state.user.id) ||
+              (x.name === this.state.user.id + options.user.id)
+          )
+
+          exists
+            ? this.actions.joinRoom(exists)
+            : this.actions.createRoom({
+              name: this.state.user.id + options.user.id,
+              addUserIds: [options.user.id],
+              private: true,
+            })
+        }
+      },
+
+      addUserToRoom: ({ userId, roomId = this.state.room.id }) => {
+        this.state.user
+          .addUserToRoom({ userId, roomId })
+          .then(this.actions.setRoom)
+      },
+
+      removeUserFromRoom: ({ userId, roomId = this.state.room.id }) => {
+        userId === this.state.user.id
+          ? this.state.user.leaveRoom({ roomId })
+          : this.state.user
+            .removeUserFromRoom({ userId, roomId })
+            .then(this.actions.setRoom)
+      },
       // --------------------------
       // Presence
       // --------------------------
@@ -138,7 +181,7 @@ class ChatRoom extends React.Component {
       userListOpen
     } = this.state;
     console.log(user);
-    const { createRoom, createConvo } = this.actions;
+    const { createRoom, createConvo, removeUserFromRoom } = this.actions;
     return (
       <main>
         <aside data-open={sidebarOpen}>
@@ -166,7 +209,13 @@ class ChatRoom extends React.Component {
                 <TypingIndicator />
                 <CreateMessageForm state={this.state} actions={this.actions} />
               </col->
-              {userListOpen && <UserList />}
+              {userListOpen && (
+                <UserList
+                  room={room}
+                  current={user.id}
+                  createConvo={createConvo}
+                  removeUser={removeUserFromRoom} />
+              )}
             </row->
           ) : user.id ? (
             <JoinRoomScreen />

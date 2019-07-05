@@ -11,10 +11,13 @@ class UserList extends React.Component {
           <li
             key={user.id}
             className={user.presence.state === "online" ? style.online : null}
-            onClick={null}
+            onClick={() => createConvo({ user })}
             style={{ order: user.presence.state === "online" && -1 }}
           >
-            <img src={user.avatarURL} alt={user.name} />
+            <img
+            // src={user.avatarURL} 
+            // alt={user.name}
+            />
             <p>{user.name}</p>
           </li>
         ))}
