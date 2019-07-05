@@ -14,6 +14,7 @@ const chatkit = new Chatkit.default({
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
+app.use('/assets', express.static('build'))
 
 app.post("/api/users", (req, res) => {
   const { username } = req.body;
@@ -41,12 +42,13 @@ app.post("/api/authenticate", (req, res) => {
   res.status(authData.status).send(authData.body);
 });
 
+
 // app.get('/assets', (req, res) => {
 //   res.sendFile(path.join(__dirname + '/build/'));
 // });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname + '/build/index.html'));
+  res.sendFile('/build/index.html');
 });
 
 const PORT = process.env.PORT || 3333;
