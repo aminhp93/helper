@@ -41,9 +41,9 @@ app.post("/api/authenticate", (req, res) => {
   res.status(authData.status).send(authData.body);
 });
 
-app.get('/assets', (req, res) => {
-  res.sendFile(path.join(__dirname + '/build/'));
-});
+// app.get('/assets', (req, res) => {
+//   res.sendFile(path.join(__dirname + '/build/'));
+// });
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '/build/index.html'));
