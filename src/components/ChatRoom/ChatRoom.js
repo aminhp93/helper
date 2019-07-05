@@ -37,8 +37,8 @@ class ChatRoom extends React.Component {
       // --------------------------
       // Typing Indicators
       // --------------------------
-      isTyping: () => {},
-      notTyping: () => {},
+      isTyping: () => { },
+      notTyping: () => { },
       // --------------------------
       // Messages
       // --------------------------
@@ -62,7 +62,7 @@ class ChatRoom extends React.Component {
         // Send notification
       },
 
-      runCommand: () => {},
+      runCommand: () => { },
       // --------------------------
       // Room
       // --------------------------
@@ -90,17 +90,17 @@ class ChatRoom extends React.Component {
             hooks: { onMessage: this.actions.addMessage }
           });
       },
-      removeRoom: () => {},
+      removeRoom: () => { },
       joinRoom: room => {
         this.actions.setRoom(room);
         this.actions.subscribeToRoom(room);
       },
 
-      createConvo: () => {},
+      createConvo: () => { },
       // --------------------------
       // Presence
       // --------------------------
-      setUserPresence: () => {}
+      setUserPresence: () => { }
     };
   }
 
@@ -110,22 +110,22 @@ class ChatRoom extends React.Component {
     existingUser
       ? ChatManager(this, JSON.parse(existingUser))
       : fetch("http://localhost:3333/users", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ username: new_user })
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username: new_user })
+      })
+        // .then(response => response.json())
+        .then(res => {
+          // console.log(res.body);
+          window.localStorage.setItem(
+            "chatkit-user",
+            JSON.stringify({ id: new_user })
+          );
+          ChatManager(this, { id: new_user });
         })
-          // .then(response => response.json())
-          .then(res => {
-            // console.log(res.body);
-            window.localStorage.setItem(
-              "chatkit-user",
-              JSON.stringify({ id: new_user })
-            );
-            ChatManager(this, { id: new_user });
-          })
-          .catch(error => console.log(error));
+        .catch(error => console.log(error));
   }
 
   render() {
@@ -156,8 +156,8 @@ class ChatRoom extends React.Component {
         <section>
           <RoomHeader state={this.state} actions={this.actions} />
           {room.id ? (
-            <div>
-              <div>
+            <row->
+              <col->
                 <MessagesList
                   user={user}
                   messages={messages[room.id]}
@@ -165,14 +165,14 @@ class ChatRoom extends React.Component {
                 />
                 <TypingIndicator />
                 <CreateMessageForm state={this.state} actions={this.actions} />
-              </div>
+              </col->
               {userListOpen && <UserList />}
-            </div>
+            </row->
           ) : user.id ? (
             <JoinRoomScreen />
           ) : (
-            <WelcomeScreen />
-          )}
+                <WelcomeScreen />
+              )}
         </section>
       </main>
     );

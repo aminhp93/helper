@@ -22,13 +22,14 @@ class MessagesList extends React.Component {
             {Object.keys(messages)
               .reverse()
               .map(k => {
-                return "hi";
+                // return "hi";
+                return <Message key={messages[k].id} message={messages[k]} />
                 // return Message({ user, createConvo })(messages[k]);
               })}
           </wrapper->
         ) : (
-          emptyList
-        )}
+            emptyList
+          )}
       </ul>
     );
   }
