@@ -48,7 +48,7 @@ app.post("/api/authenticate", (req, res) => {
 // });
 
 app.get('*', (req, res) => {
-  res.sendFile('/build/index.html');
+  res.sendFile(path.join(__dirname + '/build/index.html'));
 });
 
 const PORT = process.env.PORT || 3333;
