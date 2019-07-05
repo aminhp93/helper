@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const Chatkit = require("@pusher/chatkit-server");
-
+const path = require('path');
 const app = express();
 
 const chatkit = new Chatkit.default({
@@ -43,6 +43,10 @@ app.post("/users", (req, res) => {
 app.post("/authenticate", (req, res) => {
   const authData = chatkit.authenticate({ userId: req.query.user_id });
   res.status(authData.status).send(authData.body);
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/build/index.html'));
 });
 
 const PORT = process.env.PORT || 3333;
