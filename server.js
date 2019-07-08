@@ -16,6 +16,10 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use('/static', express.static('build/static'))
 
+app.get("/api", (req, res) => {
+  res.json({ 'api': 'success' })
+});
+
 app.post("/api/users", (req, res) => {
   const { username } = req.body;
   chatkit
@@ -42,14 +46,11 @@ app.post("/api/authenticate", (req, res) => {
   res.status(authData.status).send(authData.body);
 });
 
-
-// app.get('/assets', (req, res) => {
-//   res.sendFile(path.join(__dirname + '/build/'));
-// });
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname + '/build/index.html'));
-});
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/build/index.html'));
+  });
+}
 
 const PORT = process.env.PORT || 3333;
 app.listen(PORT, err => {
