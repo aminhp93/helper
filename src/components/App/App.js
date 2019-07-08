@@ -41,6 +41,9 @@ class App extends Component {
         <li>
           <Link to="/chatroom">Chat Room</Link>
         </li>
+        <li>
+          <Link to="/tinder">Tinder</Link>
+        </li>
         <div id="output" />
       </ul>
     );

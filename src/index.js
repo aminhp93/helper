@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
+import 'antd/dist/antd.css';
 import App from "./components/App";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter as Router, Route } from "react-router-dom";
@@ -15,6 +16,7 @@ import Ecommerce from "./components/Ecommerce";
 import Test from "./components/Test";
 import Chat from "./components/Chat";
 import ChatRoom from "./components/ChatRoom";
+import Tinder from "./components/Tinder";
 
 ReactDOM.render(
   <Router>
@@ -30,6 +32,7 @@ ReactDOM.render(
     <Route path="/test" component={Test} />
     <Route path="/chat" component={Chat} />
     <Route path="/chatroom" component={ChatRoom} />
+    <Route path="/tinder" component={Tinder} />
   </Router>,
   document.getElementById("root")
 );
