@@ -7,7 +7,7 @@ export default ({ state, actions }, { id, token }) =>
     userId: id,
     tokenProvider: new Chatkit.TokenProvider({
       url: `${
-        config.isProduction
+        process.env.NODE_ENV === 'production'
           ? "https://helper-react.herokuapp.com"
           : "http://localhost:3333"
         }/api/authenticate`

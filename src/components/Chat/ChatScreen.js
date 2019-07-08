@@ -36,7 +36,7 @@ class ChatScreen extends React.Component {
       userId: this.props.currentUsername,
       tokenProvider: new Chatkit.TokenProvider({
         url: `${
-          config.isProduction
+          process.env.NODE_ENV === 'production'
             ? "https://helper-react.herokuapp.com"
             : "http://localhost:3333"
           }/api/authenticate`

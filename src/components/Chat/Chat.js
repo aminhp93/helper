@@ -16,7 +16,7 @@ class ChatApp extends React.Component {
   onUsernameSubmitted(username) {
     fetch(
       `${
-      config.isProduction
+      process.env.NODE_ENV === 'production'
         ? "https://helper-react.herokuapp.com"
         : "http://localhost:3333"
       }/api/users`,

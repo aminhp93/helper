@@ -154,7 +154,7 @@ class ChatRoom extends React.Component {
     existingUser
       ? ChatManager(this, JSON.parse(existingUser))
       : fetch(`${
-        config.isProduction
+        process.env.NODE_ENV === 'production'
           ? "https://helper-react.herokuapp.com"
           : "http://localhost:3333"
         }/api/users`, {
