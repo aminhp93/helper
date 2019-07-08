@@ -14,7 +14,9 @@ const chatkit = new Chatkit.default({
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
-app.use('/static', express.static('build/static'))
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'build')));
 
 app.get("/api", (req, res) => {
   res.json({ 'api': 'success' })
