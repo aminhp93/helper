@@ -51,11 +51,24 @@ class Tinder extends React.Component {
             })
     }
 
+    handleFilter = () => {
+        const { data } = this.state;
+        const filterData = data.filter(item => {
+            const parsed_item = JSON.parse(item.content);
+            if (/ig/i.test(parsed_item.user.bio)) return true
+            if (/instagram/i.test(parsed_item.user.bio)) return true
+        })
+        this.setState({
+            data: filterData
+        })
+    }
+
     render() {
         const { data } = this.state;
         return <div>
             <div>{data.length}</div>
             <Button onClick={() => this.handleUpdateTinder()}>Update tinder</Button>
+            <Button onClick={() => this.handleFilter()}>Filter</Button>
             <Button onClick={() => this.handleDeleteAllTinders()}>Delete all tinders</Button>
             <List
                 itemLayout="horizontal"
