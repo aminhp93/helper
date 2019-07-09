@@ -66,7 +66,7 @@ class Tinder extends React.Component {
                         <List.Item.Meta
                             avatar={<Avatar size={200} src={parsed_item.user.photos[0].processedFiles[0].url} />}
                             title={<a href="https://ant.design">{parsed_item.user.name}</a>}
-                            description={`${parsed_item.user.birth_date} ${parsed_item.user.bio}`}
+                            description={`${parsed_item.user.birth_date} - ${parsed_item.user.bio} - ${parsed_item.distance_mi}`}
                         />
                     </List.Item>
                 }}
