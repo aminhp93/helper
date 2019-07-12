@@ -357,3 +357,7 @@ section:not(.dragging) > input[type="file"] {
 }
 
 /* END CHAT ROOM */
+
+.ant-list-item-meta {
+  max-width: 300px;
+}
