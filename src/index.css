@@ -361,3 +361,46 @@ section:not(.dragging) > input[type="file"] {
 .ant-list-item-meta {
   max-width: 300px;
 }
+
+.ant-carousel .slick-slide {
+  text-align: center;
+  height: 160px;
+  line-height: 160px;
+  background: #364d79;
+  overflow: hidden;
+}
+.ant-carousel .slick-dots li.slick-active button {
+  background: red !important;
+}
+
+.ant-carousel .slick-dots li button {
+  height: 10px !important;
+  background: red !important;
+}
+
+.tinder .header {
+  position: fixed;
+  height: 40px;
+  z-index: 1;
+}
+
+.tinder .content {
+  top: 40px;
+}
+
+.tinderModal {
+  width: 100% !important;
+  padding: 0 200px !important;
+}
+
+.tinderModal .recharts-wrapper {
+  width: 100% !important;
+}
+
+.tinderModal img {
+  width: 400px !important;
+}
+
+.tinderModal.carousel {
+  top: 0;
+}

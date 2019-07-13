@@ -61,6 +61,10 @@ export function getFilteredStocksUrl() {
   return domain + "stocks/filter/";
 }
 
+export function getAnalyzeStockUrl() {
+  return domain + "stocks/analyze/";
+}
+
 export function getAllJobsUrl() {
   return domain + "jobs/";
 }
@@ -113,11 +117,11 @@ export function getWatchingStocksUrl() {
 export function getLastestFinancialReports(type, symbol, index) {
   return `https://www.fireant.vn/api/Data/Finance/LastestFinancialReports?symbol=${symbol}&type=${type}&year=${YEAR}&quarter=${
     index === durationReportEnums.YEAR ? "0" : "4"
-    }&count=${
+  }&count=${
     index === durationReportEnums.YEAR
       ? countValueEnums.YEAR
       : countValueEnums.QUARTER
-    }`;
+  }`;
 }
 
 export async function updateAllStocksDatabase(floor, _this) {
@@ -207,7 +211,7 @@ async function getLastestFinancialInfo(resolve, item) {
       RSI_14_diff:
         calculateRSI_result.RSI_14 - calculateRSI_result.RSI_14_previous
     })
-    .then(response => { })
+    .then(response => {})
     .catch(error => {
       errorsList.push({
         error,
