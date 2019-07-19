@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-// import "antd/dist/antd.css";
+import "antd/dist/antd.css";
 import { List, Avatar, Button, Modal, Carousel, Input, Select } from "antd";
 import {
   BarChart,
@@ -12,6 +12,8 @@ import {
   Tooltip,
   Legend
 } from "recharts";
+import {tinderToken} from '../../helpers/requests';
+
 const { Search } = Input;
 
 const { Option } = Select;
@@ -35,7 +37,7 @@ class Tinder extends React.Component {
       axios
         .get("https://api.gotinder.com/v2/recs/core?locale=en", {
           headers: {
-            "X-Auth-Token": "48437f28-6237-4708-8c0d-46a0e8d9a8bf"
+            "X-Auth-Token": tinderToken
           }
         })
         .then(response => {
