@@ -13,7 +13,7 @@ import {
   Tooltip,
   Legend
 } from "recharts";
-import {tinderToken} from '../../helpers/requests';
+import { tinderToken } from "../../helpers/requests";
 
 const { Search } = Input;
 
