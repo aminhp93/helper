@@ -1,5 +1,5 @@
 import React from "react";
-import { Tabs } from "antd";
+import { Tabs, Input, Button } from "antd";
 import axios from "axios";
 import {
   BarChart,
@@ -12,29 +12,7 @@ import {
   Legend
 } from "recharts";
 import "antd/dist/antd.css";
-import { List, Avatar, Button, Modal, Carousel, Input, Select } from "antd";
 import { getAnalyzeStockUrl } from "../../helpers/requests";
-import { Table, Divider, Tag } from 'antd';
-
-const columns = [
-  {
-    title: 'Date',
-    dataIndex: '',
-    key: 'date',
-    render: data => {
-      console.log(data)
-      return data.name
-    }
-  },
-  {
-    title: 'Symbol',
-    dataIndex: '',
-    key: 'Symbol',
-    render: data => {
-      return data.data.join()
-    }
-  },
-];
 
 const { TabPane } = Tabs;
 class Strategy extends React.Component {
@@ -43,7 +21,10 @@ class Strategy extends React.Component {
     this.state = {
       data: []
     }
+    this.percent = 1.1;
+    this.period = 14;
   }
+
   callback = key => {
     console.log(key);
   };
@@ -72,36 +53,68 @@ class Strategy extends React.Component {
         })
       }
     }
+
     console.log(converted_result)
     return converted_result
   }
 
+  analyze = (justify) => {
+    const data = {
+      period: this.period,
+      percent: this.percent,
+    }
+    if (justify) data.justify = true
+    axios
+    .post(getAnalyzeStockUrl(), data)
+    .then(response => {  
+      // const mappedData = this.mapData(response.data.symbol)
+      // if (this.count )
+      this.setState({
+        data: response.data.symbol
+      })
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
+
   componentDidMount() {
     // Count FPT in last 3 years
-    axios
-      .post(getAnalyzeStockUrl(), { symbol: "FPT" })
-      .then(response => {
-        // console.log(response.data);
-        // console.log(this.mapData(response.data.symbol))
-        this.setState({
-          data: this.mapData(response.data.symbol)
-        })
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    this.analyze()
+  }
+
+
+  handleChangePeriod = (data) => {
+    this.period = data.target.value;
+    this.analyze();
+  }
+
+  handleChangePercent = (data) => {
+    this.percent = data.target.value;
+    this.analyze();
+  }
+
+  handleJustify = () => {
+    // loop through period 4 - 31 && percent 1.05 - 1.25 to get the highest number of total count
+    this.analyze(true);
   }
 
   render() {
     const {data} = this.state;
     return (
-      <React.Fragment>
+      <div className='strategy'>
+        <React.Fragment>
         <Tabs defaultActiveKey="1" onChange={this.callback}>
           <TabPane tab="Strategy 1" key="1">
             1. Count the number of increase 10%, keep it continuously 12 times - 6
             months - 2 weeks period
             2. Remove all result not include 2019
             3. Count the number of stocks that satisfy the requirement each day since 1/1/2019 - now
+            <div className='header'>
+              <Input defaultValue={14} onPressEnter={(dataInput) => this.handleChangePeriod(dataInput)}/>
+              <Input defaultValue={1.1} onPressEnter={(dataInput) => this.handleChangePercent(dataInput)}/>
+              <Button onClick={() => this.handleJustify()}>Justify</Button>
+            </div>
           </TabPane>
           <TabPane tab="Tab 2" key="2">
             Content of Tab Pane 2
@@ -133,6 +146,7 @@ class Strategy extends React.Component {
           </BarChart>
           {/* <Table columns={columns} dataSource={data} /> */}
       </React.Fragment>
+      </div>
     );
   }
 }
