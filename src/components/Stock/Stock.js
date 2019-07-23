@@ -198,6 +198,7 @@ class Stock extends Component {
   }
 
   startRealtimeSocket(dataStocks) {
+    return;
     if (!dataStocks) return;
     const that = this;
     const socket = new WebSocket(
@@ -416,6 +417,18 @@ class Stock extends Component {
       });
   }
 
+  handleCbStrategy = (data) => {
+    axios
+      .post(getFilteredStocksUrl(), { watching_stocks: data.data })
+      .then(response => {
+        console.log(response);
+        this.gridApi.setRowData(response.data.stocks);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
   render() {
     return (
       <div className="stock">
@@ -442,7 +455,7 @@ class Stock extends Component {
         </div>
         <div>
           <div>Strategy Test</div>
-          <Strategy />
+          <Strategy cb={this.handleCbStrategy} />
         </div>
         <div className="chartContainer">
           <CustomedPieChart data={this.state.minData} timeValue={251} />

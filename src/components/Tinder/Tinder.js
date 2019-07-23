@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import "antd/dist/antd.css";
 import { List, Avatar, Button, Modal, Carousel, Input, Select } from "antd";
+import "antd/dist/antd.css";
 import {
   BarChart,
   Bar,
