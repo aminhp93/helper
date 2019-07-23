@@ -13,7 +13,7 @@ import config from "./../../config";
 
 import ChatManager from "./chatkit";
 import uuidv4 from "uuid/v4";
-import { message } from "antd";
+// import { message } from "antd";
 
 const existingUser = window.localStorage.getItem("chatkit-user");
 
