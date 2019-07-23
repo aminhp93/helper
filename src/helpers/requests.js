@@ -5,7 +5,7 @@ import config from "./../config";
 import durationReportEnums from "../constants/durationReportEnums";
 import countValueEnums from "../constants/countValueEnums";
 
-export const tinderToken = "3f4e8014-097b-4caf-afd8-98048d9a401f";
+export const tinderToken = "e7cd1677-8322-4edf-a6a9-ec0e4ae0693d";
 
 let domain = config.isProduction
   ? "https://api-2019.herokuapp.com/"

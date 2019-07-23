@@ -13,7 +13,7 @@ import {
   Tooltip,
   Legend
 } from "recharts";
-import {tinderToken} from '../../helpers/requests';
+import { tinderToken } from "../../helpers/requests";
 
 const { Search } = Input;
 
@@ -261,6 +261,17 @@ class Tinder extends React.Component {
       .post(url, data)
       .then(response => {
         console.log(response);
+        if (data.status === "inactive") {
+          for (var i = 0; i < this.state.data.length; i++) {
+            if (this.state.data[i].id === data.id) {
+              this.state.data.splice(i, 1);
+              break;
+            }
+          }
+          this.setState({
+            data: this.state.data
+          });
+        }
       })
       .catch(error => {
         console.log(error);
