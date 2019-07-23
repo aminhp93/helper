@@ -2,10 +2,7 @@ import React from "react";
 import axios from "axios";
 import "antd/dist/antd.css";
 import { List, Avatar, Button, Modal, Carousel, Input, Select } from "antd";
-<<<<<<< HEAD
 import "antd/dist/antd.css";
-=======
->>>>>>> c05a699c8b12d490cbb50d8bfbd672f4cb1f4f5f
 import {
   BarChart,
   Bar,
@@ -16,11 +13,8 @@ import {
   Tooltip,
   Legend
 } from "recharts";
-<<<<<<< HEAD
-=======
 import {tinderToken} from '../../helpers/requests';
 
->>>>>>> c05a699c8b12d490cbb50d8bfbd672f4cb1f4f5f
 const { Search } = Input;
 
 const { Option } = Select;
