@@ -67,6 +67,7 @@ class Strategy extends React.Component {
     axios
     .post(getAnalyzeStockUrl(), data)
     .then(response => {  
+      console.log(response.data)
       // const mappedData = this.mapData(response.data.symbol)
       // if (this.count )
       this.setState({
@@ -110,6 +111,7 @@ class Strategy extends React.Component {
             months - 2 weeks period
             2. Remove all result not include 2019
             3. Count the number of stocks that satisfy the requirement each day since 1/1/2019 - now
+            4. Should draw chart with date and month use to see percent rate
             <div className='header'>
               <Input defaultValue={14} onPressEnter={(dataInput) => this.handleChangePeriod(dataInput)}/>
               <Input defaultValue={1.1} onPressEnter={(dataInput) => this.handleChangePercent(dataInput)}/>
