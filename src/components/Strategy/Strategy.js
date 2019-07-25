@@ -11,7 +11,7 @@ import {
   Tooltip,
   Legend
 } from "recharts";
-import "antd/dist/antd.css";
+// import "antd/dist/antd.css";
 import { getAnalyzeStockUrl } from "../../helpers/requests";
 
 const { TabPane } = Tabs;
@@ -21,8 +21,8 @@ class Strategy extends React.Component {
     this.state = {
       data: []
     };
-    this.percent = 1.1;
-    this.period = 14;
+    this.percent = 1.05;
+    this.period = 19;
   }
 
   callback = key => {
@@ -121,11 +121,11 @@ class Strategy extends React.Component {
 
               <div className="header">
                 <Input
-                  defaultValue={14}
+                  defaultValue={this.period}
                   onPressEnter={dataInput => this.handleChangePeriod(dataInput)}
                 />
                 <Input
-                  defaultValue={1.1}
+                  defaultValue={this.percent}
                   onPressEnter={dataInput =>
                     this.handleChangePercent(dataInput)
                   }

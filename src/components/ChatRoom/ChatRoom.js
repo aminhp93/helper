@@ -9,11 +9,9 @@ import UserList from "./UserList/index";
 import JoinRoomScreen from "./JoinRoomScreen/index";
 import WelcomeScreen from "./WelcomeScreen/index";
 import CreateRoomForm from "./CreateRoomForm/index";
-import config from "./../../config";
 
 import ChatManager from "./chatkit";
 import uuidv4 from "uuid/v4";
-// import { message } from "antd";
 
 const existingUser = window.localStorage.getItem("chatkit-user");
 
@@ -38,8 +36,8 @@ class ChatRoom extends React.Component {
       // --------------------------
       // Typing Indicators
       // --------------------------
-      isTyping: () => { },
-      notTyping: () => { },
+      isTyping: () => {},
+      notTyping: () => {},
       // --------------------------
       // Messages
       // --------------------------
@@ -68,14 +66,16 @@ class ChatRoom extends React.Component {
         const commands = {
           invite: ([userId]) => this.actions.addUserToRoom({ userId }),
           remove: ([userId]) => this.actions.removeUserFromRoom({ userId }),
-          leave: ([userId]) => this.actions.removeUserFromRoom({ userId: this.state.user.id })
-        }
+          leave: ([userId]) =>
+            this.actions.removeUserFromRoom({ userId: this.state.user.id })
+        };
 
-        const name = command.split(' ')[0]
-        const args = command.split(' ').slice(1)
-        const exec = commands[name]
-        exec && exec(args) && exec(args).catch(error => console.log('error', error))
-
+        const name = command.split(" ")[0];
+        const args = command.split(" ").slice(1);
+        const exec = commands[name];
+        exec &&
+          exec(args) &&
+          exec(args).catch(error => console.log("error", error));
       },
       // --------------------------
       // Room
@@ -104,47 +104,48 @@ class ChatRoom extends React.Component {
             hooks: { onMessage: this.actions.addMessage }
           });
       },
-      removeRoom: () => { },
+      removeRoom: () => {},
       joinRoom: room => {
         this.actions.setRoom(room);
         this.actions.subscribeToRoom(room);
       },
 
       createConvo: options => {
-        console.log(options)
+        console.log(options);
         if (options.user.id !== this.state.user.id) {
           const exists = this.state.user.rooms.find(
-            x => (x.name === options.user.id + this.state.user.id) ||
-              (x.name === this.state.user.id + options.user.id)
-          )
+            x =>
+              x.name === options.user.id + this.state.user.id ||
+              x.name === this.state.user.id + options.user.id
+          );
 
           exists
             ? this.actions.joinRoom(exists)
             : this.actions.createRoom({
-              name: this.state.user.id + options.user.id,
-              addUserIds: [options.user.id],
-              private: true,
-            })
+                name: this.state.user.id + options.user.id,
+                addUserIds: [options.user.id],
+                private: true
+              });
         }
       },
 
       addUserToRoom: ({ userId, roomId = this.state.room.id }) => {
         this.state.user
           .addUserToRoom({ userId, roomId })
-          .then(this.actions.setRoom)
+          .then(this.actions.setRoom);
       },
 
       removeUserFromRoom: ({ userId, roomId = this.state.room.id }) => {
         userId === this.state.user.id
           ? this.state.user.leaveRoom({ roomId })
           : this.state.user
-            .removeUserFromRoom({ userId, roomId })
-            .then(this.actions.setRoom)
+              .removeUserFromRoom({ userId, roomId })
+              .then(this.actions.setRoom);
       },
       // --------------------------
       // Presence
       // --------------------------
-      setUserPresence: () => { }
+      setUserPresence: () => {}
     };
   }
 
@@ -153,27 +154,30 @@ class ChatRoom extends React.Component {
     console.log(existingUser);
     existingUser
       ? ChatManager(this, JSON.parse(existingUser))
-      : fetch(`${
-        process.env.NODE_ENV === 'production'
-          ? "https://helper-react.herokuapp.com"
-          : "http://localhost:3333"
-        }/api/users`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ username: new_user })
-        })
-        // .then(response => response.json())
-        .then(res => {
-          // console.log(res.body);
-          window.localStorage.setItem(
-            "chatkit-user",
-            JSON.stringify({ id: new_user })
-          );
-          ChatManager(this, { id: new_user });
-        })
-        .catch(error => console.log(error));
+      : fetch(
+          `${
+            process.env.NODE_ENV === "production"
+              ? "https://helper-react.herokuapp.com"
+              : "http://localhost:3333"
+          }/api/users`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username: new_user })
+          }
+        )
+          // .then(response => response.json())
+          .then(res => {
+            // console.log(res.body);
+            window.localStorage.setItem(
+              "chatkit-user",
+              JSON.stringify({ id: new_user })
+            );
+            ChatManager(this, { id: new_user });
+          })
+          .catch(error => console.log(error));
   }
 
   render() {
@@ -219,14 +223,15 @@ class ChatRoom extends React.Component {
                   room={room}
                   current={user.id}
                   createConvo={createConvo}
-                  removeUser={removeUserFromRoom} />
+                  removeUser={removeUserFromRoom}
+                />
               )}
             </row->
           ) : user.id ? (
             <JoinRoomScreen />
           ) : (
-                <WelcomeScreen />
-              )}
+            <WelcomeScreen />
+          )}
         </section>
       </main>
     );
