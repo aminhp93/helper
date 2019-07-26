@@ -44,6 +44,9 @@ class App extends Component {
         <li>
           <Link to="/tinder">Tinder</Link>
         </li>
+        <li>
+          <Link to="/wine">Wine</Link>
+        </li>
         <div id="output" />
       </ul>
     );
