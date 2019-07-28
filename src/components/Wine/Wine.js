@@ -6,11 +6,19 @@ class Wine extends React.Component {
       <div>
         <div>
           Research about wine, all of wine, how to make the best use of wine |{" "}
-          <a target="_blank" href="https://khoruou.vn/">
+          <a
+            target="_blank"
+            href="https://khoruou.vn/"
+            rel="noopener noreferrer"
+          >
             khoruou
           </a>{" "}
           |{" "}
-          <a target="_blank" href="https://redapron.vn/wset/wsetvn.html">
+          <a
+            target="_blank"
+            href="https://redapron.vn/wset/wsetvn.html"
+            rel="noopener noreferrer"
+          >
             Wine certificate - WSET
           </a>
         </div>
