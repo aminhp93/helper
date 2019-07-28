@@ -65,13 +65,14 @@ class Strategy extends React.Component {
     };
     if (justify) data.justify = true;
     axios
-      .post(getAnalyzeStockUrl(), data)
-      .then(response => {
+    .post(getAnalyzeStockUrl(), data)
+      .then(response => {  
+        console.log(response.data)
         // const mappedData = this.mapData(response.data.symbol)
         // if (this.count )
         this.setState({
           data: response.data.symbol
-        });
+        })
       })
       .catch(error => {
         console.log(error);
