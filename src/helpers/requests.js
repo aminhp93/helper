@@ -67,6 +67,10 @@ export function getAnalyzeStockUrl() {
   return domain + "stocks/analyze/";
 }
 
+export function getBackTestStockUrl() {
+  return domain + "stocks/backtest/";
+}
+
 export function getAllJobsUrl() {
   return domain + "jobs/";
 }

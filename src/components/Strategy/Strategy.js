@@ -1,5 +1,5 @@
 import React from "react";
-import { Tabs, Input, Button } from "antd";
+import { Tabs, Input, Button, Table, Divider, Tag } from "antd";
 import axios from "axios";
 import {
   BarChart,
@@ -12,14 +12,88 @@ import {
   Legend
 } from "recharts";
 // import "antd/dist/antd.css";
-import { getAnalyzeStockUrl } from "../../helpers/requests";
+import {
+  getAnalyzeStockUrl,
+  getBackTestStockUrl
+} from "../../helpers/requests";
+
+const config = {
+  pagination: {
+    pageSize: 300
+    // pageSizeOptions: ["300"],
+    // showSizeChanger: true
+  }
+};
+
+const columns = [
+  {
+    title: "Max count",
+    key: "max_count",
+    defaultSortOrder: "descend",
+    sorter: (a, b) => a.max_count - b.max_count,
+    render: data => {
+      return data.max_count;
+    }
+  },
+  {
+    title: "Percent",
+    key: "percent",
+    render: data => {
+      return data.percent;
+    }
+  },
+  {
+    title: "Period",
+    key: "period",
+    render: data => {
+      return data.period;
+    }
+  },
+  {
+    title: "Count > 20",
+    key: "count",
+    render: data => {
+      let result = 0;
+      for (let i = 0; i < data.mapped_result.length; i++) {
+        if (data.mapped_result[i].value > 20) result += 1;
+      }
+      return result;
+    }
+  }
+];
+
+const columns2 = [
+  {
+    title: "Symbol",
+    key: "symbol",
+    render: data => {
+      return data.Symbol;
+    }
+  },
+  {
+    title: "Date",
+    key: "date",
+    render: data => {
+      return data.Date;
+    }
+  },
+  {
+    title: "Open",
+    key: "open",
+    render: data => {
+      return data.Open;
+    }
+  }
+];
 
 const { TabPane } = Tabs;
 class Strategy extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: []
+      data: [],
+      tableData: [],
+      tableData2: []
     };
     this.percent = 1.05;
     this.period = 19;
@@ -29,34 +103,34 @@ class Strategy extends React.Component {
     console.log(key);
   };
 
-  mapData = data => {
-    const result = [];
-    const converted_result = [];
-    for (let i = 0; i < data.length; i++) {
-      const item = data[i].result;
-      for (let j = 0; j < item.length; j++) {
-        if (!result[item[j]]) {
-          result[item[j]] = [];
-        }
-        result[item[j]].push(data[i].Symbol);
-      }
-    }
-    console.log(result);
-    const keys = Object.keys(result).sort();
-    for (let k = 0; k < keys.length; k++) {
-      const key = keys[k].slice(0, 10);
-      if (/(2016|2017|2018|2019)/.test(key)) {
-        converted_result.push({
-          name: keys[k].slice(0, 10),
-          data: result[keys[k]],
-          value: result[keys[k]].length
-        });
-      }
-    }
+  // mapData = data => {
+  //   const result = [];
+  //   const converted_result = [];
+  //   for (let i = 0; i < data.length; i++) {
+  //     const item = data[i].result;
+  //     for (let j = 0; j < item.length; j++) {
+  //       if (!result[item[j]]) {
+  //         result[item[j]] = [];
+  //       }
+  //       result[item[j]].push(data[i].Symbol);
+  //     }
+  //   }
+  //   console.log(result);
+  //   const keys = Object.keys(result).sort();
+  //   for (let k = 0; k < keys.length; k++) {
+  //     const key = keys[k].slice(0, 10);
+  //     if (/(2016|2017|2018|2019)/.test(key)) {
+  //       converted_result.push({
+  //         name: keys[k].slice(0, 10),
+  //         data: result[keys[k]],
+  //         value: result[keys[k]].length
+  //       });
+  //     }
+  //   }
 
-    console.log(converted_result);
-    return converted_result;
-  };
+  //   console.log(converted_result);
+  //   return converted_result;
+  // };
 
   analyze = justify => {
     const data = {
@@ -65,14 +139,16 @@ class Strategy extends React.Component {
     };
     if (justify) data.justify = true;
     axios
-    .post(getAnalyzeStockUrl(), data)
-      .then(response => {  
-        console.log(response.data)
+      .post(getAnalyzeStockUrl(), data)
+      .then(response => {
+        console.log(response.data);
         // const mappedData = this.mapData(response.data.symbol)
         // if (this.count )
         this.setState({
-          data: response.data.symbol
-        })
+          data: response.data.symbol,
+          tableData: response.data.list_obj || [],
+          tableData2: response.data.list_stocks || []
+        });
       })
       .catch(error => {
         console.log(error);
@@ -99,8 +175,23 @@ class Strategy extends React.Component {
     this.analyze(true);
   };
 
+  handleFindDay = () => {
+    const data = {};
+    axios
+      .post(getBackTestStockUrl(), data)
+      .then(response => {
+        console.log(response.data);
+        this.setState({
+          tableData2: response.data.data
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
   render() {
-    const { data } = this.state;
+    const { data, tableData, tableData2 } = this.state;
     return (
       <div className="strategy">
         <React.Fragment>
@@ -162,6 +253,7 @@ class Strategy extends React.Component {
                   })}
                 </Bar>
               </BarChart>
+              <Table {...config} columns={columns} dataSource={tableData} />
             </TabPane>
             <TabPane tab="Strategy 2" key="2">
               <div>
@@ -172,6 +264,13 @@ class Strategy extends React.Component {
               <div>3. Compare how many chosen stock in that list</div>
               <div>4. Find 1 criteria that 5 stocks has in common</div>
               <div>4. Calculate the profit base on the 5 stocks</div>
+              <div>Initial amount: 10 trieu</div>
+              <div>5 ma --> 1 ma 2 trieu</div>
+              <div>Lan 1: lay tinh so ngay voi 5 ma duoc chon</div>
+              <Button onClick={() => this.handleFindDay()}>
+                Handle calculate the day get % returned
+              </Button>
+              <Table {...config} columns={columns2} dataSource={tableData2} />
             </TabPane>
             <TabPane tab="Tab 3" key="3">
               Content of Tab Pane 3
