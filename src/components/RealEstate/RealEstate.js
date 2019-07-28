@@ -1,60 +1,14 @@
 import React, { Component } from "react";
-import CustomedAgGridReact from '../_customedComponents/CustomedAgGridReact'
-// import axios from "axios";
+import axios from "axios";
 
 class RealEstate extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      columnDefs: [
-        {
-          headerName: "Make",
-          field: "make"
-        },
-        {
-          headerName: "Model",
-          field: "model"
-        },
-        {
-          headerName: "Price",
-          field: "price"
-        }
-      ],
-      rowData: [
-        {
-          make: "Toyota",
-          model: "Celica",
-          price: 35000
-        },
-        {
-          make: "Ford",
-          model: "Mondeo",
-          price: 32000
-        },
-        {
-          make: "Porsche",
-          model: "Boxter",
-          price: 72000
-        }
-      ]
-    };
+    this.state = {};
   }
 
   render() {
-    return (
-      <div
-        className="ag-theme-balham"
-        style={{
-          height: "500px",
-          width: "600px"
-        }}
-      >
-        <CustomedAgGridReact
-          columnDefs={this.state.columnDefs}
-          rowData={this.state.rowData}
-        />
-      </div>
-    );
+    return <div>Rever</div>;
   }
 
   componentDidMount() {
@@ -75,6 +29,16 @@ class RealEstate extends Component {
     // }).catch(error => {
     //   console.log(error)
     // })
+    axios
+      .get(
+        "https://www.luxstay.com/api/search/popular-location?path=%2Fvietnam%2Fha-noi&type=project&limit=10"
+      )
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 }
 
