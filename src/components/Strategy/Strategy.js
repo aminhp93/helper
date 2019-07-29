@@ -67,21 +67,35 @@ const columns2 = [
     title: "Symbol",
     key: "symbol",
     render: data => {
-      return data.Symbol;
+      return data.start_obj.Symbol;
     }
   },
   {
-    title: "Date",
-    key: "date",
+    title: "Start Date",
+    key: "start_date",
     render: data => {
-      return data.Date;
+      return data.start_obj.Date.slice(0, 10);
     }
   },
   {
-    title: "Open",
-    key: "open",
+    title: "Start Open",
+    key: "start_open",
     render: data => {
-      return data.Open;
+      return data.start_obj.Open.toFixed(0);
+    }
+  },
+  {
+    title: "End Date",
+    key: "end_date",
+    render: data => {
+      return data.end_obj.Date.slice(0, 10);
+    }
+  },
+  {
+    title: "End Open",
+    key: "end_open",
+    render: data => {
+      return data.end_obj.Open.toFixed(0);
     }
   }
 ];
