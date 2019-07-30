@@ -1,0 +1,6 @@
+{
+  "name": "Invest",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./Invest.js"
+}

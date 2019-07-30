@@ -25,6 +25,25 @@ const config = {
   }
 };
 
+const a = {
+  line_1: [
+    {
+      start_date: "1/1/2019",
+      end_date: "4/1/2019",
+      start_price: 10,
+      end_price: 30,
+      symbol: "FPT"
+    },
+    {
+      start_date: "5/1/2019",
+      end_date: "10/1/2019",
+      start_price: 10,
+      end_price: 30,
+      symbol: "ANZ"
+    }
+  ]
+};
+
 const columns = [
   {
     title: "Max count",
@@ -95,7 +114,7 @@ const columns2 = [
     title: "End Open",
     key: "end_open",
     render: data => {
-      return data.end_obj.Open.toFixed(0);
+      return data.end_obj.High.toFixed(0);
     }
   }
 ];
