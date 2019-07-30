@@ -404,3 +404,7 @@ section:not(.dragging) > input[type="file"] {
 .tinderModal.carousel {
   top: 0;
 }
+
+.invest .inputContainer {
+  /* display: flex; */
+}

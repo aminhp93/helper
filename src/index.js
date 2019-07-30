@@ -17,6 +17,7 @@ import Chat from "./components/Chat";
 import ChatRoom from "./components/ChatRoom";
 import Tinder from "./components/Tinder";
 import Wine from "./components/Wine";
+import Invest from "./components/Invest";
 
 ReactDOM.render(
   <Router>
@@ -34,6 +35,7 @@ ReactDOM.render(
     <Route path="/chatroom" component={ChatRoom} />
     <Route path="/tinder" component={Tinder} />
     <Route path="/wine" component={Wine} />
+    <Route path="/invest" component={Invest} />
   </Router>,
   document.getElementById("root")
 );
