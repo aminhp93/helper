@@ -25,25 +25,6 @@ const config = {
   }
 };
 
-const a = {
-  line_1: [
-    {
-      start_date: "1/1/2019",
-      end_date: "4/1/2019",
-      start_price: 10,
-      end_price: 30,
-      symbol: "FPT"
-    },
-    {
-      start_date: "5/1/2019",
-      end_date: "10/1/2019",
-      start_price: 10,
-      end_price: 30,
-      symbol: "ANZ"
-    }
-  ]
-};
-
 const columns = [
   {
     title: "Max count",
@@ -111,10 +92,17 @@ const columns2 = [
     }
   },
   {
-    title: "End Open",
-    key: "end_open",
+    title: "End High",
+    key: "end_high",
     render: data => {
       return data.end_obj.High.toFixed(0);
+    }
+  },
+  {
+    title: 'Profit',
+    key: 'profit',
+    render: data => {
+      return data.profit
     }
   }
 ];
@@ -126,7 +114,9 @@ class Strategy extends React.Component {
     this.state = {
       data: [],
       tableData: [],
-      tableData2: []
+      tableData2: [],
+      initAmount: 10,
+      finalAmount: 10
     };
     this.percent = 1.05;
     this.period = 19;
@@ -135,35 +125,6 @@ class Strategy extends React.Component {
   callback = key => {
     console.log(key);
   };
-
-  // mapData = data => {
-  //   const result = [];
-  //   const converted_result = [];
-  //   for (let i = 0; i < data.length; i++) {
-  //     const item = data[i].result;
-  //     for (let j = 0; j < item.length; j++) {
-  //       if (!result[item[j]]) {
-  //         result[item[j]] = [];
-  //       }
-  //       result[item[j]].push(data[i].Symbol);
-  //     }
-  //   }
-  //   console.log(result);
-  //   const keys = Object.keys(result).sort();
-  //   for (let k = 0; k < keys.length; k++) {
-  //     const key = keys[k].slice(0, 10);
-  //     if (/(2016|2017|2018|2019)/.test(key)) {
-  //       converted_result.push({
-  //         name: keys[k].slice(0, 10),
-  //         data: result[keys[k]],
-  //         value: result[keys[k]].length
-  //       });
-  //     }
-  //   }
-
-  //   console.log(converted_result);
-  //   return converted_result;
-  // };
 
   analyze = justify => {
     const data = {
@@ -208,14 +169,25 @@ class Strategy extends React.Component {
     this.analyze(true);
   };
 
+  calculateProfit = (data) => {
+    let { finalAmount } = this.state
+    for (let i=0; i < data.length; i++) {
+      finalAmount = finalAmount * data[i].end_obj.High / data[i].start_obj.Open
+      data[i].profit = finalAmount
+    }
+    return data
+  }
+
   handleFindDay = () => {
     const data = {};
     axios
       .post(getBackTestStockUrl(), data)
       .then(response => {
         console.log(response.data);
+        const mappedData = this.calculateProfit(response.data.data)
         this.setState({
-          tableData2: response.data.data
+          tableData2: mappedData,
+          finalAmount: mappedData[mappedData.length - 1].profit
         });
       })
       .catch(error => {
@@ -228,7 +200,7 @@ class Strategy extends React.Component {
     return (
       <div className="strategy">
         <React.Fragment>
-          <Tabs defaultActiveKey="1" onChange={this.callback}>
+          <Tabs defaultActiveKey="2" onChange={this.callback}>
             <TabPane tab="Strategy 1" key="1">
               <div>
                 1. Count the number of increase 10%, keep it continuously 12
@@ -291,18 +263,22 @@ class Strategy extends React.Component {
             <TabPane tab="Strategy 2" key="2">
               <div>
                 1. Create a list of stocks to buy with value from strategy 1:
-                1.05-14
+                1.05-19
               </div>
-              <div>2. Select 5 stocks from that list</div>
-              <div>3. Compare how many chosen stock in that list</div>
-              <div>4. Find 1 criteria that 5 stocks has in common</div>
-              <div>4. Calculate the profit base on the 5 stocks</div>
+              {/* <div>2. Select 5 stocks from that list</div> */}
+              <div>Backtest with VCB</div>
+              {/* <div>3. Compare how many chosen stock in that list</div> */}
+              {/* <div>4. Find 1 criteria that 5 stocks has in common</div> */}
+              {/* <div>4. Calculate the profit base on the 5 stocks</div> */}
               <div>Initial amount: 10 trieu</div>
               <div>5 ma --> 1 ma 2 trieu</div>
               <div>Lan 1: lay tinh so ngay voi 5 ma duoc chon</div>
+              <div>Init Amount {this.state.initAmount}</div>
+              <div>Final Amount {this.state.finalAmount}</div>
               <Button onClick={() => this.handleFindDay()}>
                 Handle calculate the day get % returned
               </Button>
+
               <Table {...config} columns={columns2} dataSource={tableData2} />
             </TabPane>
             <TabPane tab="Tab 3" key="3">
