@@ -1,0 +1,6 @@
+{
+  "name": "Food",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./Food.js"
+}

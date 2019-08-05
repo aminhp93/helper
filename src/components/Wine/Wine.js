@@ -82,8 +82,10 @@ class Wine extends React.Component {
                 </a>
               </div>
             </TabPane>
-            <TabPane tab="Tab 2" key="2">
-              Content of Tab Pane 2
+            <TabPane tab="Ruou vang Y" key="2">
+              <div>Ruou vang Y</div>
+              <div>{`4 cap do: Vino data Tavola < IGT < DOC < DOCG `}</div>
+              <div>Super-Tuscan vung Tuscany</div>
             </TabPane>
             <TabPane tab="Tab 3" key="3">
               Content of Tab Pane 3
