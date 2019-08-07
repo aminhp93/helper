@@ -522,6 +522,21 @@ class Stock extends Component {
                 {
                   loading: true
                 },
+                () => updateAllStocksDatabase("all_stocks", this)
+              );
+            }}
+          >
+            Update all
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={this.state.loading}
+            onClick={() => {
+              this.setState(
+                {
+                  loading: true
+                },
                 () => updateAllStocksDatabase("HOSE_stocks", this)
               );
             }}
