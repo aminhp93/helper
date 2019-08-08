@@ -136,7 +136,7 @@ function updateLastTimeUpdateDatabase(data) {
     .catch(error => console.log(error))
 }
 
-export async function updateAllStocksDatabase(floor, _this) {
+export async function updateAllStocksDatabase(floor, _this, year) {
   let startTime = new Date();
   let endTime;
   let stop = false;
@@ -150,16 +150,58 @@ export async function updateAllStocksDatabase(floor, _this) {
   } else if (floor === "all_stocks") {
     floor_stocks = HOSE_stocks.concat(HNX_stocks).concat(UPCOM_stocks)
   }
-  let startDate = '2012-01-01'
-  await axios.get(domain + 'core/')
+  let startDate = ''
+  let endDate = ''
+  switch (year) {
+    case '2012':
+      startDate='2012-01-01'
+      endDate='2012-12-31'
+      break;
+    case '2013':
+      startDate='2013-01-01'
+      endDate='2013-12-31'
+      break;
+    case '2014':
+        startDate='2014-01-01'
+        endDate='2014-12-31'
+        break;
+    case '2015':
+        startDate='2015-01-01'
+        endDate='2015-12-31'
+        break;
+    case '2016':
+        startDate='2016-01-01'
+        endDate='2016-12-31'
+        break;
+    case '2017':
+        startDate='2017-01-01'
+        endDate='2017-12-31'
+        break;
+    case '2018':
+        startDate='2018-01-01'
+        endDate='2018-12-31'
+        break;
+    case '2019':
+        startDate='2019-01-01'
+        endDate=moment().format('YYYY-MM-DD')
+        break;
+    default:
+      break;
+  }
+  if (year === '2019') {
+    await axios.get(domain + 'core/')
     .then(response => {
       if (response.data){
         startDate = response.data.data.slice(1, 11)
       }
     })
     .catch(error => console.log(error))
-  const response2 = await updatedStockDatabase(floor_stocks, startDate);
-  await updateLastTimeUpdateDatabase({date: '"2019-08-07T00:00:00Z"'});
+  }
+  const response2 = await updatedStockDatabase(floor_stocks, startDate, endDate);
+  if (year === '2019') {
+    const date = '"' + moment().format('YYYY-MM-DD') + 'T00:00:00Z"'
+    await updateLastTimeUpdateDatabase({date});
+  }
   console.log(response2);
   response2.map(item => {
     if (item.message === "error") {
@@ -195,12 +237,12 @@ export function deleteAllStocks() {
   .catch(error => console.log(error))
 }
 
-async function getLastestFinancialInfo(resolve, item, startDate) {
+async function getLastestFinancialInfo(resolve, item, startDate, endDate) {
   let response1;
   let errorsList = [];
   await axios
     .get(
-      `https://svr1.fireant.vn/api/Data/Markets/HistoricalQuotes?symbol=${item}&startDate=${startDate}&endDate=${endDay}`
+      `https://svr1.fireant.vn/api/Data/Markets/HistoricalQuotes?symbol=${item}&startDate=${startDate}&endDate=${endDate}`
     )
     .then(response => {
       response1 = response;
@@ -224,6 +266,7 @@ async function getLastestFinancialInfo(resolve, item, startDate) {
   }
   await axios
     .post(getCreateStockUrl(), {
+      Year: startDate.slice(0, 4),
       Symbol: item,
       price_data: JSON.stringify(response1.data),
       today_capitalization,
@@ -256,12 +299,12 @@ async function getLastestFinancialInfo(resolve, item, startDate) {
   return resolve({ message: "success" });
 }
 
-function updatedStockDatabase(floor, startDate) {
+function updatedStockDatabase(floor, startDate, endDate) {
   let listPromises = [];
   floor.map(item => {
     listPromises.push(
       new Promise(resolve => {
-        getLastestFinancialInfo(resolve, item, startDate);
+        getLastestFinancialInfo(resolve, item, startDate, endDate);
       })
     );
   });

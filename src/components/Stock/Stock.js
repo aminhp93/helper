@@ -3,6 +3,7 @@ import { Input } from "@material-ui/core";
 import Modal from "@material-ui/core/Modal";
 import StockDetail from "../StockDetail";
 import axios from "axios";
+import moment from 'moment';
 import CustomedPieChart from "./../_customedComponents/CustomedPieChart";
 import Icon from "@material-ui/core/Icon";
 import {
@@ -183,10 +184,12 @@ class Stock extends Component {
   canslimFilter() {
     let today_capitalization_min = 5000000000;
     let percentage_change_in_price_min = 0.01;
+    let Date = moment().format('YYYY-MM-DD') + 'T00:00:00Z'
     axios
       .post(getFilteredStocksUrl(), {
         today_capitalization_min,
-        percentage_change_in_price_min
+        percentage_change_in_price_min,
+        Date
       })
       .then(response => {
         console.log(response);
@@ -522,13 +525,118 @@ class Stock extends Component {
                 {
                   loading: true
                 },
-                () => updateAllStocksDatabase("all_stocks", this)
+                () => updateAllStocksDatabase("all_stocks", this, '2019')
               );
             }}
           >
-            Update all
+            2019
           </Button>
           <Button
+            variant="contained"
+            color="secondary"
+            disabled={this.state.loading}
+            onClick={() => {
+              this.setState(
+                {
+                  loading: true
+                },
+                () => updateAllStocksDatabase("all_stocks", this, '2018')
+              );
+            }}
+          >
+            2018
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={this.state.loading}
+            onClick={() => {
+              this.setState(
+                {
+                  loading: true
+                },
+                () => updateAllStocksDatabase("all_stocks", this, '2017')
+              );
+            }}
+          >
+            2017
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={this.state.loading}
+            onClick={() => {
+              this.setState(
+                {
+                  loading: true
+                },
+                () => updateAllStocksDatabase("all_stocks", this, '2016')
+              );
+            }}
+          >
+            2016
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={this.state.loading}
+            onClick={() => {
+              this.setState(
+                {
+                  loading: true
+                },
+                () => updateAllStocksDatabase("all_stocks", this, '2015')
+              );
+            }}
+          >
+            2015
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={this.state.loading}
+            onClick={() => {
+              this.setState(
+                {
+                  loading: true
+                },
+                () => updateAllStocksDatabase("all_stocks", this, '2014')
+              );
+            }}
+          >
+            2014
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={this.state.loading}
+            onClick={() => {
+              this.setState(
+                {
+                  loading: true
+                },
+                () => updateAllStocksDatabase("all_stocks", this, '2013')
+              );
+            }}
+          >
+            2013
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={this.state.loading}
+            onClick={() => {
+              this.setState(
+                {
+                  loading: true
+                },
+                () => updateAllStocksDatabase("all_stocks", this, '2012')
+              );
+            }}
+          >
+            2012
+          </Button>
+          {/* <Button
             variant="contained"
             color="secondary"
             disabled={this.state.loading}
@@ -572,7 +680,7 @@ class Stock extends Component {
             }}
           >
             Update UPCOM_stocks
-          </Button>
+          </Button> */}
           <Button
             variant="contained"
             color="secondary"
