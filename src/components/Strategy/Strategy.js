@@ -9,12 +9,15 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
+  LineChart,
+  Line
 } from "recharts";
 // import "antd/dist/antd.css";
 import {
   getAnalyzeStockUrl,
-  getBackTestStockUrl
+  getBackTestStockUrl,
+  getStrategyResultUrl
 } from "../../helpers/requests";
 
 const config = {
@@ -99,10 +102,31 @@ const columns2 = [
     }
   },
   {
-    title: 'Profit',
-    key: 'profit',
+    title: "Volumn Day End",
+    key: "volume_end",
     render: data => {
-      return data.profit
+      return data.end_obj.Volume;
+    }
+  },
+  {
+    title: 'Volume',
+    key: 'volume',
+    render: data => {
+      return `${data.volume.toFixed(0)} - ${(data.volume * 100 / data.end_obj.Volume).toFixed(4)}`
+    }
+  },
+  {
+    title: 'percent',
+    key: 'percent',
+    render: data => {
+      return data.end_obj.High/data.start_obj.Open
+    }
+  },
+  {
+    title: 'NAV',
+    key: 'NAV',
+    render: data => {
+      return data.NAV
     }
   }
 ];
@@ -149,9 +173,41 @@ class Strategy extends React.Component {
       });
   };
 
+  mapLineData = (data) => {
+    console.log(data)
+    const results = [];
+
+    for (let j=0; j < 60; j++) {
+      const item = {};
+      let content
+      for (let i=0; i < 12; i++) {
+        // console.log(JSON.parse(data[i].content))
+        content = JSON.parse(data[i].content)
+        const content_data = content[content.length - 1]
+        // console.log(content)
+        let name = 'name_'+ j
+        item['title'] = data[i].title
+        item['name'] = name        
+        item['value' + i] = content_data[j] ? content_data[j].NAV : 0
+      }
+      results.push(item)
+    }
+    
+    console.log(results)
+    return results
+  }
+
   componentDidMount() {
     // Count FPT in last 3 years
     // this.analyze();
+    axios.get(getStrategyResultUrl())
+      .then(response => {
+        console.log(response.data)
+        this.setState({
+          data123: this.mapLineData(response.data.data)
+        })
+      })
+      .catch(error => console.log(error))
   }
 
   handleChangePeriod = data => {
@@ -194,6 +250,23 @@ class Strategy extends React.Component {
         console.log(error);
       });
   };
+
+  getArray = (number) => {
+    const result = [];
+    for (let i=0; i < number; i++) {
+      result.push(i)
+    }
+    return result
+  }
+
+  getRandomColor = () => {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
 
   render() {
     const { data, tableData, tableData2 } = this.state;
@@ -275,6 +348,31 @@ class Strategy extends React.Component {
               </Button>
 
               <Table {...config} columns={columns2} dataSource={tableData2} />
+              <LineChart
+                width={1000}
+                height={500}
+                data={this.state.data123 || []}
+                margin={{
+                  top: 5, right: 30, left: 20, bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                {/* <Line type="monotone" dataKey='value0' stroke="#82ca9d" />
+                <Line type="monotone" dataKey='value1' stroke="#82ca9d" />
+                  */}
+                {
+                  this.getArray(12).map((item, index) => {
+                    const dataKey = 'value' + index
+                    return <Line type="monotone" dataKey={dataKey} stroke={this.getRandomColor()} />
+                  })
+                }
+                {/* <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
+                <Line type="monotone" dataKey="uv" stroke="#82ca9d" /> */}
+              </LineChart>
             </TabPane>
             <TabPane tab="Tab 3" key="3">
               Content of Tab Pane 3

@@ -70,6 +70,10 @@ export function getBackTestStockUrl() {
   return domain + "stocks/backtest/";
 }
 
+export function getStrategyResultUrl() {
+  return domain + "stocks/results"
+}
+
 export function getAllJobsUrl() {
   return domain + "jobs/";
 }
