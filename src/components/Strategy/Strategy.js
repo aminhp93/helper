@@ -74,17 +74,17 @@ const columns2 = [
     }
   },
   {
-    title: "Start Date",
-    key: "start_date",
+    title: "Buy Date",
+    key: "buy_date",
     render: data => {
       return data.start_obj.Date.slice(0, 10);
     }
   },
   {
-    title: "Start Open",
-    key: "start_open",
+    title: "Buy Price",
+    key: "buy_price",
     render: data => {
-      return data.start_obj.Open.toFixed(0);
+      return data.buy_price.toFixed(0);
     }
   },
   {
@@ -95,38 +95,41 @@ const columns2 = [
     }
   },
   {
-    title: "End High",
-    key: "end_high",
+    title: "Sell Price",
+    key: "sell_price",
     render: data => {
-      return data.end_obj.High.toFixed(0);
+      return data.sell_price.toFixed(0);
     }
   },
   {
-    title: "Volumn Day End",
-    key: "volume_end",
+    title: "Total Volume Stock",
+    key: "total_volume_stock",
     render: data => {
       return data.end_obj.Volume;
     }
   },
   {
-    title: 'Volume',
-    key: 'volume',
+    title: "Volume",
+    key: "volume",
     render: data => {
-      return `${data.volume.toFixed(0)} - ${(data.volume * 100 / data.end_obj.Volume).toFixed(4)}`
+      return `${data.volume.toFixed(0)} - ${(
+        (data.volume * 100) /
+        data.end_obj.Volume
+      ).toFixed(4)}`;
     }
   },
   {
-    title: 'percent',
-    key: 'percent',
+    title: "percent",
+    key: "percent",
     render: data => {
-      return data.end_obj.High/data.start_obj.Open
+      return (data.sell_price / data.buy_price).toFixed(3);
     }
   },
   {
-    title: 'NAV',
-    key: 'NAV',
+    title: "NAV",
+    key: "NAV",
     render: data => {
-      return data.NAV
+      return data.NAV;
     }
   }
 ];
@@ -173,41 +176,42 @@ class Strategy extends React.Component {
       });
   };
 
-  mapLineData = (data) => {
-    console.log(data)
+  mapLineData = data => {
+    console.log(data);
     const results = [];
 
-    for (let j=0; j < 60; j++) {
+    for (let j = 0; j < 60; j++) {
       const item = {};
-      let content
-      for (let i=0; i < 12; i++) {
+      let content;
+      for (let i = 0; i < 12; i++) {
         // console.log(JSON.parse(data[i].content))
-        content = JSON.parse(data[i].content)
-        const content_data = content[content.length - 1]
+        content = JSON.parse(data[i].content);
+        const content_data = content[content.length - 1];
         // console.log(content)
-        let name = 'name_'+ j
-        item['title'] = data[i].title
-        item['name'] = name        
-        item['value' + i] = content_data[j] ? content_data[j].NAV : 0
+        let name = "name_" + j;
+        item["title"] = data[i].title;
+        item["name"] = name;
+        item["value" + i] = content_data[j] ? content_data[j].NAV : 0;
       }
-      results.push(item)
+      results.push(item);
     }
-    
-    console.log(results)
-    return results
-  }
+
+    console.log(results);
+    return results;
+  };
 
   componentDidMount() {
     // Count FPT in last 3 years
     // this.analyze();
-    axios.get(getStrategyResultUrl())
+    axios
+      .get(getStrategyResultUrl())
       .then(response => {
-        console.log(response.data)
+        console.log(response.data);
         this.setState({
           data123: this.mapLineData(response.data.data)
-        })
+        });
       })
-      .catch(error => console.log(error))
+      .catch(error => console.log(error));
   }
 
   handleChangePeriod = data => {
@@ -225,14 +229,15 @@ class Strategy extends React.Component {
     this.analyze(true);
   };
 
-  calculateProfit = (data) => {
-    let { finalAmount } = this.state
-    for (let i=0; i < data.length; i++) {
-      finalAmount = finalAmount * data[i].end_obj.High / data[i].start_obj.Open
-      data[i].profit = finalAmount
+  calculateProfit = data => {
+    let { finalAmount } = this.state;
+    for (let i = 0; i < data.length; i++) {
+      finalAmount =
+        (finalAmount * data[i].end_obj.High) / data[i].start_obj.Open;
+      data[i].profit = finalAmount;
     }
-    return data
-  }
+    return data;
+  };
 
   handleFindDay = () => {
     const data = {};
@@ -240,7 +245,7 @@ class Strategy extends React.Component {
       .post(getBackTestStockUrl(), data)
       .then(response => {
         console.log(response.data);
-        const mappedData = this.calculateProfit(response.data.data)
+        const mappedData = this.calculateProfit(response.data.data);
         this.setState({
           tableData2: mappedData,
           finalAmount: mappedData[mappedData.length - 1].profit
@@ -251,22 +256,22 @@ class Strategy extends React.Component {
       });
   };
 
-  getArray = (number) => {
+  getArray = number => {
     const result = [];
-    for (let i=0; i < number; i++) {
-      result.push(i)
+    for (let i = 0; i < number; i++) {
+      result.push(i);
     }
-    return result
-  }
+    return result;
+  };
 
   getRandomColor = () => {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
+    var letters = "0123456789ABCDEF";
+    var color = "#";
     for (var i = 0; i < 6; i++) {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
-  }
+  };
 
   render() {
     const { data, tableData, tableData2 } = this.state;
@@ -353,7 +358,10 @@ class Strategy extends React.Component {
                 height={500}
                 data={this.state.data123 || []}
                 margin={{
-                  top: 5, right: 30, left: 20, bottom: 5,
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5
                 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
@@ -364,12 +372,16 @@ class Strategy extends React.Component {
                 {/* <Line type="monotone" dataKey='value0' stroke="#82ca9d" />
                 <Line type="monotone" dataKey='value1' stroke="#82ca9d" />
                   */}
-                {
-                  this.getArray(12).map((item, index) => {
-                    const dataKey = 'value' + index
-                    return <Line type="monotone" dataKey={dataKey} stroke={this.getRandomColor()} />
-                  })
-                }
+                {this.getArray(12).map((item, index) => {
+                  const dataKey = "value" + index;
+                  return (
+                    <Line
+                      type="monotone"
+                      dataKey={dataKey}
+                      stroke={this.getRandomColor()}
+                    />
+                  );
+                })}
                 {/* <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
                 <Line type="monotone" dataKey="uv" stroke="#82ca9d" /> */}
               </LineChart>
