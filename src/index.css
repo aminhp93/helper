@@ -408,3 +408,6 @@ section:not(.dragging) > input[type="file"] {
 .invest .inputContainer {
   /* display: flex; */
 }
+.stock .filterRow {
+  display: flex;
+}

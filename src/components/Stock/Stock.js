@@ -25,12 +25,16 @@ import {
   Tooltip,
   Legend
 } from "recharts";
+
 import Button from "@material-ui/core/Button";
 import CustomedAgGridReact from "../_customedComponents/CustomedAgGridReact";
 import ReactDOM from "react-dom";
 import CustomedToggleButtonGroup from "../_customedComponents/CustomedToggleButtonGroup";
 import filterButtonsEnums from "../../constants/filterButtonsEnums";
 import Strategy from "../Strategy";
+import { InputNumber } from 'antd';
+import { getDateToFilter } from '../../helpers/functionUtils';
+
 
 const filterButtonsOptions = [
   {
@@ -48,6 +52,8 @@ const filterButtonsOptions = [
   }
 ];
 
+
+
 class Stock extends Component {
   constructor(props) {
     super(props);
@@ -56,6 +62,9 @@ class Stock extends Component {
       open: false,
       loading: true
     };
+    this.today_capitalization_min = 5000000000;
+    this.percentage_change_in_price_min = 0.01;
+    this.filter = this.filter.bind(this);
 
     this.columnDefs = [
       {
@@ -184,7 +193,14 @@ class Stock extends Component {
   canslimFilter() {
     let today_capitalization_min = 5000000000;
     let percentage_change_in_price_min = 0.01;
-    let Date = moment().format('YYYY-MM-DD') + 'T00:00:00Z'
+    let Date
+    if (moment().format('ddd') === 'Sat') {
+      Date = moment().subtract(1, 'days').format("YYYY-MM-DD")
+    } else if (moment().format('ddd') === 'Sun' ) {
+      Date = moment().subtract(2, 'days').format("YYYY-MM-DD")
+    } else {
+      Date = moment().format("YYYY-MM-DD")
+    }
     axios
       .post(getFilteredStocksUrl(), {
         today_capitalization_min,
@@ -436,6 +452,35 @@ class Stock extends Component {
       });
   }
 
+  handleChangeTodayCapitalization = (value) => {
+    console.log(value)
+    this.today_capitalization_min = value * 1000000000
+    this.filter()
+  }
+
+  handleChangePercentChangeInPrice = (value) => {
+    console.log(value)
+    this.percentage_change_in_price_min = value / 100
+    this.filter()
+  }
+
+  filter = () => {
+    axios
+    .post(getFilteredStocksUrl(), {
+      today_capitalization_min: this.today_capitalization_min,
+      percentage_change_in_price_min: this.percentage_change_in_price_min,
+      Date: getDateToFilter()
+    })
+    .then(response => {
+      console.log(response);
+      this.gridApi.setRowData(response.data.stocks);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+
+  }
+
   render() {
     return (
       <div className="stock">
@@ -451,6 +496,16 @@ class Stock extends Component {
               />
               <div onClick={this.handleClickFinboxButton.bind(this)}>
                 FinboxButton
+              </div>
+            </div>
+            <div className='filterContainer'>
+              <div className='filterRow'>
+                <div>TodayCapitalization</div>
+                <InputNumber min={1} max={10} defaultValue={this.today_capitalization_min / 1000000000} onChange={this.handleChangeTodayCapitalization} />
+              </div>
+              <div className='filterRow'>
+                <div>Percent Change in Price</div>
+                <InputNumber min={-2} max={10} defaultValue={this.percentage_change_in_price_min * 100} onChange={this.handleChangePercentChangeInPrice} />
               </div>
             </div>
             <CustomedAgGridReact

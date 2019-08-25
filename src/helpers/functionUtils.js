@@ -1,6 +1,7 @@
 import analysisTypes from "../constants/analysisTypes";
 import countValueEnums from "../constants/countValueEnums";
 import { YEAR } from "./requests";
+import moment from 'moment';
 
 export function calculateClose(data, timeValue, percentValue = 0) {
   if (!data) return;
@@ -784,4 +785,16 @@ export function getColumnDefs_analysis_4() {
       }
     }
   ];
+}
+
+export function getDateToFilter(){
+  let Date
+    if (moment().format('ddd') === 'Sat') {
+      Date = moment().subtract(1, 'days').format("YYYY-MM-DD")
+    } else if (moment().format('ddd') === 'Sun' ) {
+      Date = moment().subtract(2, 'days').format("YYYY-MM-DD")
+    } else {
+      Date = moment().format("YYYY-MM-DD")
+    }
+    return Date
 }
