@@ -369,7 +369,9 @@ class Stock extends Component {
 
   searchSymbol(e) {
     let Symbol_search = (e.target.value + "").toUpperCase();
-    axios
+    this.timeout && clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
+      axios
       .post(getFilteredStocksUrl(), {
         Symbol_search
       })
@@ -380,6 +382,8 @@ class Stock extends Component {
       .catch(error => {
         console.log(error);
       });
+    }, 1000)
+    
   }
 
   onGridReadyCb(params) {
@@ -460,7 +464,7 @@ class Stock extends Component {
           <div>Strategy Test</div>
           <Strategy cb={this.handleCbStrategy} />
         </div>
-        <div className="chartContainer">
+        {/* <div className="chartContainer">
           <CustomedPieChart data={this.state.minData} timeValue={251} />
           <CustomedPieChart data={this.state.minData} timeValue={18} />
           <CustomedPieChart
@@ -468,8 +472,8 @@ class Stock extends Component {
             timeValue={251}
             percentValue={20}
           />
-        </div>
-        <div>
+        </div> */}
+        {/* <div>
           <BarChart
             width={500}
             height={300}
@@ -490,7 +494,7 @@ class Stock extends Component {
             <Bar dataKey="decreasedStockNumbers" fill="red" />
             <Bar dataKey="unchangedStockNumbers" fill="grey" />
           </BarChart>
-        </div>
+        </div> */}
         <Modal
           className="stockModal"
           aria-labelledby="simple-modal-title"

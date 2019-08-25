@@ -148,16 +148,16 @@ export async function updateAllStocksDatabase(floor, _this, year) {
   let startTime = new Date();
   let endTime;
   let stop = false;
-  let floor_stocks;
-  if (floor === "HOSE_stocks") {
-    floor_stocks = HOSE_stocks;
-  } else if (floor === "HNX_stocks") {
-    floor_stocks = HNX_stocks;
-  } else if (floor === "UPCOM_stocks") {
-    floor_stocks = UPCOM_stocks;
-  } else if (floor === "all_stocks") {
-    floor_stocks = HOSE_stocks.concat(HNX_stocks).concat(UPCOM_stocks);
-  }
+  // let floor_stocks = ['POS'];
+  // if (floor === "HOSE_stocks") {
+  //   floor_stocks = HOSE_stocks;
+  // } else if (floor === "HNX_stocks") {
+  //   floor_stocks = HNX_stocks;
+  // } else if (floor === "UPCOM_stocks") {
+  //   floor_stocks = UPCOM_stocks;
+  // } else if (floor === "all_stocks") {
+  //   floor_stocks = HOSE_stocks.concat(HNX_stocks).concat(UPCOM_stocks);
+  // }
   let startDate = "";
   let endDate = "";
   switch (year) {
@@ -191,7 +191,13 @@ export async function updateAllStocksDatabase(floor, _this, year) {
       break;
     case "2019":
       startDate = "2019-01-01";
-      endDate = moment().format("YYYY-MM-DD");
+      if (moment().format('ddd') === 'Sat') {
+        endDate = moment().subtract(1, 'days').format("YYYY-MM-DD")
+      } else if (moment().format('ddd') === 'Sun' ) {
+        endDate = moment().subtract(2, 'days').format("YYYY-MM-DD")
+      } else {
+        endDate = moment().format("YYYY-MM-DD")
+      }
       break;
     default:
       break;
@@ -210,20 +216,55 @@ export async function updateAllStocksDatabase(floor, _this, year) {
       })
       .catch(error => console.log(error));
   }
+  if (startDate === endDate) {
+    _this.setState({
+      loading: false
+    })
+    return
+  }
   const response2 = await updatedStockDatabase(
-    floor_stocks,
+    HOSE_stocks,
+    startDate,
+    endDate
+  );
+  const response3 = await updatedStockDatabase(
+    HNX_stocks,
+    startDate,
+    endDate
+  );
+  const response4 = await updatedStockDatabase(
+    UPCOM_stocks,
     startDate,
     endDate
   );
   if (year === "2019") {
-    const date = '"' + moment().format("YYYY-MM-DD") + 'T00:00:00Z"';
-    await updateLastTimeUpdateDatabase({ date });
+    await updateLastTimeUpdateDatabase({ date: `"${endDate}T00:00:00Z"` });
   }
-  console.log(response2);
+  console.log(response2, response3, response4);
   response2.map(item => {
     if (item.message === "error") {
       stop = true;
-      console.log(JSON.stringify(item.errorsList[0].data.Symbol));
+      if (item.errorsList) {
+        console.log(JSON.stringify(item.errorsList[0].data.Symbol));
+      }
+      return;
+    }
+  });
+  response3.map(item => {
+    if (item.message === "error") {
+      stop = true;
+      if (item.errorsList) {
+        console.log(JSON.stringify(item.errorsList[0].data.Symbol));
+      }
+      return;
+    }
+  });
+  response4.map(item => {
+    if (item.message === "error") {
+      stop = true;
+      if (item.errorsList) {
+        console.log(JSON.stringify(item.errorsList[0].data.Symbol));
+      }
       return;
     }
   });

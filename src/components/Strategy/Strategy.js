@@ -19,6 +19,7 @@ import {
   getBackTestStockUrl,
   getStrategyResultUrl
 } from "../../helpers/requests";
+import Strategy3 from './Strategy3';
 
 const config = {
   pagination: {
@@ -134,6 +135,23 @@ const columns2 = [
   }
 ];
 
+const columns3 = [
+  {
+    title: "Title",
+    key: "title",
+    render: data => {
+      return data.title
+    }
+  },
+  {
+    title: "Content",
+    key: "content",
+    render: data => {
+      return data.content
+    }
+  },
+]
+
 const { TabPane } = Tabs;
 class Strategy extends React.Component {
   constructor(props) {
@@ -208,7 +226,8 @@ class Strategy extends React.Component {
       .then(response => {
         console.log(response.data);
         this.setState({
-          data123: this.mapLineData(response.data.data)
+          // data123: this.mapLineData(response.data.data),
+          tableData3: response.data.data
         });
       })
       .catch(error => console.log(error));
@@ -239,8 +258,9 @@ class Strategy extends React.Component {
     return data;
   };
 
-  handleFindDay = () => {
+  handleFindDay = (test) => {
     const data = {};
+    if (test) data.test = true
     axios
       .post(getBackTestStockUrl(), data)
       .then(response => {
@@ -274,7 +294,7 @@ class Strategy extends React.Component {
   };
 
   render() {
-    const { data, tableData, tableData2 } = this.state;
+    const { data, tableData, tableData2, tableData3 } = this.state;
     return (
       <div className="strategy">
         <React.Fragment>
@@ -351,6 +371,9 @@ class Strategy extends React.Component {
               <Button onClick={() => this.handleFindDay()}>
                 Handle calculate the day get % returned
               </Button>
+              <Button onClick={() => this.handleFindDay(true)}>
+                Test
+              </Button>
 
               <Table {...config} columns={columns2} dataSource={tableData2} />
               <LineChart
@@ -385,9 +408,10 @@ class Strategy extends React.Component {
                 {/* <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
                 <Line type="monotone" dataKey="uv" stroke="#82ca9d" /> */}
               </LineChart>
+              <Table {...config} columns={columns3} dataSource={tableData3} />
             </TabPane>
-            <TabPane tab="Tab 3" key="3">
-              Content of Tab Pane 3
+            <TabPane tab="Strategy 3" key="3">
+            <Strategy3/>
             </TabPane>
           </Tabs>
         </React.Fragment>
