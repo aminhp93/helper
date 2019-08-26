@@ -501,11 +501,11 @@ class Stock extends Component {
             <div className='filterContainer'>
               <div className='filterRow'>
                 <div>TodayCapitalization</div>
-                <InputNumber min={1} max={10} defaultValue={this.today_capitalization_min / 1000000000} onChange={this.handleChangeTodayCapitalization} />
+                <InputNumber min={0} max={10} defaultValue={this.today_capitalization_min / 1000000000} onChange={this.handleChangeTodayCapitalization} />
               </div>
               <div className='filterRow'>
                 <div>Percent Change in Price</div>
-                <InputNumber min={-2} max={10} defaultValue={this.percentage_change_in_price_min * 100} onChange={this.handleChangePercentChangeInPrice} />
+                <InputNumber min={-10} max={10} defaultValue={this.percentage_change_in_price_min * 100} onChange={this.handleChangePercentChangeInPrice} />
               </div>
             </div>
             <CustomedAgGridReact
