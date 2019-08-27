@@ -1,7 +1,7 @@
 import analysisTypes from "../constants/analysisTypes";
 import countValueEnums from "../constants/countValueEnums";
 import { YEAR } from "./requests";
-import moment from 'moment';
+import moment from "moment";
 
 export function calculateClose(data, timeValue, percentValue = 0) {
   if (!data) return;
@@ -474,7 +474,7 @@ export function getColumnDefs_year() {
   return result;
 }
 
-export function getColumnDefs_quarter() {
+export function getColumnDefs_quarter(number_of_period = 5) {
   let result = [
     {
       headerName: "Name",
@@ -482,7 +482,16 @@ export function getColumnDefs_quarter() {
       width: 200
     }
   ];
+
   let periods = [
+    "Q2 2015",
+    "Q3 2015",
+    "Q4 2015",
+    "Q1 2016",
+    "Q2 2016",
+    "Q3 2016",
+    "Q4 2016",
+    "Q1 2017",
     "Q2 2017",
     "Q3 2017",
     "Q4 2017",
@@ -490,8 +499,11 @@ export function getColumnDefs_quarter() {
     "Q2 2018",
     "Q3 2018",
     "Q4 2018",
-    "Q1 2019"
+    "Q1 2019",
+    "Q2 2019"
   ];
+  periods = periods.slice(periods.length - number_of_period, periods.length);
+  console.log(periods);
   for (let i = 0; i < periods.length; i++) {
     let item = {
       headerName: periods[i],
@@ -787,14 +799,18 @@ export function getColumnDefs_analysis_4() {
   ];
 }
 
-export function getDateToFilter(){
-  let Date
-    if (moment().format('ddd') === 'Sat') {
-      Date = moment().subtract(1, 'days').format("YYYY-MM-DD")
-    } else if (moment().format('ddd') === 'Sun' ) {
-      Date = moment().subtract(2, 'days').format("YYYY-MM-DD")
-    } else {
-      Date = moment().format("YYYY-MM-DD")
-    }
-    return Date
+export function getDateToFilter() {
+  let Date;
+  if (moment().format("ddd") === "Sat") {
+    Date = moment()
+      .subtract(1, "days")
+      .format("YYYY-MM-DD");
+  } else if (moment().format("ddd") === "Sun") {
+    Date = moment()
+      .subtract(2, "days")
+      .format("YYYY-MM-DD");
+  } else {
+    Date = moment().format("YYYY-MM-DD");
+  }
+  return Date;
 }

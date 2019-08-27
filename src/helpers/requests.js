@@ -126,14 +126,16 @@ export function getWatchingStocksUrl() {
   return "https://watchlist-api.vndirect.com.vn/api/watchlists?filter[where][creator]=vnds-0001813109";
 }
 
-export function getLastestFinancialReports(type, symbol, index) {
+export function getLastestFinancialReports(
+  type,
+  symbol,
+  index,
+  countQuarter = 8,
+  countYear = 5
+) {
   return `https://www.fireant.vn/api/Data/Finance/LastestFinancialReports?symbol=${symbol}&type=${type}&year=${YEAR}&quarter=${
     index === durationReportEnums.YEAR ? "0" : "4"
-  }&count=${
-    index === durationReportEnums.YEAR
-      ? countValueEnums.YEAR
-      : countValueEnums.QUARTER
-  }`;
+  }&count=${index === durationReportEnums.YEAR ? countYear : countQuarter}`;
 }
 
 function updateLastTimeUpdateDatabase(data) {
@@ -191,12 +193,16 @@ export async function updateAllStocksDatabase(floor, _this, year) {
       break;
     case "2019":
       startDate = "2019-01-01";
-      if (moment().format('ddd') === 'Sat') {
-        endDate = moment().subtract(1, 'days').format("YYYY-MM-DD")
-      } else if (moment().format('ddd') === 'Sun' ) {
-        endDate = moment().subtract(2, 'days').format("YYYY-MM-DD")
+      if (moment().format("ddd") === "Sat") {
+        endDate = moment()
+          .subtract(1, "days")
+          .format("YYYY-MM-DD");
+      } else if (moment().format("ddd") === "Sun") {
+        endDate = moment()
+          .subtract(2, "days")
+          .format("YYYY-MM-DD");
       } else {
-        endDate = moment().format("YYYY-MM-DD")
+        endDate = moment().format("YYYY-MM-DD");
       }
       break;
     default:
@@ -219,19 +225,11 @@ export async function updateAllStocksDatabase(floor, _this, year) {
   if (startDate === endDate) {
     _this.setState({
       loading: false
-    })
-    return
+    });
+    return;
   }
-  const response2 = await updatedStockDatabase(
-    HOSE_stocks,
-    startDate,
-    endDate
-  );
-  const response3 = await updatedStockDatabase(
-    HNX_stocks,
-    startDate,
-    endDate
-  );
+  const response2 = await updatedStockDatabase(HOSE_stocks, startDate, endDate);
+  const response3 = await updatedStockDatabase(HNX_stocks, startDate, endDate);
   const response4 = await updatedStockDatabase(
     UPCOM_stocks,
     startDate,

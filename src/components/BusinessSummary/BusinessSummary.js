@@ -16,6 +16,7 @@ import analysisTypes from "../../constants/analysisTypes";
 import durationReportEnums from "../../constants/durationReportEnums";
 import { Input } from "@material-ui/core";
 import CustomedToggleButtonGroup from "../_customedComponents/CustomedToggleButtonGroup";
+import { InputNumber } from "antd";
 
 const ketQuaKinhDoanhOptions = [
   {
@@ -72,7 +73,7 @@ export default class BusinessSummary extends React.Component {
     this.columnDefs_analysis_2 = getColumnDefs_analysis_2();
     this.columnDefs_analysis_3 = getColumnDefs_analysis_3();
     this.columnDefs_analysis_4 = getColumnDefs_analysis_4();
-    this.columnDefs_quarter = getColumnDefs_quarter();
+    this.columnDefs_quarter = getColumnDefs_quarter(5);
 
     this.defaultColDef = {
       width: 120,
@@ -158,6 +159,13 @@ export default class BusinessSummary extends React.Component {
     this.gridApi.sizeColumnsToFit();
   }
 
+  handleChangeNumberOfQuarter = number => {
+    if (!number) return;
+    if (this.period === durationReportEnums.QUARTER) {
+      this.getDataBusinessSummary(number);
+    }
+  };
+
   render() {
     return (
       <div className="ag-theme-balham businessSummary">
@@ -167,33 +175,33 @@ export default class BusinessSummary extends React.Component {
             options={periodOptions}
             cb={this.handleCbCustomedToggleButtonGroup.bind(this)}
           />
+          <InputNumber
+            min={0}
+            max={10}
+            defaultValue={5}
+            onChange={this.handleChangeNumberOfQuarter}
+          />
           {this.renderAnalysisOptions()}
         </div>
         <AgGridReact
-          columnDefs={
-            this.period === durationReportEnums.YEAR
-              ? this.columnDefs_year
-              : this.columnDefs_quarter
-          }
-          // frameworkComponents={this.frameworkComponents}
           defaultColDef={this.defaultColDef}
           onGridReady={this.onGridReady.bind(this)}
           onRowClicked={this.onRowClicked.bind(this)}
-          // autoGroupColumnDef={this.autoGroupColumnDef}
           suppressDragLeaveHidesColumns={true}
         />
       </div>
     );
   }
 
-  getDataBusinessSummary() {
+  getDataBusinessSummary(countQuarter) {
     if (!this.symbol) return;
     const url = getLastestFinancialReports(
       this.typeBusinessSummary,
       this.symbol,
       this.period === durationReportEnums.YEAR
         ? durationReportEnums.YEAR
-        : durationReportEnums.QUARTER
+        : durationReportEnums.QUARTER,
+      countQuarter
     );
     axios
       .get(url)
@@ -206,7 +214,7 @@ export default class BusinessSummary extends React.Component {
         this.gridApi.setColumnDefs(
           this.period === durationReportEnums.YEAR
             ? this.columnDefs_year
-            : this.columnDefs_quarter
+            : getColumnDefs_quarter(countQuarter)
         );
         this.gridApi.sizeColumnsToFit();
       })
