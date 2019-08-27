@@ -3,7 +3,7 @@ import { Input } from "@material-ui/core";
 import Modal from "@material-ui/core/Modal";
 import StockDetail from "../StockDetail";
 import axios from "axios";
-import moment from 'moment';
+import moment from "moment";
 import CustomedPieChart from "./../_customedComponents/CustomedPieChart";
 import Icon from "@material-ui/core/Icon";
 import {
@@ -32,9 +32,8 @@ import ReactDOM from "react-dom";
 import CustomedToggleButtonGroup from "../_customedComponents/CustomedToggleButtonGroup";
 import filterButtonsEnums from "../../constants/filterButtonsEnums";
 import Strategy from "../Strategy";
-import { InputNumber } from 'antd';
-import { getDateToFilter } from '../../helpers/functionUtils';
-
+import { InputNumber } from "antd";
+import { getDateToFilter } from "../../helpers/functionUtils";
 
 const filterButtonsOptions = [
   {
@@ -49,10 +48,12 @@ const filterButtonsOptions = [
   {
     value: filterButtonsEnums.WATCHING_STOCKS,
     display_value: "Watching Stocks"
+  },
+  {
+    value: filterButtonsEnums.NEED_STUDY_STOCKS,
+    display_value: "Need study"
   }
 ];
-
-
 
 class Stock extends Component {
   constructor(props) {
@@ -193,13 +194,17 @@ class Stock extends Component {
   canslimFilter() {
     let today_capitalization_min = 5000000000;
     let percentage_change_in_price_min = 0.01;
-    let Date
-    if (moment().format('ddd') === 'Sat') {
-      Date = moment().subtract(1, 'days').format("YYYY-MM-DD")
-    } else if (moment().format('ddd') === 'Sun' ) {
-      Date = moment().subtract(2, 'days').format("YYYY-MM-DD")
+    let Date;
+    if (moment().format("ddd") === "Sat") {
+      Date = moment()
+        .subtract(1, "days")
+        .format("YYYY-MM-DD");
+    } else if (moment().format("ddd") === "Sun") {
+      Date = moment()
+        .subtract(2, "days")
+        .format("YYYY-MM-DD");
     } else {
-      Date = moment().format("YYYY-MM-DD")
+      Date = moment().format("YYYY-MM-DD");
     }
     axios
       .post(getFilteredStocksUrl(), {
@@ -332,7 +337,10 @@ class Stock extends Component {
         this.setQuickFilter();
         break;
       case filterButtonsEnums.WATCHING_STOCKS:
-        this.getWatchingStocks();
+        this.getWatchingStocks(filterButtonsEnums.WATCHING_STOCKS);
+        break;
+      case filterButtonsEnums.NEED_STUDY_STOCKS:
+        this.getWatchingStocks(filterButtonsEnums.NEED_STUDY_STOCKS);
         break;
       case filterButtonsEnums.CANSLIM_STOCKS:
         this.canslimFilter();
@@ -342,15 +350,20 @@ class Stock extends Component {
     }
   }
 
-  async getWatchingStocks() {
+  async getWatchingStocks(title) {
+    let watchlist_id = "";
+    if (title === filterButtonsEnums.WATCHING_STOCKS) {
+      watchlist_id = "5cea9628838fae3176909129";
+    } else if (title === filterButtonsEnums.NEED_STUDY_STOCKS) {
+      watchlist_id = "5d62962df012b10cd1e81bc5";
+    }
+    if (!watchlist_id) return;
     let watching_stocks;
     await axios
       .get(getWatchingStocksUrl())
       .then(response => {
         console.log(response);
-        let index = response.data.findIndex(
-          item => item.id === "5cea9628838fae3176909129"
-        );
+        let index = response.data.findIndex(item => item.id === watchlist_id);
         if (index > -1) {
           watching_stocks = response.data[index].symbols;
         }
@@ -388,18 +401,17 @@ class Stock extends Component {
     this.timeout && clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
       axios
-      .post(getFilteredStocksUrl(), {
-        Symbol_search
-      })
-      .then(response => {
-        console.log(response);
-        this.gridApi.setRowData(response.data.stocks);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    }, 1000)
-    
+        .post(getFilteredStocksUrl(), {
+          Symbol_search
+        })
+        .then(response => {
+          console.log(response);
+          this.gridApi.setRowData(response.data.stocks);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }, 1000);
   }
 
   onGridReadyCb(params) {
@@ -440,7 +452,7 @@ class Stock extends Component {
       });
   }
 
-  handleCbStrategy = (data) => {
+  handleCbStrategy = data => {
     axios
       .post(getFilteredStocksUrl(), { watching_stocks: data.data })
       .then(response => {
@@ -450,36 +462,35 @@ class Stock extends Component {
       .catch(error => {
         console.log(error);
       });
-  }
+  };
 
-  handleChangeTodayCapitalization = (value) => {
-    console.log(value)
-    this.today_capitalization_min = value * 1000000000
-    this.filter()
-  }
+  handleChangeTodayCapitalization = value => {
+    console.log(value);
+    this.today_capitalization_min = value * 1000000000;
+    this.filter();
+  };
 
-  handleChangePercentChangeInPrice = (value) => {
-    console.log(value)
-    this.percentage_change_in_price_min = value / 100
-    this.filter()
-  }
+  handleChangePercentChangeInPrice = value => {
+    console.log(value);
+    this.percentage_change_in_price_min = value / 100;
+    this.filter();
+  };
 
   filter = () => {
     axios
-    .post(getFilteredStocksUrl(), {
-      today_capitalization_min: this.today_capitalization_min,
-      percentage_change_in_price_min: this.percentage_change_in_price_min,
-      Date: getDateToFilter()
-    })
-    .then(response => {
-      console.log(response);
-      this.gridApi.setRowData(response.data.stocks);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-
-  }
+      .post(getFilteredStocksUrl(), {
+        today_capitalization_min: this.today_capitalization_min,
+        percentage_change_in_price_min: this.percentage_change_in_price_min,
+        Date: getDateToFilter()
+      })
+      .then(response => {
+        console.log(response);
+        this.gridApi.setRowData(response.data.stocks);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
   render() {
     return (
@@ -498,14 +509,24 @@ class Stock extends Component {
                 FinboxButton
               </div>
             </div>
-            <div className='filterContainer'>
-              <div className='filterRow'>
+            <div className="filterContainer">
+              <div className="filterRow">
                 <div>TodayCapitalization</div>
-                <InputNumber min={0} max={10} defaultValue={this.today_capitalization_min / 1000000000} onChange={this.handleChangeTodayCapitalization} />
+                <InputNumber
+                  min={0}
+                  max={10}
+                  defaultValue={this.today_capitalization_min / 1000000000}
+                  onChange={this.handleChangeTodayCapitalization}
+                />
               </div>
-              <div className='filterRow'>
+              <div className="filterRow">
                 <div>Percent Change in Price</div>
-                <InputNumber min={-10} max={10} defaultValue={this.percentage_change_in_price_min * 100} onChange={this.handleChangePercentChangeInPrice} />
+                <InputNumber
+                  min={-10}
+                  max={10}
+                  defaultValue={this.percentage_change_in_price_min * 100}
+                  onChange={this.handleChangePercentChangeInPrice}
+                />
               </div>
             </div>
             <CustomedAgGridReact
@@ -584,7 +605,7 @@ class Stock extends Component {
                 {
                   loading: true
                 },
-                () => updateAllStocksDatabase("all_stocks", this, '2019')
+                () => updateAllStocksDatabase("all_stocks", this, "2019")
               );
             }}
           >
@@ -599,7 +620,7 @@ class Stock extends Component {
                 {
                   loading: true
                 },
-                () => updateAllStocksDatabase("all_stocks", this, '2018')
+                () => updateAllStocksDatabase("all_stocks", this, "2018")
               );
             }}
           >
@@ -614,7 +635,7 @@ class Stock extends Component {
                 {
                   loading: true
                 },
-                () => updateAllStocksDatabase("all_stocks", this, '2017')
+                () => updateAllStocksDatabase("all_stocks", this, "2017")
               );
             }}
           >
@@ -629,7 +650,7 @@ class Stock extends Component {
                 {
                   loading: true
                 },
-                () => updateAllStocksDatabase("all_stocks", this, '2016')
+                () => updateAllStocksDatabase("all_stocks", this, "2016")
               );
             }}
           >
@@ -644,7 +665,7 @@ class Stock extends Component {
                 {
                   loading: true
                 },
-                () => updateAllStocksDatabase("all_stocks", this, '2015')
+                () => updateAllStocksDatabase("all_stocks", this, "2015")
               );
             }}
           >
@@ -659,7 +680,7 @@ class Stock extends Component {
                 {
                   loading: true
                 },
-                () => updateAllStocksDatabase("all_stocks", this, '2014')
+                () => updateAllStocksDatabase("all_stocks", this, "2014")
               );
             }}
           >
@@ -674,7 +695,7 @@ class Stock extends Component {
                 {
                   loading: true
                 },
-                () => updateAllStocksDatabase("all_stocks", this, '2013')
+                () => updateAllStocksDatabase("all_stocks", this, "2013")
               );
             }}
           >
@@ -689,7 +710,7 @@ class Stock extends Component {
                 {
                   loading: true
                 },
-                () => updateAllStocksDatabase("all_stocks", this, '2012')
+                () => updateAllStocksDatabase("all_stocks", this, "2012")
               );
             }}
           >

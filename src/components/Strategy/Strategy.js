@@ -19,7 +19,7 @@ import {
   getBackTestStockUrl,
   getStrategyResultUrl
 } from "../../helpers/requests";
-import Strategy3 from './Strategy3';
+import Strategy3 from "./Strategy3";
 
 const config = {
   pagination: {
@@ -140,17 +140,17 @@ const columns3 = [
     title: "Title",
     key: "title",
     render: data => {
-      return data.title
+      return data.title;
     }
   },
   {
     title: "Content",
     key: "content",
     render: data => {
-      return data.content
+      return data.content;
     }
-  },
-]
+  }
+];
 
 const { TabPane } = Tabs;
 class Strategy extends React.Component {
@@ -221,16 +221,16 @@ class Strategy extends React.Component {
   componentDidMount() {
     // Count FPT in last 3 years
     // this.analyze();
-    axios
-      .get(getStrategyResultUrl())
-      .then(response => {
-        console.log(response.data);
-        this.setState({
-          // data123: this.mapLineData(response.data.data),
-          tableData3: response.data.data
-        });
-      })
-      .catch(error => console.log(error));
+    // axios
+    //   .get(getStrategyResultUrl())
+    //   .then(response => {
+    //     console.log(response.data);
+    //     this.setState({
+    //       // data123: this.mapLineData(response.data.data),
+    //       tableData3: response.data.data
+    //     });
+    //   })
+    //   .catch(error => console.log(error));
   }
 
   handleChangePeriod = data => {
@@ -258,9 +258,9 @@ class Strategy extends React.Component {
     return data;
   };
 
-  handleFindDay = (test) => {
+  handleFindDay = test => {
     const data = {};
-    if (test) data.test = true
+    if (test) data.test = true;
     axios
       .post(getBackTestStockUrl(), data)
       .then(response => {
@@ -371,9 +371,7 @@ class Strategy extends React.Component {
               <Button onClick={() => this.handleFindDay()}>
                 Handle calculate the day get % returned
               </Button>
-              <Button onClick={() => this.handleFindDay(true)}>
-                Test
-              </Button>
+              <Button onClick={() => this.handleFindDay(true)}>Test</Button>
 
               <Table {...config} columns={columns2} dataSource={tableData2} />
               <LineChart
@@ -411,7 +409,7 @@ class Strategy extends React.Component {
               <Table {...config} columns={columns3} dataSource={tableData3} />
             </TabPane>
             <TabPane tab="Strategy 3" key="3">
-            <Strategy3/>
+              <Strategy3 />
             </TabPane>
           </Tabs>
         </React.Fragment>
