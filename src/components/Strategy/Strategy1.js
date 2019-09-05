@@ -20,10 +20,10 @@ import {
   getStrategyResultUrl
 } from "../../helpers/requests";
 
-class Strategy3 extends React.Component {
+class Strategy1 extends React.Component {
   render() {
-    return <div>Strategy3</div>;
+    return <div>Strategy1</div>;
   }
 }
 
-export default Strategy3;
+export default Strategy1;
