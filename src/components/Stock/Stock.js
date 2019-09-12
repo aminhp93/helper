@@ -4,7 +4,7 @@ import Modal from "@material-ui/core/Modal";
 import StockDetail from "../StockDetail";
 import axios from "axios";
 import moment from "moment";
-import CustomedPieChart from "./../_customedComponents/CustomedPieChart";
+// import CustomedPieChart from "./../_customedComponents/CustomedPieChart";
 import Icon from "@material-ui/core/Icon";
 import {
   updateAllStocksDatabase,
@@ -16,15 +16,15 @@ import {
   getWatchingStocksUrl,
   getMarketDataUrl_finbox
 } from "../../helpers/requests";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend
-} from "recharts";
+// import {
+//   BarChart,
+//   Bar,
+//   XAxis,
+//   YAxis,
+//   CartesianGrid,
+//   Tooltip,
+//   Legend
+// } from "recharts";
 
 import Button from "@material-ui/core/Button";
 import CustomedAgGridReact from "../_customedComponents/CustomedAgGridReact";
@@ -222,7 +222,6 @@ class Stock extends Component {
   }
 
   startRealtimeSocket(dataStocks) {
-    return;
     if (!dataStocks) return;
     const that = this;
     const socket = new WebSocket(
@@ -818,7 +817,7 @@ class Stock extends Component {
         this.setState({
           loading: false
         });
-        this.startRealtimeSocket(response.data.stocks);
+        // this.startRealtimeSocket(response.data.stocks);
       })
       .catch(error => {
         this.setState({

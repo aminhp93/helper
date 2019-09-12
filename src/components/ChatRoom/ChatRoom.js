@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React from "react";
 import UserHeader from "./UserHeader/index";
 import { RoomList } from "./RoomList/index";
 import RoomHeader from "./RoomHeader/index";

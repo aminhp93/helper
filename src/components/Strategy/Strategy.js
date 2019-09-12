@@ -1,5 +1,5 @@
 import React from "react";
-import { Tabs, Input, Button, Table, Divider, Tag } from "antd";
+import { Tabs, Input, Button, Table } from "antd";
 import axios from "axios";
 import {
   BarChart,
@@ -17,7 +17,7 @@ import {
 import {
   getAnalyzeStockUrl,
   getBackTestStockUrl,
-  getStrategyResultUrl
+  // getStrategyResultUrl
 } from "../../helpers/requests";
 import Strategy3 from "./Strategy3";
 
@@ -397,6 +397,7 @@ class Strategy extends React.Component {
                   const dataKey = "value" + index;
                   return (
                     <Line
+                      key={index}
                       type="monotone"
                       dataKey={dataKey}
                       stroke={this.getRandomColor()}

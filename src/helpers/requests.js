@@ -1,9 +1,10 @@
+/* eslint-disable array-callback-return */
 import moment from "moment";
 import axios from "axios";
 import { calculateRSI, msToTime } from "../helpers/functionUtils";
 import config from "./../config";
 import durationReportEnums from "../constants/durationReportEnums";
-import countValueEnums from "../constants/countValueEnums";
+// import countValueEnums from "../constants/countValueEnums";
 
 export const tinderToken = "a5897eea-6f59-4094-a776-f21ffd723632";
 
@@ -22,12 +23,12 @@ const UPCOM_stocks = "A32,ABC,ABI,ABR,AC4,ACE,ACS,ACV,ADP,AFC,AFX,AG1,AGP,AGX,AM
   ","
 );
 let time = moment();
-let subtract = 0;
+// let subtract = 0;
 // if (time.format('hh') < 16) {
 //   subtract = 1
 // }
 export const YEAR = time.format("YYYY");
-const endDay = time.subtract(subtract, "days").format("YYYY-MM-DD");
+// const endDay = time.subtract(subtract, "days").format("YYYY-MM-DD");
 
 export function getAllNotesUrl() {
   return domain + "posts/";
