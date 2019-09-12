@@ -10,8 +10,8 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  LineChart,
-  Line
+  // LineChart,
+  // Line
 } from "recharts";
 // import "antd/dist/antd.css";
 import {
@@ -19,6 +19,8 @@ import {
   getBackTestStockUrl,
   // getStrategyResultUrl
 } from "../../helpers/requests";
+// import Strategy1 from "./Strategy1";
+import Strategy2 from "./Strategy2";
 import Strategy3 from "./Strategy3";
 
 const config = {
@@ -62,92 +64,6 @@ const columns = [
         if (data.mapped_result[i].value > 20) result += 1;
       }
       return result;
-    }
-  }
-];
-
-const columns2 = [
-  {
-    title: "Symbol",
-    key: "symbol",
-    render: data => {
-      return data.start_obj.Symbol;
-    }
-  },
-  {
-    title: "Buy Date",
-    key: "buy_date",
-    render: data => {
-      return data.start_obj.Date.slice(0, 10);
-    }
-  },
-  {
-    title: "Buy Price",
-    key: "buy_price",
-    render: data => {
-      return data.buy_price.toFixed(0);
-    }
-  },
-  {
-    title: "End Date",
-    key: "end_date",
-    render: data => {
-      return data.end_obj.Date.slice(0, 10);
-    }
-  },
-  {
-    title: "Sell Price",
-    key: "sell_price",
-    render: data => {
-      return data.sell_price.toFixed(0);
-    }
-  },
-  {
-    title: "Total Volume Stock",
-    key: "total_volume_stock",
-    render: data => {
-      return data.end_obj.Volume;
-    }
-  },
-  {
-    title: "Volume",
-    key: "volume",
-    render: data => {
-      return `${data.volume.toFixed(0)} - ${(
-        (data.volume * 100) /
-        data.end_obj.Volume
-      ).toFixed(4)}`;
-    }
-  },
-  {
-    title: "percent",
-    key: "percent",
-    render: data => {
-      return (data.sell_price / data.buy_price).toFixed(3);
-    }
-  },
-  {
-    title: "NAV",
-    key: "NAV",
-    render: data => {
-      return data.NAV;
-    }
-  }
-];
-
-const columns3 = [
-  {
-    title: "Title",
-    key: "title",
-    render: data => {
-      return data.title;
-    }
-  },
-  {
-    title: "Content",
-    key: "content",
-    render: data => {
-      return data.content;
     }
   }
 ];
@@ -276,25 +192,8 @@ class Strategy extends React.Component {
       });
   };
 
-  getArray = number => {
-    const result = [];
-    for (let i = 0; i < number; i++) {
-      result.push(i);
-    }
-    return result;
-  };
-
-  getRandomColor = () => {
-    var letters = "0123456789ABCDEF";
-    var color = "#";
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  };
-
   render() {
-    const { data, tableData, tableData2, tableData3 } = this.state;
+    const { data, tableData } = this.state;
     return (
       <div className="strategy">
         <React.Fragment>
@@ -359,55 +258,7 @@ class Strategy extends React.Component {
               <Table {...config} columns={columns} dataSource={tableData} />
             </TabPane>
             <TabPane tab="Strategy 2" key="2">
-              <div>
-                1. Create a list of stocks to buy with value from strategy 1:
-                1.05-19
-              </div>
-              <div>Update database based on the period of time 2017, 2018</div>
-              <div>Tinh thanh khoan voi so tien lon dan</div>
-              <div>Delay time: for buy: 3-7 days, for sell: 0-3 days</div>
-              <div>Init Amount {this.state.initAmount}</div>
-              <div>Final Amount {this.state.finalAmount}</div>
-              <Button onClick={() => this.handleFindDay()}>
-                Handle calculate the day get % returned
-              </Button>
-              <Button onClick={() => this.handleFindDay(true)}>Test</Button>
-
-              <Table {...config} columns={columns2} dataSource={tableData2} />
-              <LineChart
-                width={1000}
-                height={500}
-                data={this.state.data123 || []}
-                margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 5
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                {/* <Line type="monotone" dataKey='value0' stroke="#82ca9d" />
-                <Line type="monotone" dataKey='value1' stroke="#82ca9d" />
-                  */}
-                {this.getArray(12).map((item, index) => {
-                  const dataKey = "value" + index;
-                  return (
-                    <Line
-                      key={index}
-                      type="monotone"
-                      dataKey={dataKey}
-                      stroke={this.getRandomColor()}
-                    />
-                  );
-                })}
-                {/* <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-                <Line type="monotone" dataKey="uv" stroke="#82ca9d" /> */}
-              </LineChart>
-              <Table {...config} columns={columns3} dataSource={tableData3} />
+              <Strategy2 />
             </TabPane>
             <TabPane tab="Strategy 3" key="3">
               <Strategy3 />
