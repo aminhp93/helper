@@ -814,3 +814,20 @@ export function getDateToFilter() {
   }
   return Date;
 }
+
+export function getArray(number) {
+  const result = [];
+  for (let i = 0; i < number; i++) {
+    result.push(i);
+  }
+  return result;
+}
+
+export function getRandomColor() {
+  var letters = "0123456789ABCDEF";
+  var color = "#";
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}

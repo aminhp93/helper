@@ -196,16 +196,17 @@ class Stock extends Component {
     let percentage_change_in_price_min = 0.01;
     let Date;
     if (moment().format("ddd") === "Sat") {
-      Date = moment()
-        .subtract(1, "days")
-        .format("YYYY-MM-DD");
+      Date = moment().subtract(1, "days");
     } else if (moment().format("ddd") === "Sun") {
-      Date = moment()
-        .subtract(2, "days")
-        .format("YYYY-MM-DD");
+      Date = moment().subtract(2, "days");
     } else {
-      Date = moment().format("YYYY-MM-DD");
+      Date = moment();
     }
+    const hour = moment().format("HH");
+    if (hour >= "00" && hour <= "16") {
+      Date = Date.subtract(1, "days");
+    }
+    Date = Date.format("YYYY-MM-DD");
     axios
       .post(getFilteredStocksUrl(), {
         today_capitalization_min,
