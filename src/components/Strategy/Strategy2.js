@@ -17,10 +17,14 @@ import {
 import {
   // getAnalyzeStockUrl,
   getBackTestStockUrl,
-  // getStrategyResultUrl
+  getStrategyResultUrl,
 } from "../../helpers/requests";
 
 import { getArray, getRandomColor } from "../../helpers/functionUtils";
+import { filterButtonsEnums } from "./constants";
+import CustomedToggleButtonGroup from "../_customedComponents/CustomedToggleButtonGroup";
+import { Empty } from 'antd';
+import Loading from './../Loading';
 
 const timePeriodDefault = 5;
 const positionStockDefault = 1;
@@ -34,7 +38,22 @@ const config = {
   }
 };
 
-const columns2 = [
+const filterButtonsOptions = [
+  {
+    value: filterButtonsEnums.CALCULATE,
+    display_value: 'CALCULATE'
+  },
+  {
+    value: filterButtonsEnums.TEST,
+    display_value: 'TEST'
+  },
+  {
+    value: filterButtonsEnums.REPORT,
+    display_value: 'REPORT'
+  },
+];
+
+const testColumns = [
   {
     title: "Symbol",
     key: "symbol",
@@ -110,7 +129,7 @@ const columns2 = [
   }
 ];
 
-const columns3 = [
+const reportColumns = [
   {
     title: "Title",
     key: "title",
@@ -119,10 +138,17 @@ const columns3 = [
     }
   },
   {
-    title: "Content",
-    key: "content",
+    title: "NAV",
+    key: "NAV",
     render: data => {
-      return data.content;
+      return data.NAV && data.NAV.toFixed(0);
+    }
+  },
+  {
+    title: "total_NAV",
+    key: "total_NAV",
+    render: data => {
+      return data.total_NAV;
     }
   }
 ];
@@ -139,7 +165,8 @@ class Strategy2 extends React.Component {
         percent: percentDefault,
       },
       lineChartData: [],
-      tableData: [],
+      testTableData: [],
+      loading: false
     };
   }
 
@@ -150,18 +177,26 @@ class Strategy2 extends React.Component {
     Object.keys(this.state.data).map(key => (
       data[key] = this.state.data[key]
     ))
-
+    this.setState({
+      loading: true
+    })
     axios
       .post(getBackTestStockUrl(), data)
       .then(response => {
         console.log(response.data);
         // const mappedData = this.calculateProfit(response.data.data);
-        this.setState({
-          tableData: response.data.data,
-        //   finalAmount: mappedData[mappedData.length - 1].profit
-        });
+        if (response.data && response.data.data) {
+          this.setState({
+            testTableData: (response.data.data || []).sort((a, b) => b.content - a.content),
+            loading: false
+          //   finalAmount: mappedData[mappedData.length - 1].profit
+          });
+        }
       })
       .catch(error => {
+        this.setState({
+          loading: false
+        })
         console.log(error);
       });
   };
@@ -176,11 +211,102 @@ class Strategy2 extends React.Component {
     })
   }
 
-  render() {
-    const { tableData, lineChartData } = this.state;
+  getReport = () => {
+    this.setState({
+      loading: true
+    })
+    axios
+      .get(getStrategyResultUrl())
+      .then(response => {
+        console.log(response.data);
+        if (response.data && response.data.data) {
+          this.setState({
+            // data123: this.mapLineData(response.data.data),
+            reportTableData: (response.data.data || []).sort((a, b) => b.NAV - a.NAV),
+            loading: false
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error)
+        this.setState({
+          loading: false
+        })
+      });
+  }
 
+  handleCbCustomedToggleButtonGroup = (index) => {
+    this.toggleButton = index;
+    switch (index) {
+      case filterButtonsEnums.CALCULATE:
+          this.handleFindDay()
+        break;
+      case filterButtonsEnums.TEST:
+          this.handleFindDay(true)
+        break;
+      case filterButtonsEnums.REPORT:
+          this.getReport()
+        break;
+      default:
+        break;
+    }
+  }
+
+  renderChart = () => {
+    const { testTableData, lineChartData, reportTableData } = this.state;
+    switch (this.toggleButton) {
+      case filterButtonsEnums.CALCULATE:
+        return null;
+      case filterButtonsEnums.TEST:
+        return <Table {...config} columns={testColumns} dataSource={testTableData} />
+      case filterButtonsEnums.REPORT:
+        return <React.Fragment>
+          <LineChart
+            width={1000}
+            height={500}
+            data={lineChartData}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 20,
+              bottom: 5
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            {/* <Line type="monotone" dataKey='value0' stroke="#82ca9d" />
+                  <Line type="monotone" dataKey='value1' stroke="#82ca9d" />
+                    */}
+            {getArray(12).map((item, index) => {
+              const dataKey = "value" + index;
+              return (
+                <Line
+                  key={index}
+                  type="monotone"
+                  dataKey={dataKey}
+                  stroke={getRandomColor()}
+                />
+              );
+            })}
+            {/* <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
+                  <Line type="monotone" dataKey="uv" stroke="#82ca9d" /> */}
+          </LineChart>
+          <Table {...config} columns={reportColumns} dataSource={reportTableData} />
+        </React.Fragment>
+      default:
+        return <Empty />
+    }
+  }
+
+  render() {
+    if (this.state.loading) {
+      return <Loading />
+    }
     return (
-      <div>
+      <div className="strategy2">
         <div>
           1. Create a list of stocks to buy with value from strategy 1: 1.05-19
         </div>
@@ -189,58 +315,22 @@ class Strategy2 extends React.Component {
         <div>Delay time: for buy: 3-7 days, for sell: 0-3 days</div>
         <div>Init Amount {this.state.initAmount}</div>
         <div>Final Amount {this.state.finalAmount}</div>
-        <div className="">
-          <div>
-            time_period: <Input defaultValue={timePeriodDefault} onChange={(e) => this.handleChangeInput('time_period', e)} />
+        <div className="inputContainer">
+          <div className='inputBox'>
+            <Input addonBefore="time_period" defaultValue={timePeriodDefault} onChange={(e) => this.handleChangeInput('time_period', e)} />
           </div>
-          <div>
-            position_stock: <Input defaultValue={positionStockDefault} onChange={e => this.handleChangeInput('position_stock', e)} />
+          <div className='inputBox'>
+            <Input addonBefore="position_stock" defaultValue={positionStockDefault} onChange={e => this.handleChangeInput('position_stock', e)} />
           </div>
-          <div>
-            percent: <Input defaultValue={percentDefault} onChange={e => this.handleChangeInput('percent', e)} />
+          <div className='inputBox'>
+            <Input addonBefore="percent" defaultValue={percentDefault} onChange={e => this.handleChangeInput('percent', e)} />
           </div>
         </div>
-
-        <Button onClick={() => this.handleFindDay()}>
-          Handle calculate the day get % returned
-        </Button>
-        <Button onClick={() => this.handleFindDay(true)}>Test</Button>
-
-        <Table {...config} columns={columns2} dataSource={tableData} />
-        <LineChart
-          width={1000}
-          height={500}
-          data={lineChartData}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          {/* <Line type="monotone" dataKey='value0' stroke="#82ca9d" />
-                <Line type="monotone" dataKey='value1' stroke="#82ca9d" />
-                  */}
-          {getArray(12).map((item, index) => {
-            const dataKey = "value" + index;
-            return (
-              <Line
-                key={index}
-                type="monotone"
-                dataKey={dataKey}
-                stroke={getRandomColor()}
-              />
-            );
-          })}
-          {/* <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-                <Line type="monotone" dataKey="uv" stroke="#82ca9d" /> */}
-        </LineChart>
-        {/* <Table {...config} columns={columns3} dataSource={tableData3} /> */}
+        <CustomedToggleButtonGroup
+          options={filterButtonsOptions}
+          cb={this.handleCbCustomedToggleButtonGroup.bind(this)}
+        />
+        { this.renderChart()}
       </div>
     );
   }

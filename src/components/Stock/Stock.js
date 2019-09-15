@@ -540,37 +540,6 @@ class Stock extends Component {
           <div>Strategy Test</div>
           <Strategy cb={this.handleCbStrategy} />
         </div>
-        {/* <div className="chartContainer">
-          <CustomedPieChart data={this.state.minData} timeValue={251} />
-          <CustomedPieChart data={this.state.minData} timeValue={18} />
-          <CustomedPieChart
-            data={this.state.minData}
-            timeValue={251}
-            percentValue={20}
-          />
-        </div> */}
-        {/* <div>
-          <BarChart
-            width={500}
-            height={300}
-            data={this.state.barChartData}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="increasedStockNumbers" fill="green" />
-            <Bar dataKey="decreasedStockNumbers" fill="red" />
-            <Bar dataKey="unchangedStockNumbers" fill="grey" />
-          </BarChart>
-        </div> */}
         <Modal
           className="stockModal"
           aria-labelledby="simple-modal-title"
@@ -716,51 +685,6 @@ class Stock extends Component {
           >
             2012
           </Button>
-          {/* <Button
-            variant="contained"
-            color="secondary"
-            disabled={this.state.loading}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("HOSE_stocks", this)
-              );
-            }}
-          >
-            Update HOSE_stocks
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={this.state.loading}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("HNX_stocks", this)
-              );
-            }}
-          >
-            Update HNX_stocks
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={this.state.loading}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("UPCOM_stocks", this)
-              );
-            }}
-          >
-            Update UPCOM_stocks
-          </Button> */}
           <Button
             variant="contained"
             color="secondary"

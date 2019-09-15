@@ -411,3 +411,7 @@ section:not(.dragging) > input[type="file"] {
 .stock .filterRow {
   display: flex;
 }
+
+.strategy2 .inputBox{
+  display: flex;
+}
