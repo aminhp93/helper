@@ -146,46 +146,46 @@ class Stock extends Component {
         field: "Volume",
         filter: "agNumberColumnFilter"
       },
-      {
-        headerName: "ROE",
-        field: "ROE",
-        filter: "agNumberColumnFilter",
-        cellRenderer: function(params) {
-          if (params.data.ROE) {
-            return params.data.ROE.toFixed(0);
-          }
-        }
-      },
-      {
-        headerName: "EPS",
-        field: "EPS",
-        filter: "agNumberColumnFilter",
-        cellRenderer: function(params) {
-          if (params.data.EPS) {
-            return params.data.EPS.toFixed(0);
-          }
-        }
-      },
-      {
-        headerName: "RSI_14",
-        field: "RSI_14",
-        filter: "agNumberColumnFilter"
-      },
-      {
-        headerName: "RSI_14_diff",
-        field: "RSI_14_diff",
-        filter: "agNumberColumnFilter"
-      },
-      {
-        headerName: "MarketCapitalization",
-        field: "MarketCapitalization",
-        filter: "agNumberColumnFilter",
-        cellRenderer: function(params) {
-          if (params.data.MarketCapitalization) {
-            return params.data.MarketCapitalization.toFixed(0);
-          }
-        }
-      }
+      // {
+      //   headerName: "ROE",
+      //   field: "ROE",
+      //   filter: "agNumberColumnFilter",
+      //   cellRenderer: function(params) {
+      //     if (params.data.ROE) {
+      //       return params.data.ROE.toFixed(0);
+      //     }
+      //   }
+      // },
+      // {
+      //   headerName: "EPS",
+      //   field: "EPS",
+      //   filter: "agNumberColumnFilter",
+      //   cellRenderer: function(params) {
+      //     if (params.data.EPS) {
+      //       return params.data.EPS.toFixed(0);
+      //     }
+      //   }
+      // },
+      // {
+      //   headerName: "RSI_14",
+      //   field: "RSI_14",
+      //   filter: "agNumberColumnFilter"
+      // },
+      // {
+      //   headerName: "RSI_14_diff",
+      //   field: "RSI_14_diff",
+      //   filter: "agNumberColumnFilter"
+      // },
+      // {
+      //   headerName: "MarketCapitalization",
+      //   field: "MarketCapitalization",
+      //   filter: "agNumberColumnFilter",
+      //   cellRenderer: function(params) {
+      //     if (params.data.MarketCapitalization) {
+      //       return params.data.MarketCapitalization.toFixed(0);
+      //     }
+      //   }
+      // }
     ];
 
     this.toggleButton = filterButtonsEnums.QUICK_FILTER_STOCKS;
@@ -736,6 +736,7 @@ class Stock extends Component {
   }
 
   async componentDidMount() {
+    this.getExportReport();
     await axios
       .post(getFilteredStocksUrl(), {})
       .then(response => {
@@ -751,6 +752,49 @@ class Stock extends Component {
         console.log(error);
       });
     await this.canslimFilter();
+  }
+
+  getExportReport = () => {
+    
+    
+
+    let today_capitalization_min = 5000000000;
+    let percentage_change_in_price_min = 0.01;
+    let Date;
+    if (moment().format("ddd") === "Sat") {
+      Date = moment().subtract(1, "days");
+    } else if (moment().format("ddd") === "Sun") {
+      Date = moment().subtract(2, "days");
+    } else {
+      Date = moment();
+    }
+    const hour = moment().format("HH");
+    if (hour >= "00" && hour <= "16") {
+      Date = Date.subtract(1, "days");
+    }
+    Date = Date.format("YYYY-MM-DD");
+    axios
+      .post(getFilteredStocksUrl(), {
+        today_capitalization_min,
+        percentage_change_in_price_min,
+        Date
+      })
+      .then(response => {
+        console.log(response);
+        if (response.data && response.data.stocks) {
+          // the total number of stocks are positive in the day
+          console.log(response.data.stocks.length)
+          // average of total_capitalization
+          let sum = 0;
+          response.data.stocks.map(item => sum += item.today_capitalization)
+          console.log((sum / response.data.stocks.length / 1000000000).toFixed(0))
+        }
+        
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
   }
 }
 

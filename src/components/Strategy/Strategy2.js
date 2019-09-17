@@ -26,8 +26,8 @@ import CustomedToggleButtonGroup from "../_customedComponents/CustomedToggleButt
 import { Empty } from 'antd';
 import Loading from './../Loading';
 
-const timePeriodDefault = 5;
-const positionStockDefault = 1;
+const timePeriodDefault = 12;
+const positionStockDefault = 2;
 const percentDefault = 105
 
 const config = {
@@ -307,14 +307,19 @@ class Strategy2 extends React.Component {
     }
     return (
       <div className="strategy2">
-        <div>
-          1. Create a list of stocks to buy with value from strategy 1: 1.05-19
-        </div>
-        <div>Update database based on the period of time 2017, 2018</div>
-        <div>Tinh thanh khoan voi so tien lon dan</div>
-        <div>Delay time: for buy: 3-7 days, for sell: 0-3 days</div>
-        <div>Init Amount {this.state.initAmount}</div>
-        <div>Final Amount {this.state.finalAmount}</div>
+        <div>Test: calculate the return from start_time to end_time with 3 variable time_period, position_stock, percent</div>
+        <div>Report: show the highest return from start_time to end_time with range of each variables</div>
+        <div>Delay buy time: 3 days</div>
+        <div>Delay sell time: 0 days</div>
+        <div>Percent bear to sell: 0.97</div>
+        <div>time_period: maximum number of period in one transaction</div>
+        <div>position_stock: the position of a stock that will be chosen from CANSLIM_list to trade in the next transaction</div>
+        <div>Canslim_list: today_capitalization_min = 5000000000
+        percentage_change_in_price_min = 0.01</div>
+
+        <div>Next</div>
+        <div>Should get different start_time and end_time to see which period of time should be used to be start_time</div>
+        <div>Delay time for sell: 0 - 1 days</div>
         <div className="inputContainer">
           <div className='inputBox'>
             <Input addonBefore="time_period" defaultValue={timePeriodDefault} onChange={(e) => this.handleChangeInput('time_period', e)} />
