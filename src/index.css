@@ -415,3 +415,23 @@ section:not(.dragging) > input[type="file"] {
 .strategy2 .inputBox{
   display: flex;
 }
+
+#root {
+
+}
+
+#root .lm_stack {
+  height: 100%;
+}
+
+.app {
+  height: 100%;
+}
+
+.app .goldenLayout {
+  height: 100%;
+}
+
+.app .lm_goldenlayout {
+  height: 100% !important;
+}

@@ -21,8 +21,15 @@ import {
 } from "../../helpers/requests";
 
 class Strategy1 extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: {},
+      tableData: [],
+    }
+  }
   render() {
-    const { data, tableData } = this.state;
+    // const { data, tableData } = this.state;
 
     return <div>
         <div>
@@ -52,7 +59,7 @@ class Strategy1 extends React.Component {
                 />
                 <Button onClick={() => this.handleJustify()}>Justify</Button>
               </div>
-              <BarChart
+              {/* <BarChart
                 width={1500}
                 height={300}
                 data={data}
@@ -80,7 +87,7 @@ class Strategy1 extends React.Component {
                     return <Cell fill={obj.value < 20 ? "red" : "#8884d8"} />;
                   })}
                 </Bar>
-              </BarChart>
+              </BarChart> */}
               {/* <Table {...config} columns={columns} dataSource={tableData} /> */}
     </div>;
   }

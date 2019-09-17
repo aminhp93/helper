@@ -146,46 +146,46 @@ class Stock extends Component {
         field: "Volume",
         filter: "agNumberColumnFilter"
       },
-      {
-        headerName: "ROE",
-        field: "ROE",
-        filter: "agNumberColumnFilter",
-        cellRenderer: function(params) {
-          if (params.data.ROE) {
-            return params.data.ROE.toFixed(0);
-          }
-        }
-      },
-      {
-        headerName: "EPS",
-        field: "EPS",
-        filter: "agNumberColumnFilter",
-        cellRenderer: function(params) {
-          if (params.data.EPS) {
-            return params.data.EPS.toFixed(0);
-          }
-        }
-      },
-      {
-        headerName: "RSI_14",
-        field: "RSI_14",
-        filter: "agNumberColumnFilter"
-      },
-      {
-        headerName: "RSI_14_diff",
-        field: "RSI_14_diff",
-        filter: "agNumberColumnFilter"
-      },
-      {
-        headerName: "MarketCapitalization",
-        field: "MarketCapitalization",
-        filter: "agNumberColumnFilter",
-        cellRenderer: function(params) {
-          if (params.data.MarketCapitalization) {
-            return params.data.MarketCapitalization.toFixed(0);
-          }
-        }
-      }
+      // {
+      //   headerName: "ROE",
+      //   field: "ROE",
+      //   filter: "agNumberColumnFilter",
+      //   cellRenderer: function(params) {
+      //     if (params.data.ROE) {
+      //       return params.data.ROE.toFixed(0);
+      //     }
+      //   }
+      // },
+      // {
+      //   headerName: "EPS",
+      //   field: "EPS",
+      //   filter: "agNumberColumnFilter",
+      //   cellRenderer: function(params) {
+      //     if (params.data.EPS) {
+      //       return params.data.EPS.toFixed(0);
+      //     }
+      //   }
+      // },
+      // {
+      //   headerName: "RSI_14",
+      //   field: "RSI_14",
+      //   filter: "agNumberColumnFilter"
+      // },
+      // {
+      //   headerName: "RSI_14_diff",
+      //   field: "RSI_14_diff",
+      //   filter: "agNumberColumnFilter"
+      // },
+      // {
+      //   headerName: "MarketCapitalization",
+      //   field: "MarketCapitalization",
+      //   filter: "agNumberColumnFilter",
+      //   cellRenderer: function(params) {
+      //     if (params.data.MarketCapitalization) {
+      //       return params.data.MarketCapitalization.toFixed(0);
+      //     }
+      //   }
+      // }
     ];
 
     this.toggleButton = filterButtonsEnums.QUICK_FILTER_STOCKS;
