@@ -11,7 +11,7 @@ import {
 import CustomedCheckBox from "../_customedComponents/CustomedCheckBox";
 import CustomedInput from "../_customedComponents/CustomedInput";
 import RepeatedCard from "../RepeatedCard";
-import LinearProgress from "@material-ui/core/LinearProgress";
+// import LinearProgress from "@material-ui/core/LinearProgress";
 import Icon from "@material-ui/core/Icon";
 
 class CheckList extends Component {

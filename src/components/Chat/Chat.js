@@ -1,7 +1,7 @@
 import React from "react";
 import UsernameForm from "./UsernameForm";
 import ChatScreen from "./ChatScreen";
-import config from "./../../config";
+// import config from "./../../config";
 
 class ChatApp extends React.Component {
   constructor(props) {

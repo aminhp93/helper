@@ -5,7 +5,6 @@ import { List, Avatar, Button, Modal, Carousel, Input, Select } from "antd";
 import {
   BarChart,
   Bar,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -82,6 +81,7 @@ class Tinder extends React.Component {
       const parsed_item = JSON.parse(item.content);
       if (/ig/i.test(parsed_item.user.bio)) return true;
       if (/instagram/i.test(parsed_item.user.bio)) return true;
+      return false
     });
     this.setState({
       data: filterData
@@ -285,7 +285,7 @@ class Tinder extends React.Component {
           <Carousel>
             {detailTinder.user &&
               detailTinder.user.photos.map(item => {
-                return <img src={item.url} />;
+                return <img src={item.url} alt="" />;
               })}
           </Carousel>
         );

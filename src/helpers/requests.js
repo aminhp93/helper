@@ -1,18 +1,21 @@
+/* eslint-disable array-callback-return */
 import moment from "moment";
 import axios from "axios";
 import { calculateRSI, msToTime } from "../helpers/functionUtils";
 import config from "./../config";
 import durationReportEnums from "../constants/durationReportEnums";
-import countValueEnums from "../constants/countValueEnums";
+// import countValueEnums from "../constants/countValueEnums";
 
 export const tinderToken = "a5897eea-6f59-4094-a776-f21ffd723632";
 
 let domain = config.isProduction
   ? "https://api-2019.herokuapp.com/"
   : "http://localhost:8001/";
-const HOSE_stocks = "AAA,AAM,ABT,ACC,ACL,ADS,AGD,AGF,AGM,AGR,ALP,AMD,ANV,APC,APG,ASIAGF,ASM,ASP,AST,ATG,BAS,BBC,BCE,BCG,BCI,BFC,BGM,BHN,BHS,BIC,BID,BMC,BMI,BMP,BRC,BSI,BTP,BTT,BVH,BWE,C32,C47,CAV,CCI,CCL,CDC,CEE,CHP,CIG,CII,CLC,CLG,CLL,CLP,CLW,CMG,CMV,CMX,CNG,COM,CRC,CRE,CSG,CSM,CSV,CTD,CTF,CTG,CTI,CTS,CVT,D2D,DAG,DAH,DAT,DBD,DCC,DCL,DCM,DGW,DHA,DHC,DHG,DHM,DIC,DIG,DLG,DMC,DPG,DPM,DPR,DQC,DRC,DRH,DRL,DSN,DTA,DTL,DTT,DVD,DVP,DXG,DXV,E1VFVN30,EIB,ELC,EMC,EVE,EVG,FBT,FCM,FCN,FDC,FIR,FIT,FLC,FMC,FPC,FPT,FRT,FTM,FTS,FUCTVGF1,FUCTVGF2,FUCVREIT,FUESSV50,GAS,GDT,GEX,GIL,GMC,GMD,GSP,GTA,GTN,HAG,HAH,HAI,HAP,HAR,HAS,HAX,HBC,HCD,HCM,HDB,HDC,HDG,HHS,HID,HII,HLG,HMC,HNG,HOT,HPG,HPX,HQC,HRC,HSG,HSL,HT1,HT2,HTI,HTL,HTN,HTT,HTV,HU1,HU3,HUB,HVG,HVH,HVN,HVX,IBC,IDI,IJC,ILB,IMP,ITA,ITC,ITD,JVC,KAC,KBC,KDC,KDH,KHP,KMR,KPF,KSA,KSB,KSH,KSS,L10,LAF,LBM,LCG,LCM,LDG,LEC,LGC,LGL,LHG,LIX,LM8,LMH,LSS,MAFPF1,MBB,MCG,MCP,MCV,MDG,MHC,MSH,MSN,MWG,NAF,NAV,NBB,NCT,NHS,NHW,NKD,NKG,NLG,NNC,NSC,NT2,NTL,NVL,NVN,NVT,OGC,OPC,PAC,PAN,PC1,PDN,PDR,PET,PGC,PGD,PGI,PHC,PHR,PHT,PIT,PJT,PLP,PLX,PME,PMG,PNC,PNJ,POM,POW,PPC,PPI,PRUBF1,PTB,PTC,PTL,PVD,PVF,PVT,PXI,PXS,PXT,QBS,QCG,RAL,RDP,REE,RIC,ROS,S4A,SAB,SAM,SAV,SBA,SBC,SBT,SBV,SC5,SCD,SCR,SCS,SEC,SFC,SFG,SFI,SGN,SGR,SGT,SHA,SHI,SHP,SII,SJD,SJF,SJS,SKG,SMA,SMB,SMC,SPM,SRC,SRF,SSC,SSI,ST8,STB,STG,STK,SVC,SVI,SVT,SZC,SZL,TAC,TBC,TCB,TCD,TCH,TCL,TCM,TCO,TCR,TCT,TDC,TDG,TDH,TDM,TDW,TEG,TGG,THG,THI,TIE,TIP,TIX,TLD,TLG,TLH,TMP,TMS,TMT,TNA,TNC,TNI,TNT,TPB,TPC,TRA,TRC,TRI,TS4,TSC,TTB,TTE,TTF,TVB,TVS,TVT,TYA,UDC,UIC,VAF,VCB,VCF,VCI,VDP,VDS,VFG,VFMVF1,VFMVF4,VFMVFA,VHC,VHG,VHM,VIC,VID,VIP,VIS,VJC,VMD,VND,VNE,VNG,VNL,VNM,VNS,VOS,VPB,VPD,VPG,VPH,VPI,VPK,VPL,VPS,VRC,VRE,VSC,VSH,VSI,VTB,VTO,YBM,YEG"
-  // .slice(0, 7)
-  .split(",");
+const HOSE_stocks = "AAA,AAM,ABT,ACC,ACL,ADS,AGD,AGF,AGM,AGR,ALP,AMD,ANV,APC,APG,ASIAGF,ASM,ASP,AST,ATG,BAS,BBC,BCE,BCG,BCI,BFC,BGM,BHN,BHS,BIC,BID,BMC,BMI,BMP,BRC,BSI,BTP,BTT,BVH,BWE,C32,C47,CAV,CCI,CCL,CDC,CEE,CHP,CIG,CII,CLC,CLG,CLL,CLP,CLW,CMG,CMV,CMX,CNG,COM,CRC,CRE,CSG,CSM,CSV,CTD,CTF,CTG,CTI,CTS,CVT,D2D,DAG,DAH,DAT,DBD,DCC,DCL,DCM,DGW,DHA,DHC,DHG,DHM,DIC,DIG,DLG,DMC,DPG,DPM,DPR,DQC,DRC,DRH,DRL,DSN,DTA,DTL,DTT,DVD,DVP,DXG,DXV,E1VFVN30,EIB,ELC,EMC,EVE,EVG,FBT,FCM,FCN,FDC,FIR,FIT,FLC,FMC,FPC,FPT,FRT,FTM,FTS,FUCTVGF1,FUCTVGF2,FUCVREIT,FUESSV50,GAS,GDT,GEX,GIL,GMC,GMD,GSP,GTA,GTN,HAG,HAH,HAI,HAP,HAR,HAS,HAX,HBC,HCD,HCM,HDB,HDC,HDG,HHS,HID,HII,HLG,HMC,HNG,HOT,HPG,HPX,HQC,HRC,HSG,HSL,HT1,HT2,HTI,HTL,HTN,HTT,HTV,HU1,HU3,HUB,HVG,HVH,HVN,HVX,IBC,IDI,IJC,ILB,IMP,ITA,ITC,ITD,JVC,KAC,KBC,KDC,KDH,KHP,KMR,KPF,KSA,KSB,KSH,KSS,L10,LAF,LBM,LCG,LCM,LDG,LEC,LGC,LGL,LHG,LIX,LM8,LMH,LSS,MAFPF1,MBB,MCG,MCP,MCV,MDG,MHC,MSH,MSN,MWG,NAF,NAV,NBB,NCT,NHS,NHW,NKD,NKG,NLG,NNC,NSC,NT2,NTL,NVL,NVN,NVT,OGC,OPC,PAC,PAN,PC1,PDN,PDR,PET,PGC,PGD,PGI,PHC,PHR,PHT,PIT,PJT,PLP,PLX,PME,PMG,PNC,PNJ,POM,POW,PPC,PPI,PRUBF1,PTB,PTC,PTL,PVD,PVF,PVT,PXI,PXS,PXT,QBS,QCG,RAL,RDP,REE,RIC,ROS,S4A,SAB,SAM,SAV,SBA,SBC,SBT,SBV,SC5,SCD,SCR,SCS,SEC,SFC,SFG,SFI,SGN,SGR,SGT,SHA,SHI,SHP,SII,SJD,SJF,SJS,SKG,SMA,SMB,SMC,SPM,SRC,SRF,SSC,SSI,ST8,STB,STG,STK,SVC,SVI,SVT,SZC,SZL,TAC,TBC,TCB,TCD,TCH,TCL,TCM,TCO,TCR,TCT,TDC,TDG,TDH,TDM,TDW,TEG,TGG,THG,THI,TIE,TIP,TIX,TLD,TLG,TLH,TMP,TMS,TMT,TNA,TNC,TNI,TNT,TPB,TPC,TRA,TRC,TRI,TS4,TSC,TTB,TTE,TTF,TVB,TVS,TVT,TYA,UDC,UIC,VAF,VCB,VCF,VCI,VDP,VDS,VFG,VFMVF1,VFMVF4,VFMVFA,VHC,VHG,VHM,VIC,VID,VIP,VIS,VJC,VMD,VND,VNE,VNG,VNL,VNM,VNS,VOS,VPB,VPD,VPG,VPH,VPI,VPK,VPL,VPS,VRC,VRE,VSC,VSH,VSI,VTB,VTO,YBM,YEG".split(
+  ","
+);
+// .slice(0, 5)
+// const HOSE_stocks = ['ACB', 'VCB', 'MBB', 'VHM', 'ROS']
 const HNX_stocks = "AAV,ACB,ACM,ADC,AGC,ALT,ALV,AMC,AME,AMV,API,APP,APS,ARM,ART,ASA,ATS,AVS,BAM,BAX,BBS,BCC,BDB,BED,BII,BKC,BLF,BPC,BSC,BST,BTS,BTW,BVS,BXH,C69,C92,CAG,CAN,CAP,CDN,CEO,CET,CIA,CIC,CJC,CKV,CLH,CLM,CMC,CMI,CMS,CPC,CSC,CT6,CTA,CTB,CTC,CTM,CTP,CTT,CTV,CTX,CVN,CX8,D11,DAD,DAE,DBC,DBT,DC2,DC4,DCS,DDG,DGC,DGL,DHI,DHL,DHP,DHT,DID,DIH,DL1,DLR,DNC,DNM,DNP,DNY,DP3,DPC,DPS,DS3,DST,DTD,DXP,DZM,E1SSHN30,EBS,ECI,EID,FDT,FID,GBS,GDW,GFC,GHA,GKM,GLT,GMX,HAD,HAT,HBB,HBE,HBS,HCC,HCT,HDA,HEV,HGM,HHC,HHG,HHL,HHP,HJS,HKB,HKT,HLC,HLD,HLY,HMH,HNM,HOM,HPM,HPR,HPS,HSC,HST,HTB,HTC,HTP,HUT,HVA,HVT,ICG,IDJ,IDV,INC,INN,ITQ,IVS,KBT,KDM,KHB,KHS,KKC,KLF,KLS,KMF,KMT,KSD,KSK,KSQ,KST,KTS,KTT,KVC,L14,L18,L35,L43,L61,L62,LAS,LBE,LCD,LCS,LDP,LHC,LIG,LM7,LO5,LTC,LUT,MAC,MAS,MAX,MBG,MBS,MCC,MCF,MCL,MCO,MDC,MEC,MED,MEL,MHL,MIH,MIM,MKV,MNC,MPT,MSC,MST,NAG,NAP,NBC,NBP,NBW,NDF,NDN,NDX,NET,NFC,NGC,NHA,NHC,NHP,NIS,NLC,NRC,NSH,NSN,NST,NTP,NVB,NVC,OCH,ONE,PBP,PCE,PCG,PCN,PCT,PDB,PDC,PEN,PGS,PGT,PHN,PHP,PHS,PIC,PJC,PLC,PMB,PMC,PMP,PMS,POT,PPE,PPP,PPS,PPY,PRC,PSC,PSD,PSE,PSI,PSW,PTD,PTI,PTS,PV2,PVB,PVC,PVE,PVG,PVI,PVL,PVS,PVV,PVX,QHD,QNC,QST,QTC,RCL,RHC,S55,S64,S74,S91,S99,SAF,SCI,SCJ,SCL,SD2,SD4,SD5,SD6,SD9,SDA,SDC,SDD,SDG,SDN,SDS,SDT,SDU,SEB,SED,SEL,SFN,SGC,SGD,SGH,SGO,SHB,SHE,SHN,SHS,SIC,SJ1,SJC,SJE,SKS,SLS,SME,SMN,SMT,SNG,SPI,SPP,SRA,SSM,SSS,STC,STP,SVN,SVS,TA9,TAR,TAS,TBX,TC6,TCS,TDN,TDT,TET,TFC,THB,THS,THT,THV,TIG,TJC,TKC,TKU,TLC,TMB,TMC,TMX,TNG,TPH,TPP,TSB,TSM,TST,TTC,TTH,TTL,TTT,TTZ,TV2,TV3,TV4,TVC,TVD,TXM,UNI,V12,V21,VAT,VBC,VC1,VC2,VC3,VC6,VC7,VC9,VCC,VCG,VCH,VCM,VCR,VCS,VCV,VDL,VE1,VE2,VE3,VE4,VE8,VE9,VGC,VGP,VGS,VHE,VHL,VIE,VIG,VIT,VIX,VKC,VLA,VMC,VMI,VMS,VNC,VNF,VNR,VNT,VSA,VSM,VTC,VTH,VTJ,VTL,VTS,VTV,VXB,WCS,WSS,X20,XMC,YSC".split(
   ","
 );
@@ -20,12 +23,12 @@ const UPCOM_stocks = "A32,ABC,ABI,ABR,AC4,ACE,ACS,ACV,ADP,AFC,AFX,AG1,AGP,AGX,AM
   ","
 );
 let time = moment();
-let subtract = 0;
+// let subtract = 0;
 // if (time.format('hh') < 16) {
 //   subtract = 1
 // }
 export const YEAR = time.format("YYYY");
-const endDay = time.subtract(subtract, "days").format("YYYY-MM-DD");
+// const endDay = time.subtract(subtract, "days").format("YYYY-MM-DD");
 
 export function getAllNotesUrl() {
   return domain + "posts/";
@@ -69,6 +72,10 @@ export function getAnalyzeStockUrl() {
 
 export function getBackTestStockUrl() {
   return domain + "stocks/backtest/";
+}
+
+export function getStrategyResultUrl() {
+  return domain + "stocks/results";
 }
 
 export function getAllJobsUrl() {
@@ -120,34 +127,143 @@ export function getWatchingStocksUrl() {
   return "https://watchlist-api.vndirect.com.vn/api/watchlists?filter[where][creator]=vnds-0001813109";
 }
 
-export function getLastestFinancialReports(type, symbol, index) {
+export function getLastestFinancialReports(
+  type,
+  symbol,
+  index,
+  countQuarter = 8,
+  countYear = 5
+) {
   return `https://www.fireant.vn/api/Data/Finance/LastestFinancialReports?symbol=${symbol}&type=${type}&year=${YEAR}&quarter=${
     index === durationReportEnums.YEAR ? "0" : "4"
-  }&count=${
-    index === durationReportEnums.YEAR
-      ? countValueEnums.YEAR
-      : countValueEnums.QUARTER
-  }`;
+  }&count=${index === durationReportEnums.YEAR ? countYear : countQuarter}`;
 }
 
-export async function updateAllStocksDatabase(floor, _this) {
+function updateLastTimeUpdateDatabase(data) {
+  const url = domain + "core/update/";
+  axios
+    .post(url, data)
+    .then(response => console.log(response))
+    .catch(error => console.log(error));
+}
+
+export async function updateAllStocksDatabase(floor, _this, year) {
   let startTime = new Date();
   let endTime;
   let stop = false;
-  let floor_stocks;
-  if (floor === "HOSE_stocks") {
-    floor_stocks = HOSE_stocks;
-  } else if (floor === "HNX_stocks") {
-    floor_stocks = HNX_stocks;
-  } else if (floor === "UPCOM_stocks") {
-    floor_stocks = UPCOM_stocks;
+  // let floor_stocks = ['POS'];
+  // if (floor === "HOSE_stocks") {
+  //   floor_stocks = HOSE_stocks;
+  // } else if (floor === "HNX_stocks") {
+  //   floor_stocks = HNX_stocks;
+  // } else if (floor === "UPCOM_stocks") {
+  //   floor_stocks = UPCOM_stocks;
+  // } else if (floor === "all_stocks") {
+  //   floor_stocks = HOSE_stocks.concat(HNX_stocks).concat(UPCOM_stocks);
+  // }
+  let startDate = "";
+  let endDate = "";
+  switch (year) {
+    case "2012":
+      startDate = "2012-01-01";
+      endDate = "2012-12-31";
+      break;
+    case "2013":
+      startDate = "2013-01-01";
+      endDate = "2013-12-31";
+      break;
+    case "2014":
+      startDate = "2014-01-01";
+      endDate = "2014-12-31";
+      break;
+    case "2015":
+      startDate = "2015-01-01";
+      endDate = "2015-12-31";
+      break;
+    case "2016":
+      startDate = "2016-01-01";
+      endDate = "2016-12-31";
+      break;
+    case "2017":
+      startDate = "2017-01-01";
+      endDate = "2017-12-31";
+      break;
+    case "2018":
+      startDate = "2018-01-01";
+      endDate = "2018-12-31";
+      break;
+    case "2019":
+      startDate = "2019-01-01";
+      if (moment().format("ddd") === "Sat") {
+        endDate = moment()
+          .subtract(1, "days")
+          .format("YYYY-MM-DD");
+      } else if (moment().format("ddd") === "Sun") {
+        endDate = moment()
+          .subtract(2, "days")
+          .format("YYYY-MM-DD");
+      } else {
+        endDate = moment().format("YYYY-MM-DD");
+      }
+      break;
+    default:
+      break;
   }
-  const response2 = await updatedStockDatabase(floor_stocks);
-  console.log(response2);
+  if (year === "2019") {
+    await axios
+      .get(domain + "core/")
+      .then(response => {
+        if (response.data) {
+          if (response.data.data === "error") {
+            //
+          } else {
+            startDate = response.data.data.slice(1, 11);
+          }
+        }
+      })
+      .catch(error => console.log(error));
+  }
+  if (startDate === endDate) {
+    _this.setState({
+      loading: false
+    });
+    return;
+  }
+  const response2 = await updatedStockDatabase(HOSE_stocks, startDate, endDate);
+  const response3 = await updatedStockDatabase(HNX_stocks, startDate, endDate);
+  const response4 = await updatedStockDatabase(
+    UPCOM_stocks,
+    startDate,
+    endDate
+  );
+  if (year === "2019") {
+    await updateLastTimeUpdateDatabase({ date: `"${endDate}T00:00:00Z"` });
+  }
+  console.log(response2, response3, response4);
   response2.map(item => {
     if (item.message === "error") {
       stop = true;
-      console.log(JSON.stringify(item.errorsList[0].data.Symbol));
+      if (item.errorsList) {
+        console.log(JSON.stringify(item.errorsList[0].data.Symbol));
+      }
+      return;
+    }
+  });
+  response3.map(item => {
+    if (item.message === "error") {
+      stop = true;
+      if (item.errorsList) {
+        console.log(JSON.stringify(item.errorsList[0].data.Symbol));
+      }
+      return;
+    }
+  });
+  response4.map(item => {
+    if (item.message === "error") {
+      stop = true;
+      if (item.errorsList) {
+        console.log(JSON.stringify(item.errorsList[0].data.Symbol));
+      }
       return;
     }
   });
@@ -173,15 +289,20 @@ export async function updateAllStocksDatabase(floor, _this) {
 }
 
 export function deleteAllStocks() {
-  return axios.post(getDeleteAllStocksUrl());
+  return axios
+    .post(getDeleteAllStocksUrl())
+    .then(response =>
+      updateLastTimeUpdateDatabase({ date: '"2019-01-02T00:00:00Z"' })
+    )
+    .catch(error => console.log(error));
 }
 
-async function getLastestFinancialInfo(resolve, item) {
+async function getLastestFinancialInfo(resolve, item, startDate, endDate) {
   let response1;
   let errorsList = [];
   await axios
     .get(
-      `https://svr1.fireant.vn/api/Data/Markets/HistoricalQuotes?symbol=${item}&startDate=2012-1-1&endDate=${endDay}`
+      `https://svr1.fireant.vn/api/Data/Markets/HistoricalQuotes?symbol=${item}&startDate=${startDate}&endDate=${endDate}`
     )
     .then(response => {
       response1 = response;
@@ -205,6 +326,7 @@ async function getLastestFinancialInfo(resolve, item) {
   }
   await axios
     .post(getCreateStockUrl(), {
+      Year: startDate.slice(0, 4),
       Symbol: item,
       price_data: JSON.stringify(response1.data),
       today_capitalization,
@@ -237,12 +359,12 @@ async function getLastestFinancialInfo(resolve, item) {
   return resolve({ message: "success" });
 }
 
-function updatedStockDatabase(floor) {
+function updatedStockDatabase(floor, startDate, endDate) {
   let listPromises = [];
   floor.map(item => {
     listPromises.push(
       new Promise(resolve => {
-        getLastestFinancialInfo(resolve, item);
+        getLastestFinancialInfo(resolve, item, startDate, endDate);
       })
     );
   });

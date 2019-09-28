@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 import dataStorage from "../../dataStorage";
 import axios from "axios";
 import { getDataHistoryUrl } from "../../helpers/requests";

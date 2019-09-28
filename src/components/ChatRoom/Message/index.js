@@ -16,9 +16,9 @@ class Message extends React.Component {
             return (
                 <li key={message.id} className={style.component}>
                     <img
-                    // onClick={null}
-                    // src={message.sender.avatarURL}
-                    // alt={message.sender.name} 
+                        onClick={null}
+                        src={message.sender.avatarURL}
+                        alt={message.sender.name} 
                     />
                     <div>
                         <span className={''}>

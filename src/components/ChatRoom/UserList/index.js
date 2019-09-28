@@ -3,7 +3,7 @@ import style from "./index.module.css";
 
 class UserList extends React.Component {
   render() {
-    const { current, createConvo, removeUser } = this.props;
+    const { createConvo } = this.props;
     const room = this.props.room || {};
     return (
       <ul className={style.component}>
@@ -15,8 +15,8 @@ class UserList extends React.Component {
             style={{ order: user.presence.state === "online" && -1 }}
           >
             <img
-            // src={user.avatarURL} 
-            // alt={user.name}
+              src={user.avatarURL} 
+              alt={user.name}
             />
             <p>{user.name}</p>
           </li>

@@ -3,7 +3,8 @@ import { Input } from "@material-ui/core";
 import Modal from "@material-ui/core/Modal";
 import StockDetail from "../StockDetail";
 import axios from "axios";
-import CustomedPieChart from "./../_customedComponents/CustomedPieChart";
+import moment from "moment";
+// import CustomedPieChart from "./../_customedComponents/CustomedPieChart";
 import Icon from "@material-ui/core/Icon";
 import {
   updateAllStocksDatabase,
@@ -15,21 +16,24 @@ import {
   getWatchingStocksUrl,
   getMarketDataUrl_finbox
 } from "../../helpers/requests";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend
-} from "recharts";
+// import {
+//   BarChart,
+//   Bar,
+//   XAxis,
+//   YAxis,
+//   CartesianGrid,
+//   Tooltip,
+//   Legend
+// } from "recharts";
+
 import Button from "@material-ui/core/Button";
 import CustomedAgGridReact from "../_customedComponents/CustomedAgGridReact";
 import ReactDOM from "react-dom";
 import CustomedToggleButtonGroup from "../_customedComponents/CustomedToggleButtonGroup";
 import filterButtonsEnums from "../../constants/filterButtonsEnums";
 import Strategy from "../Strategy";
+import { InputNumber } from "antd";
+import { getDateToFilter } from "../../helpers/functionUtils";
 
 const filterButtonsOptions = [
   {
@@ -44,6 +48,10 @@ const filterButtonsOptions = [
   {
     value: filterButtonsEnums.WATCHING_STOCKS,
     display_value: "Watching Stocks"
+  },
+  {
+    value: filterButtonsEnums.NEED_STUDY_STOCKS,
+    display_value: "Need study"
   }
 ];
 
@@ -55,6 +63,9 @@ class Stock extends Component {
       open: false,
       loading: true
     };
+    this.today_capitalization_min = 5000000000;
+    this.percentage_change_in_price_min = 0.01;
+    this.filter = this.filter.bind(this);
 
     this.columnDefs = [
       {
@@ -135,46 +146,46 @@ class Stock extends Component {
         field: "Volume",
         filter: "agNumberColumnFilter"
       },
-      {
-        headerName: "ROE",
-        field: "ROE",
-        filter: "agNumberColumnFilter",
-        cellRenderer: function(params) {
-          if (params.data.ROE) {
-            return params.data.ROE.toFixed(0);
-          }
-        }
-      },
-      {
-        headerName: "EPS",
-        field: "EPS",
-        filter: "agNumberColumnFilter",
-        cellRenderer: function(params) {
-          if (params.data.EPS) {
-            return params.data.EPS.toFixed(0);
-          }
-        }
-      },
-      {
-        headerName: "RSI_14",
-        field: "RSI_14",
-        filter: "agNumberColumnFilter"
-      },
-      {
-        headerName: "RSI_14_diff",
-        field: "RSI_14_diff",
-        filter: "agNumberColumnFilter"
-      },
-      {
-        headerName: "MarketCapitalization",
-        field: "MarketCapitalization",
-        filter: "agNumberColumnFilter",
-        cellRenderer: function(params) {
-          if (params.data.MarketCapitalization) {
-            return params.data.MarketCapitalization.toFixed(0);
-          }
-        }
-      }
+      // {
+      //   headerName: "ROE",
+      //   field: "ROE",
+      //   filter: "agNumberColumnFilter",
+      //   cellRenderer: function(params) {
+      //     if (params.data.ROE) {
+      //       return params.data.ROE.toFixed(0);
+      //     }
+      //   }
+      // },
+      // {
+      //   headerName: "EPS",
+      //   field: "EPS",
+      //   filter: "agNumberColumnFilter",
+      //   cellRenderer: function(params) {
+      //     if (params.data.EPS) {
+      //       return params.data.EPS.toFixed(0);
+      //     }
+      //   }
+      // },
+      // {
+      //   headerName: "RSI_14",
+      //   field: "RSI_14",
+      //   filter: "agNumberColumnFilter"
+      // },
+      // {
+      //   headerName: "RSI_14_diff",
+      //   field: "RSI_14_diff",
+      //   filter: "agNumberColumnFilter"
+      // },
+      // {
+      //   headerName: "MarketCapitalization",
+      //   field: "MarketCapitalization",
+      //   filter: "agNumberColumnFilter",
+      //   cellRenderer: function(params) {
+      //     if (params.data.MarketCapitalization) {
+      //       return params.data.MarketCapitalization.toFixed(0);
+      //     }
+      //   }
+      // }
     ];
 
     this.toggleButton = filterButtonsEnums.QUICK_FILTER_STOCKS;
@@ -183,10 +194,24 @@ class Stock extends Component {
   canslimFilter() {
     let today_capitalization_min = 5000000000;
     let percentage_change_in_price_min = 0.01;
+    let Date;
+    if (moment().format("ddd") === "Sat") {
+      Date = moment().subtract(1, "days");
+    } else if (moment().format("ddd") === "Sun") {
+      Date = moment().subtract(2, "days");
+    } else {
+      Date = moment();
+    }
+    const hour = moment().format("HH");
+    if (hour >= "00" && hour <= "16") {
+      Date = Date.subtract(1, "days");
+    }
+    Date = Date.format("YYYY-MM-DD");
     axios
       .post(getFilteredStocksUrl(), {
         today_capitalization_min,
-        percentage_change_in_price_min
+        percentage_change_in_price_min,
+        Date
       })
       .then(response => {
         console.log(response);
@@ -198,7 +223,6 @@ class Stock extends Component {
   }
 
   startRealtimeSocket(dataStocks) {
-    return;
     if (!dataStocks) return;
     const that = this;
     const socket = new WebSocket(
@@ -313,7 +337,10 @@ class Stock extends Component {
         this.setQuickFilter();
         break;
       case filterButtonsEnums.WATCHING_STOCKS:
-        this.getWatchingStocks();
+        this.getWatchingStocks(filterButtonsEnums.WATCHING_STOCKS);
+        break;
+      case filterButtonsEnums.NEED_STUDY_STOCKS:
+        this.getWatchingStocks(filterButtonsEnums.NEED_STUDY_STOCKS);
         break;
       case filterButtonsEnums.CANSLIM_STOCKS:
         this.canslimFilter();
@@ -323,15 +350,20 @@ class Stock extends Component {
     }
   }
 
-  async getWatchingStocks() {
+  async getWatchingStocks(title) {
+    let watchlist_id = "";
+    if (title === filterButtonsEnums.WATCHING_STOCKS) {
+      watchlist_id = "5cea9628838fae3176909129";
+    } else if (title === filterButtonsEnums.NEED_STUDY_STOCKS) {
+      watchlist_id = "5d62962df012b10cd1e81bc5";
+    }
+    if (!watchlist_id) return;
     let watching_stocks;
     await axios
       .get(getWatchingStocksUrl())
       .then(response => {
         console.log(response);
-        let index = response.data.findIndex(
-          item => item.id === "5cea9628838fae3176909129"
-        );
+        let index = response.data.findIndex(item => item.id === watchlist_id);
         if (index > -1) {
           watching_stocks = response.data[index].symbols;
         }
@@ -366,17 +398,20 @@ class Stock extends Component {
 
   searchSymbol(e) {
     let Symbol_search = (e.target.value + "").toUpperCase();
-    axios
-      .post(getFilteredStocksUrl(), {
-        Symbol_search
-      })
-      .then(response => {
-        console.log(response);
-        this.gridApi.setRowData(response.data.stocks);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    this.timeout && clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
+      axios
+        .post(getFilteredStocksUrl(), {
+          Symbol_search
+        })
+        .then(response => {
+          console.log(response);
+          this.gridApi.setRowData(response.data.stocks);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }, 1000);
   }
 
   onGridReadyCb(params) {
@@ -417,7 +452,7 @@ class Stock extends Component {
       });
   }
 
-  handleCbStrategy = (data) => {
+  handleCbStrategy = data => {
     axios
       .post(getFilteredStocksUrl(), { watching_stocks: data.data })
       .then(response => {
@@ -427,7 +462,35 @@ class Stock extends Component {
       .catch(error => {
         console.log(error);
       });
-  }
+  };
+
+  handleChangeTodayCapitalization = value => {
+    console.log(value);
+    this.today_capitalization_min = value * 1000000000;
+    this.filter();
+  };
+
+  handleChangePercentChangeInPrice = value => {
+    console.log(value);
+    this.percentage_change_in_price_min = value / 100;
+    this.filter();
+  };
+
+  filter = () => {
+    axios
+      .post(getFilteredStocksUrl(), {
+        today_capitalization_min: this.today_capitalization_min,
+        percentage_change_in_price_min: this.percentage_change_in_price_min,
+        Date: getDateToFilter()
+      })
+      .then(response => {
+        console.log(response);
+        this.gridApi.setRowData(response.data.stocks);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
   render() {
     return (
@@ -446,6 +509,26 @@ class Stock extends Component {
                 FinboxButton
               </div>
             </div>
+            <div className="filterContainer">
+              <div className="filterRow">
+                <div>TodayCapitalization</div>
+                <InputNumber
+                  min={0}
+                  max={10}
+                  defaultValue={this.today_capitalization_min / 1000000000}
+                  onChange={this.handleChangeTodayCapitalization}
+                />
+              </div>
+              <div className="filterRow">
+                <div>Percent Change in Price</div>
+                <InputNumber
+                  min={-10}
+                  max={10}
+                  defaultValue={this.percentage_change_in_price_min * 100}
+                  onChange={this.handleChangePercentChangeInPrice}
+                />
+              </div>
+            </div>
             <CustomedAgGridReact
               title="stock"
               columnDefs={this.columnDefs}
@@ -456,37 +539,6 @@ class Stock extends Component {
         <div>
           <div>Strategy Test</div>
           <Strategy cb={this.handleCbStrategy} />
-        </div>
-        <div className="chartContainer">
-          <CustomedPieChart data={this.state.minData} timeValue={251} />
-          <CustomedPieChart data={this.state.minData} timeValue={18} />
-          <CustomedPieChart
-            data={this.state.minData}
-            timeValue={251}
-            percentValue={20}
-          />
-        </div>
-        <div>
-          <BarChart
-            width={500}
-            height={300}
-            data={this.state.barChartData}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="increasedStockNumbers" fill="green" />
-            <Bar dataKey="decreasedStockNumbers" fill="red" />
-            <Bar dataKey="unchangedStockNumbers" fill="grey" />
-          </BarChart>
         </div>
         <Modal
           className="stockModal"
@@ -522,11 +574,11 @@ class Stock extends Component {
                 {
                   loading: true
                 },
-                () => updateAllStocksDatabase("HOSE_stocks", this)
+                () => updateAllStocksDatabase("all_stocks", this, "2019")
               );
             }}
           >
-            Update HOSE_stocks
+            2019
           </Button>
           <Button
             variant="contained"
@@ -537,11 +589,11 @@ class Stock extends Component {
                 {
                   loading: true
                 },
-                () => updateAllStocksDatabase("HNX_stocks", this)
+                () => updateAllStocksDatabase("all_stocks", this, "2018")
               );
             }}
           >
-            Update HNX_stocks
+            2018
           </Button>
           <Button
             variant="contained"
@@ -552,11 +604,86 @@ class Stock extends Component {
                 {
                   loading: true
                 },
-                () => updateAllStocksDatabase("UPCOM_stocks", this)
+                () => updateAllStocksDatabase("all_stocks", this, "2017")
               );
             }}
           >
-            Update UPCOM_stocks
+            2017
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={this.state.loading}
+            onClick={() => {
+              this.setState(
+                {
+                  loading: true
+                },
+                () => updateAllStocksDatabase("all_stocks", this, "2016")
+              );
+            }}
+          >
+            2016
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={this.state.loading}
+            onClick={() => {
+              this.setState(
+                {
+                  loading: true
+                },
+                () => updateAllStocksDatabase("all_stocks", this, "2015")
+              );
+            }}
+          >
+            2015
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={this.state.loading}
+            onClick={() => {
+              this.setState(
+                {
+                  loading: true
+                },
+                () => updateAllStocksDatabase("all_stocks", this, "2014")
+              );
+            }}
+          >
+            2014
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={this.state.loading}
+            onClick={() => {
+              this.setState(
+                {
+                  loading: true
+                },
+                () => updateAllStocksDatabase("all_stocks", this, "2013")
+              );
+            }}
+          >
+            2013
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={this.state.loading}
+            onClick={() => {
+              this.setState(
+                {
+                  loading: true
+                },
+                () => updateAllStocksDatabase("all_stocks", this, "2012")
+              );
+            }}
+          >
+            2012
           </Button>
           <Button
             variant="contained"
@@ -609,13 +736,14 @@ class Stock extends Component {
   }
 
   async componentDidMount() {
+    this.getExportReport();
     await axios
       .post(getFilteredStocksUrl(), {})
       .then(response => {
         this.setState({
           loading: false
         });
-        this.startRealtimeSocket(response.data.stocks);
+        // this.startRealtimeSocket(response.data.stocks);
       })
       .catch(error => {
         this.setState({
@@ -624,6 +752,49 @@ class Stock extends Component {
         console.log(error);
       });
     await this.canslimFilter();
+  }
+
+  getExportReport = () => {
+    
+    
+
+    let today_capitalization_min = 5000000000;
+    let percentage_change_in_price_min = 0.01;
+    let Date;
+    if (moment().format("ddd") === "Sat") {
+      Date = moment().subtract(1, "days");
+    } else if (moment().format("ddd") === "Sun") {
+      Date = moment().subtract(2, "days");
+    } else {
+      Date = moment();
+    }
+    const hour = moment().format("HH");
+    if (hour >= "00" && hour <= "16") {
+      Date = Date.subtract(1, "days");
+    }
+    Date = Date.format("YYYY-MM-DD");
+    axios
+      .post(getFilteredStocksUrl(), {
+        today_capitalization_min,
+        percentage_change_in_price_min,
+        Date
+      })
+      .then(response => {
+        console.log(response);
+        if (response.data && response.data.stocks) {
+          // the total number of stocks are positive in the day
+          console.log(response.data.stocks.length)
+          // average of total_capitalization
+          let sum = 0;
+          response.data.stocks.map(item => sum += item.today_capitalization)
+          console.log((sum / response.data.stocks.length / 1000000000).toFixed(0))
+        }
+        
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
   }
 }
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Tabs, Input, Button, Table, Divider, Tag } from "antd";
+import { Tabs, Input, Button, Table } from "antd";
 import axios from "axios";
 import {
   BarChart,
@@ -9,13 +9,19 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
+  // LineChart,
+  // Line
 } from "recharts";
 // import "antd/dist/antd.css";
 import {
   getAnalyzeStockUrl,
-  getBackTestStockUrl
+  getBackTestStockUrl,
+  // getStrategyResultUrl
 } from "../../helpers/requests";
+import Strategy1 from "./Strategy1";
+import Strategy2 from "./Strategy2";
+import Strategy3 from "./Strategy3";
 
 const config = {
   pagination: {
@@ -62,51 +68,6 @@ const columns = [
   }
 ];
 
-const columns2 = [
-  {
-    title: "Symbol",
-    key: "symbol",
-    render: data => {
-      return data.start_obj.Symbol;
-    }
-  },
-  {
-    title: "Start Date",
-    key: "start_date",
-    render: data => {
-      return data.start_obj.Date.slice(0, 10);
-    }
-  },
-  {
-    title: "Start Open",
-    key: "start_open",
-    render: data => {
-      return data.start_obj.Open.toFixed(0);
-    }
-  },
-  {
-    title: "End Date",
-    key: "end_date",
-    render: data => {
-      return data.end_obj.Date.slice(0, 10);
-    }
-  },
-  {
-    title: "End High",
-    key: "end_high",
-    render: data => {
-      return data.end_obj.High.toFixed(0);
-    }
-  },
-  {
-    title: 'Profit',
-    key: 'profit',
-    render: data => {
-      return data.profit
-    }
-  }
-];
-
 const { TabPane } = Tabs;
 class Strategy extends React.Component {
   constructor(props) {
@@ -121,10 +82,6 @@ class Strategy extends React.Component {
     this.percent = 1.05;
     this.period = 19;
   }
-
-  callback = key => {
-    console.log(key);
-  };
 
   analyze = justify => {
     const data = {
@@ -149,9 +106,32 @@ class Strategy extends React.Component {
       });
   };
 
+  mapLineData = data => {
+    console.log(data);
+    const results = [];
+
+    for (let j = 0; j < 60; j++) {
+      const item = {};
+      let content;
+      for (let i = 0; i < 12; i++) {
+        // console.log(JSON.parse(data[i].content))
+        content = JSON.parse(data[i].content);
+        const content_data = content[content.length - 1];
+        // console.log(content)
+        let name = "name_" + j;
+        item["title"] = data[i].title;
+        item["name"] = name;
+        item["value" + i] = content_data[j] ? content_data[j].NAV : 0;
+      }
+      results.push(item);
+    }
+
+    console.log(results);
+    return results;
+  };
+
   componentDidMount() {
-    // Count FPT in last 3 years
-    this.analyze();
+  // 
   }
 
   handleChangePeriod = data => {
@@ -169,22 +149,24 @@ class Strategy extends React.Component {
     this.analyze(true);
   };
 
-  calculateProfit = (data) => {
-    let { finalAmount } = this.state
-    for (let i=0; i < data.length; i++) {
-      finalAmount = finalAmount * data[i].end_obj.High / data[i].start_obj.Open
-      data[i].profit = finalAmount
+  calculateProfit = data => {
+    let { finalAmount } = this.state;
+    for (let i = 0; i < data.length; i++) {
+      finalAmount =
+        (finalAmount * data[i].end_obj.High) / data[i].start_obj.Open;
+      data[i].profit = finalAmount;
     }
-    return data
-  }
+    return data;
+  };
 
-  handleFindDay = () => {
+  handleFindDay = test => {
     const data = {};
+    if (test) data.test = true;
     axios
       .post(getBackTestStockUrl(), data)
       .then(response => {
         console.log(response.data);
-        const mappedData = this.calculateProfit(response.data.data)
+        const mappedData = this.calculateProfit(response.data.data);
         this.setState({
           tableData2: mappedData,
           finalAmount: mappedData[mappedData.length - 1].profit
@@ -196,93 +178,18 @@ class Strategy extends React.Component {
   };
 
   render() {
-    const { data, tableData, tableData2 } = this.state;
     return (
       <div className="strategy">
         <React.Fragment>
-          <Tabs defaultActiveKey="2" onChange={this.callback}>
+          <Tabs defaultActiveKey="2">
             <TabPane tab="Strategy 1" key="1">
-              <div>
-                1. Count the number of increase 10%, keep it continuously 12
-                times - 6 months - 2 weeks period
-              </div>
-              <div>2. Remove all result not include 2019</div>
-              <div>
-                3. Count the number of stocks that satisfy the requirement each
-                day since 1/1/2019 - now
-              </div>
-              <div>
-                4. Not select the total count of each day, but take the day with
-                highest percentage of days containing > 20 stocks
-              </div>
-
-              <div className="header">
-                <Input
-                  defaultValue={this.period}
-                  onPressEnter={dataInput => this.handleChangePeriod(dataInput)}
-                />
-                <Input
-                  defaultValue={this.percent}
-                  onPressEnter={dataInput =>
-                    this.handleChangePercent(dataInput)
-                  }
-                />
-                <Button onClick={() => this.handleJustify()}>Justify</Button>
-              </div>
-              <BarChart
-                width={1500}
-                height={300}
-                data={data}
-                margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 5
-                }}
-              >
-                <CartesianGrid strokeDasharray="8 8" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar
-                  dataKey="value"
-                  // fill="#8884d8"
-                  onClick={data1 => {
-                    console.log(data1);
-                    this.props.cb(data1);
-                  }}
-                >
-                  {data.map((obj, index) => {
-                    return <Cell fill={obj.value < 20 ? "red" : "#8884d8"} />;
-                  })}
-                </Bar>
-              </BarChart>
-              <Table {...config} columns={columns} dataSource={tableData} />
+              <Strategy1 />
             </TabPane>
             <TabPane tab="Strategy 2" key="2">
-              <div>
-                1. Create a list of stocks to buy with value from strategy 1:
-                1.05-19
-              </div>
-              {/* <div>2. Select 5 stocks from that list</div> */}
-              <div>Backtest with VCB</div>
-              {/* <div>3. Compare how many chosen stock in that list</div> */}
-              {/* <div>4. Find 1 criteria that 5 stocks has in common</div> */}
-              {/* <div>4. Calculate the profit base on the 5 stocks</div> */}
-              <div>Initial amount: 10 trieu</div>
-              <div>5 ma --> 1 ma 2 trieu</div>
-              <div>Lan 1: lay tinh so ngay voi 5 ma duoc chon</div>
-              <div>Init Amount {this.state.initAmount}</div>
-              <div>Final Amount {this.state.finalAmount}</div>
-              <Button onClick={() => this.handleFindDay()}>
-                Handle calculate the day get % returned
-              </Button>
-
-              <Table {...config} columns={columns2} dataSource={tableData2} />
+              <Strategy2 />
             </TabPane>
-            <TabPane tab="Tab 3" key="3">
-              Content of Tab Pane 3
+            <TabPane tab="Strategy 3" key="3">
+              <Strategy3 />
             </TabPane>
           </Tabs>
         </React.Fragment>

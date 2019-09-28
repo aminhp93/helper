@@ -14,7 +14,7 @@ const emptyList = (
 
 class MessagesList extends React.Component {
   render() {
-    const { messages, user, createConvo } = this.props;
+    const { messages } = this.props;
     return (
       <ul id="messages" className={style.component}>
         {Object.keys(messages || {}).length > 0 ? (

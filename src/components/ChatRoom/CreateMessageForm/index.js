@@ -6,7 +6,7 @@ class CreateMessageForm extends React.Component {
     const { state, actions } = this.props;
     const room = (state && state.room) || {};
     const user = (state && state.user) || {};
-    const message = (state && state.message) || "";
+    // const message = (state && state.message) || "";
     const runCommand = actions && actions.runCommand;
     return room.id ? (
       <form
