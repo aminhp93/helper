@@ -32,7 +32,7 @@ import ReactDOM from "react-dom";
 import CustomedToggleButtonGroup from "../_customedComponents/CustomedToggleButtonGroup";
 import filterButtonsEnums from "../../constants/filterButtonsEnums";
 import Strategy from "../Strategy";
-import { InputNumber } from "antd";
+import { InputNumber, Button as AntdButton } from "antd";
 import { getDateToFilter } from "../../helpers/functionUtils";
 
 const filterButtonsOptions = [
@@ -61,7 +61,8 @@ class Stock extends Component {
     const that = this;
     this.state = {
       open: false,
-      loading: true
+      loading: true,
+      viewStrategy: false,
     };
     this.today_capitalization_min = 5000000000;
     this.percentage_change_in_price_min = 0.01;
@@ -102,6 +103,16 @@ class Stock extends Component {
         }
       },
       {
+        headerName: "Close",
+        field: "Close",
+        filter: "agNumberColumnFilter",
+        cellRenderer: function(params) {
+          if (params.data.Close) {
+            return params.data.Close.toFixed(0);
+          }
+        }
+      },
+      {
         headerName: "TodayCapitalization",
         field: "today_capitalization",
         filter: "agNumberColumnFilter",
@@ -118,16 +129,6 @@ class Stock extends Component {
         cellRenderer: function(params) {
           if (params.data.percentage_change_in_price) {
             return (params.data.percentage_change_in_price * 100).toFixed(2);
-          }
-        }
-      },
-      {
-        headerName: "Close",
-        field: "Close",
-        filter: "agNumberColumnFilter",
-        cellRenderer: function(params) {
-          if (params.data.Close) {
-            return params.data.Close.toFixed(0);
           }
         }
       },
@@ -216,9 +217,15 @@ class Stock extends Component {
       .then(response => {
         console.log(response);
         this.gridApi.setRowData(response.data.stocks);
+        this.setState({
+          loading: false
+        })
       })
       .catch(error => {
         console.log(error);
+        this.setState({
+          loading: false
+        })
       });
   }
 
@@ -492,12 +499,30 @@ class Stock extends Component {
       });
   };
 
+  toggleView = () => {
+    this.setState({
+      viewStrategy: !this.state.viewStrategy
+    }, () => {
+      if (!this.state.viewStrategy) {
+        this.canslimFilter();
+      }
+    })
+  }
+
   render() {
+    const { viewStrategy } = this.state;
     return (
       <div className="stock">
         Stock
-        <div className="stockTable">
-          <div className="ag-theme-balham customedAgGrid">
+        <AntdButton onClick={this.toggleView}>
+          View { viewStrategy ? 'stock' : 'strategy' }
+        </AntdButton>
+        {
+          !viewStrategy
+          ? (
+            <React.Fragment>
+              <div className="stockTable">
+              <div className="ag-theme-balham customedAgGrid">
             <div className="header">
               <div>{this.props.symbol}</div>
               <Input onChange={e => this.searchSymbol(e)} />
@@ -535,26 +560,8 @@ class Stock extends Component {
               onGridReady={this.onGridReadyCb.bind(this)}
             />
           </div>
-        </div>
-        <div>
-          <div>Strategy Test</div>
-          <Strategy cb={this.handleCbStrategy} />
-        </div>
-        <Modal
-          className="stockModal"
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          open={this.state.open}
-          onClose={this.closeModal.bind(this)}
-        >
-          <div className="modalContent">
-            <StockDetail
-              closeStockDetail={this.handleCloseStockDetail.bind(this)}
-              symbol={this.state.symbol}
-            />
-          </div>
-        </Modal>
-        <div className="updateButtons">
+            </div>
+              <div className="updateButtons">
           <Button
             variant="contained"
             color="secondary"
@@ -694,6 +701,33 @@ class Stock extends Component {
             Get all database
           </Button>
         </div>
+            </React.Fragment>
+            
+
+          )
+          : (
+            <div>
+              <div>Strategy Test</div>
+              <Strategy cb={this.handleCbStrategy} />
+            </div>
+          )
+        }
+        
+        <Modal
+          className="stockModal"
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={this.state.open}
+          onClose={this.closeModal.bind(this)}
+        >
+          <div className="modalContent">
+            <StockDetail
+              closeStockDetail={this.handleCloseStockDetail.bind(this)}
+              symbol={this.state.symbol}
+            />
+          </div>
+        </Modal>
+        
       </div>
     );
   }
@@ -736,21 +770,21 @@ class Stock extends Component {
   }
 
   async componentDidMount() {
-    this.getExportReport();
-    await axios
-      .post(getFilteredStocksUrl(), {})
-      .then(response => {
-        this.setState({
-          loading: false
-        });
-        // this.startRealtimeSocket(response.data.stocks);
-      })
-      .catch(error => {
-        this.setState({
-          loading: false
-        });
-        console.log(error);
-      });
+    // this.getExportReport();
+    // await axios
+    //   .post(getFilteredStocksUrl(), {})
+    //   .then(response => {
+    //     this.setState({
+    //       loading: false
+    //     });
+    //     // this.startRealtimeSocket(response.data.stocks);
+    //   })
+    //   .catch(error => {
+    //     this.setState({
+    //       loading: false
+    //     });
+    //     console.log(error);
+    //   });
     await this.canslimFilter();
   }
 
