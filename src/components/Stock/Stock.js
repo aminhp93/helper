@@ -4,7 +4,6 @@ import Modal from "@material-ui/core/Modal";
 import StockDetail from "../StockDetail";
 import axios from "axios";
 import moment from "moment";
-// import CustomedPieChart from "./../_customedComponents/CustomedPieChart";
 import Icon from "@material-ui/core/Icon";
 import {
   updateAllStocksDatabase,
@@ -16,15 +15,6 @@ import {
   getWatchingStocksUrl,
   getMarketDataUrl_finbox
 } from "../../helpers/requests";
-// import {
-//   BarChart,
-//   Bar,
-//   XAxis,
-//   YAxis,
-//   CartesianGrid,
-//   Tooltip,
-//   Legend
-// } from "recharts";
 
 import Button from "@material-ui/core/Button";
 import CustomedAgGridReact from "../_customedComponents/CustomedAgGridReact";
@@ -34,6 +24,7 @@ import filterButtonsEnums from "../../constants/filterButtonsEnums";
 import Strategy from "../Strategy";
 import { InputNumber, Button as AntdButton } from "antd";
 import { getDateToFilter } from "../../helpers/functionUtils";
+import StockEvaluation from '../StockEvaluation';
 
 const filterButtonsOptions = [
   {
@@ -712,7 +703,7 @@ class Stock extends Component {
             </div>
           )
         }
-        
+        <StockEvaluation stock={'VND'}/>
         <Modal
           className="stockModal"
           aria-labelledby="simple-modal-title"

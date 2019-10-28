@@ -181,14 +181,14 @@ class Strategy extends React.Component {
     return (
       <div className="strategy">
         <React.Fragment>
-          <Tabs defaultActiveKey="2">
+          <Tabs defaultActiveKey="3">
             <TabPane tab="Strategy 1" key="1">
               <Strategy1 />
             </TabPane>
             <TabPane tab="Strategy 2" key="2">
               <Strategy2 />
             </TabPane>
-            <TabPane tab="Strategy 3" key="3">
+            <TabPane tab="Paybacktime Strategy" key="3">
               <Strategy3 />
             </TabPane>
           </Tabs>
