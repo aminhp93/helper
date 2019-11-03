@@ -31,11 +31,11 @@ const filterButtonsOptions = [
     value: filterButtonsEnums.CANSLIM_STOCKS,
     display_value: "Canslim Stocks"
   },
-  {
-    value: filterButtonsEnums.QUICK_FILTER_STOCKS,
-    display_value:
-      "Quick filter(EPS > 3000, ROE > 17, VOLUME > 10000, ROI > 60)"
-  },
+  // {
+  //   value: filterButtonsEnums.QUICK_FILTER_STOCKS,
+  //   display_value:
+  //     "Quick filter(EPS > 3000, ROE > 17, VOLUME > 10000, ROI > 60)"
+  // },
   {
     value: filterButtonsEnums.WATCHING_STOCKS,
     display_value: "Watching Stocks"
@@ -43,7 +43,20 @@ const filterButtonsOptions = [
   {
     value: filterButtonsEnums.NEED_STUDY_STOCKS,
     display_value: "Need study"
-  }
+  },
+  {
+    value: filterButtonsEnums.CO_PHIEU_DAU_CO,
+    display_value: "Co phieu dau co"
+  },
+  {
+    value: filterButtonsEnums.CO_PHIEU_GIA_TRI,
+    display_value: "Co phieu gia tri"
+  },
+  {
+    value: filterButtonsEnums.ALL,
+    display_value: "All"
+  },
+  
 ];
 
 class Stock extends Component {
@@ -184,40 +197,9 @@ class Stock extends Component {
   }
 
   canslimFilter() {
-    let today_capitalization_min = 5000000000;
-    let percentage_change_in_price_min = 0.01;
-    let Date;
-    if (moment().format("ddd") === "Sat") {
-      Date = moment().subtract(1, "days");
-    } else if (moment().format("ddd") === "Sun") {
-      Date = moment().subtract(2, "days");
-    } else {
-      Date = moment();
-    }
-    const hour = moment().format("HH");
-    if (hour >= "00" && hour <= "16") {
-      Date = Date.subtract(1, "days");
-    }
-    Date = Date.format("YYYY-MM-DD");
-    axios
-      .post(getFilteredStocksUrl(), {
-        today_capitalization_min,
-        percentage_change_in_price_min,
-        Date
-      })
-      .then(response => {
-        console.log(response);
-        this.gridApi.setRowData(response.data.stocks);
-        this.setState({
-          loading: false
-        })
-      })
-      .catch(error => {
-        console.log(error);
-        this.setState({
-          loading: false
-        })
-      });
+    this.today_capitalization_min = 5000000000;
+    this.percentage_change_in_price_min = 0.01;
+    this.filter();
   }
 
   startRealtimeSocket(dataStocks) {
@@ -334,18 +316,33 @@ class Stock extends Component {
       case filterButtonsEnums.QUICK_FILTER_STOCKS:
         this.setQuickFilter();
         break;
+      case filterButtonsEnums.CANSLIM_STOCKS:
+        this.canslimFilter();
+        break;
       case filterButtonsEnums.WATCHING_STOCKS:
         this.getWatchingStocks(filterButtonsEnums.WATCHING_STOCKS);
         break;
       case filterButtonsEnums.NEED_STUDY_STOCKS:
         this.getWatchingStocks(filterButtonsEnums.NEED_STUDY_STOCKS);
         break;
-      case filterButtonsEnums.CANSLIM_STOCKS:
-        this.canslimFilter();
+      case filterButtonsEnums.CO_PHIEU_DAU_CO:
+        this.getWatchingStocks(filterButtonsEnums.CO_PHIEU_DAU_CO);
+        break;
+      case filterButtonsEnums.CO_PHIEU_GIA_TRI:
+        this.getWatchingStocks(filterButtonsEnums.CO_PHIEU_GIA_TRI);
+        break;
+      case filterButtonsEnums.ALL:
+        this.getAllStocks();
         break;
       default:
         break;
     }
+  }
+
+  getAllStocks = () => {
+    this.today_capitalization_min = 0
+    this.percentage_change_in_price_min = -9999999
+    this.filter()
   }
 
   async getWatchingStocks(title) {
@@ -354,6 +351,10 @@ class Stock extends Component {
       watchlist_id = "5cea9628838fae3176909129";
     } else if (title === filterButtonsEnums.NEED_STUDY_STOCKS) {
       watchlist_id = "5d62962df012b10cd1e81bc5";
+    } else if (title === filterButtonsEnums.CO_PHIEU_DAU_CO) {
+      watchlist_id = "5dbed4e782b5472ff6f3d05d";
+    } else if (title === filterButtonsEnums.CO_PHIEU_GIA_TRI) {
+      watchlist_id = "5dbed4f0f32ca876823837b4";
     }
     if (!watchlist_id) return;
     let watching_stocks;
@@ -484,9 +485,15 @@ class Stock extends Component {
       .then(response => {
         console.log(response);
         this.gridApi.setRowData(response.data.stocks);
+        this.setState({
+          loading: false
+        })
       })
       .catch(error => {
         console.log(error);
+        this.setState({
+          loading: false
+        })
       });
   };
 
@@ -693,8 +700,6 @@ class Stock extends Component {
           </Button>
         </div>
             </React.Fragment>
-            
-
           )
           : (
             <div>
@@ -741,85 +746,13 @@ class Stock extends Component {
         loading: true
       },
       () => {
-        axios
-          .get(getAllStocksUrl())
-          .then(response => {
-            console.log(response);
-            this.gridApi.setRowData(response.data.stocks);
-            this.setState({
-              loading: false
-            });
-          })
-          .catch(error => {
-            console.log(error);
-            this.setState({
-              loading: false
-            });
-          });
+        this.getAllStocks();
       }
     );
   }
 
-  async componentDidMount() {
-    // this.getExportReport();
-    // await axios
-    //   .post(getFilteredStocksUrl(), {})
-    //   .then(response => {
-    //     this.setState({
-    //       loading: false
-    //     });
-    //     // this.startRealtimeSocket(response.data.stocks);
-    //   })
-    //   .catch(error => {
-    //     this.setState({
-    //       loading: false
-    //     });
-    //     console.log(error);
-    //   });
-    await this.canslimFilter();
-  }
-
-  getExportReport = () => {
-    
-    
-
-    let today_capitalization_min = 5000000000;
-    let percentage_change_in_price_min = 0.01;
-    let Date;
-    if (moment().format("ddd") === "Sat") {
-      Date = moment().subtract(1, "days");
-    } else if (moment().format("ddd") === "Sun") {
-      Date = moment().subtract(2, "days");
-    } else {
-      Date = moment();
-    }
-    const hour = moment().format("HH");
-    if (hour >= "00" && hour <= "16") {
-      Date = Date.subtract(1, "days");
-    }
-    Date = Date.format("YYYY-MM-DD");
-    axios
-      .post(getFilteredStocksUrl(), {
-        today_capitalization_min,
-        percentage_change_in_price_min,
-        Date
-      })
-      .then(response => {
-        console.log(response);
-        if (response.data && response.data.stocks) {
-          // the total number of stocks are positive in the day
-          console.log(response.data.stocks.length)
-          // average of total_capitalization
-          let sum = 0;
-          response.data.stocks.map(item => sum += item.today_capitalization)
-          console.log((sum / response.data.stocks.length / 1000000000).toFixed(0))
-        }
-        
-      })
-      .catch(error => {
-        console.log(error);
-      });
-
+  componentDidMount() {
+    this.canslimFilter();
   }
 }
 
