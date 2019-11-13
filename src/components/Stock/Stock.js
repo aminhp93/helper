@@ -24,7 +24,7 @@ import filterButtonsEnums from "../../constants/filterButtonsEnums";
 import Strategy from "../Strategy";
 import { InputNumber, Button as AntdButton } from "antd";
 import { getDateToFilter } from "../../helpers/functionUtils";
-import StockEvaluation from '../StockEvaluation';
+import StockEvaluation from "../StockEvaluation";
 
 const filterButtonsOptions = [
   {
@@ -55,8 +55,7 @@ const filterButtonsOptions = [
   {
     value: filterButtonsEnums.ALL,
     display_value: "All"
-  },
-  
+  }
 ];
 
 class Stock extends Component {
@@ -66,7 +65,7 @@ class Stock extends Component {
     this.state = {
       open: false,
       loading: true,
-      viewStrategy: false,
+      viewStrategy: false
     };
     this.today_capitalization_min = 5000000000;
     this.percentage_change_in_price_min = 0.01;
@@ -112,8 +111,73 @@ class Stock extends Component {
         filter: "agNumberColumnFilter",
         cellRenderer: function(params) {
           if (params.data.Close) {
-            return params.data.Close.toFixed(0);
+            const Close = params.data.Close;
+            return Close.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
           }
+        }
+      },
+      {
+        headerName: "% Change in Price",
+        field: "percentage_change_in_price",
+        filter: "agNumberColumnFilter",
+        cellRenderer: function(params) {
+          let content;
+          if (params.data.percentage_change_in_price === 0) {
+            content = 0;
+          }
+          if (params.data.percentage_change_in_price) {
+            content = (params.data.percentage_change_in_price * 100).toFixed(0);
+          }
+
+          const div = document.createElement("div");
+
+          div.innerText = content;
+          if (Number(content) > 0) {
+            div.className = "green";
+          } else if (Number(content) < 0) {
+            div.className = "red";
+          }
+
+          return div;
+        }
+      },
+      {
+        headerName: "Volume (1000)",
+        field: "Volume",
+        filter: "agNumberColumnFilter",
+        cellRenderer: function(params) {
+          if (params.data.Volume) {
+            const Volume = params.data.Volume / 1000;
+            return Volume.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+          }
+          return "Undefined";
+        }
+      },
+      {
+        headerName: "% Change in Volume",
+        field: "percentage_change_in_volume",
+        filter: "agNumberColumnFilter",
+        cellRenderer: function(params) {
+          let content;
+          if (params.data.percentage_change_in_volume === 0) {
+            content = 0;
+          }
+          if (params.data.percentage_change_in_volume) {
+            content = (params.data.percentage_change_in_volume * 100).toFixed(
+              0
+            );
+          }
+
+          const div = document.createElement("div");
+
+          div.innerText = content;
+          if (Number(content) > 0) {
+            div.className = "green";
+          } else if (Number(content) < 0) {
+            div.className = "red";
+          }
+
+          return div;
         }
       },
       {
@@ -125,32 +189,8 @@ class Stock extends Component {
             0
           );
         }
-      },
-      {
-        headerName: "% Change in Price",
-        field: "percentage_change_in_price",
-        filter: "agNumberColumnFilter",
-        cellRenderer: function(params) {
-          if (params.data.percentage_change_in_price) {
-            return (params.data.percentage_change_in_price * 100).toFixed(2);
-          }
-        }
-      },
-      {
-        headerName: "% Change in Volume",
-        field: "percentage_change_in_volume",
-        filter: "agNumberColumnFilter",
-        cellRenderer: function(params) {
-          if (params.data.percentage_change_in_volume) {
-            return (params.data.percentage_change_in_volume * 100).toFixed(2);
-          }
-        }
-      },
-      {
-        headerName: "Volume",
-        field: "Volume",
-        filter: "agNumberColumnFilter"
-      },
+      }
+
       // {
       //   headerName: "ROE",
       //   field: "ROE",
@@ -340,10 +380,10 @@ class Stock extends Component {
   }
 
   getAllStocks = () => {
-    this.today_capitalization_min = 0
-    this.percentage_change_in_price_min = -9999999
-    this.filter()
-  }
+    this.today_capitalization_min = 0;
+    this.percentage_change_in_price_min = -9999999;
+    this.filter();
+  };
 
   async getWatchingStocks(title) {
     let watchlist_id = "";
@@ -487,25 +527,28 @@ class Stock extends Component {
         this.gridApi.setRowData(response.data.stocks);
         this.setState({
           loading: false
-        })
+        });
       })
       .catch(error => {
         console.log(error);
         this.setState({
           loading: false
-        })
+        });
       });
   };
 
   toggleView = () => {
-    this.setState({
-      viewStrategy: !this.state.viewStrategy
-    }, () => {
-      if (!this.state.viewStrategy) {
-        this.canslimFilter();
+    this.setState(
+      {
+        viewStrategy: !this.state.viewStrategy
+      },
+      () => {
+        if (!this.state.viewStrategy) {
+          this.canslimFilter();
+        }
       }
-    })
-  }
+    );
+  };
 
   render() {
     const { viewStrategy } = this.state;
@@ -513,54 +556,52 @@ class Stock extends Component {
       <div className="stock">
         Stock
         <AntdButton onClick={this.toggleView}>
-          View { viewStrategy ? 'stock' : 'strategy' }
+          View {viewStrategy ? "stock" : "strategy"}
         </AntdButton>
-        {
-          !viewStrategy
-          ? (
-            <React.Fragment>
-              <div className="stockTable">
+        {!viewStrategy ? (
+          <React.Fragment>
+            <div className="stockTable">
               <div className="ag-theme-balham customedAgGrid">
-            <div className="header">
-              <div>{this.props.symbol}</div>
-              <Input onChange={e => this.searchSymbol(e)} />
-              <CustomedToggleButtonGroup
-                options={filterButtonsOptions}
-                cb={this.handleCbCustomedToggleButtonGroup.bind(this)}
-              />
-              <div onClick={this.handleClickFinboxButton.bind(this)}>
-                FinboxButton
-              </div>
-            </div>
-            <div className="filterContainer">
-              <div className="filterRow">
-                <div>TodayCapitalization</div>
-                <InputNumber
-                  min={0}
-                  max={10}
-                  defaultValue={this.today_capitalization_min / 1000000000}
-                  onChange={this.handleChangeTodayCapitalization}
+                <div className="header">
+                  <div>{this.props.symbol}</div>
+                  <Input onChange={e => this.searchSymbol(e)} />
+                  <CustomedToggleButtonGroup
+                    options={filterButtonsOptions}
+                    cb={this.handleCbCustomedToggleButtonGroup.bind(this)}
+                  />
+                  <div onClick={this.handleClickFinboxButton.bind(this)}>
+                    FinboxButton
+                  </div>
+                </div>
+                <div className="filterContainer">
+                  <div className="filterRow">
+                    <div>TodayCapitalization</div>
+                    <InputNumber
+                      min={0}
+                      max={10}
+                      defaultValue={this.today_capitalization_min / 1000000000}
+                      onChange={this.handleChangeTodayCapitalization}
+                    />
+                  </div>
+                  <div className="filterRow">
+                    <div>Percent Change in Price</div>
+                    <InputNumber
+                      min={-10}
+                      max={10}
+                      defaultValue={this.percentage_change_in_price_min * 100}
+                      onChange={this.handleChangePercentChangeInPrice}
+                    />
+                  </div>
+                </div>
+                <CustomedAgGridReact
+                  title="stock"
+                  columnDefs={this.columnDefs}
+                  onGridReady={this.onGridReadyCb.bind(this)}
                 />
               </div>
-              <div className="filterRow">
-                <div>Percent Change in Price</div>
-                <InputNumber
-                  min={-10}
-                  max={10}
-                  defaultValue={this.percentage_change_in_price_min * 100}
-                  onChange={this.handleChangePercentChangeInPrice}
-                />
-              </div>
             </div>
-            <CustomedAgGridReact
-              title="stock"
-              columnDefs={this.columnDefs}
-              onGridReady={this.onGridReadyCb.bind(this)}
-            />
-          </div>
-            </div>
-              <div className="updateButtons">
-          <Button
+            <div className="updateButtons">
+              {/* <Button
             variant="contained"
             color="secondary"
             disabled={this.state.loading}
@@ -569,146 +610,152 @@ class Stock extends Component {
             }}
           >
             Delete all stocks
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={this.state.loading}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2019")
-              );
-            }}
-          >
-            2019
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={this.state.loading}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2018")
-              );
-            }}
-          >
-            2018
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={this.state.loading}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2017")
-              );
-            }}
-          >
-            2017
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={this.state.loading}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2016")
-              );
-            }}
-          >
-            2016
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={this.state.loading}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2015")
-              );
-            }}
-          >
-            2015
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={this.state.loading}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2014")
-              );
-            }}
-          >
-            2014
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={this.state.loading}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2013")
-              );
-            }}
-          >
-            2013
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={this.state.loading}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2012")
-              );
-            }}
-          >
-            2012
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={this.state.loading}
-            onClick={this.getAllDatabase.bind(this)}
-          >
-            Get all database
-          </Button>
-        </div>
-            </React.Fragment>
-          )
-          : (
-            <div>
-              <div>Strategy Test</div>
-              <Strategy cb={this.handleCbStrategy} />
+          </Button> */}
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2019")
+                  );
+                }}
+              >
+                2019
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
+                // disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2018")
+                  );
+                }}
+              >
+                2018
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
+                // disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2017")
+                  );
+                }}
+              >
+                2017
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
+                // disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2016")
+                  );
+                }}
+              >
+                2016
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
+                // disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2015")
+                  );
+                }}
+              >
+                2015
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
+                // disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2014")
+                  );
+                }}
+              >
+                2014
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
+                // disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2013")
+                  );
+                }}
+              >
+                2013
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
+                // disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2012")
+                  );
+                }}
+              >
+                2012
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
+                // disabled={this.state.loading}
+                onClick={this.getAllDatabase.bind(this)}
+              >
+                Get all database
+              </Button>
             </div>
-          )
-        }
-        <StockEvaluation stock={'VND'}/>
+          </React.Fragment>
+        ) : (
+          <div>
+            <div>Strategy Test</div>
+            <Strategy cb={this.handleCbStrategy} />
+          </div>
+        )}
+        <StockEvaluation stock={"VND"} />
         <Modal
           className="stockModal"
           aria-labelledby="simple-modal-title"
@@ -723,7 +770,6 @@ class Stock extends Component {
             />
           </div>
         </Modal>
-        
       </div>
     );
   }
