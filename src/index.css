@@ -412,12 +412,11 @@ section:not(.dragging) > input[type="file"] {
   display: flex;
 }
 
-.strategy2 .inputBox{
+.strategy2 .inputBox {
   display: flex;
 }
 
 #root {
-
 }
 
 #root .lm_stack {
@@ -434,4 +433,16 @@ section:not(.dragging) > input[type="file"] {
 
 .app .lm_goldenlayout {
   height: 100% !important;
+}
+
+.red {
+  color: red;
+}
+
+.green {
+  color: green;
+}
+
+.grid-cell-right {
+  text-align: right;
 }
