@@ -116,6 +116,7 @@ export default class BusinessSummary extends React.Component {
   }
 
   handleCbCustomedToggleButtonGroup(index) {
+    this.columnDefs_year = getColumnDefs_year(this.rootData);
     switch (index) {
       case analysisTypes.DEFAULT:
         this.gridApi.setColumnDefs(this.columnDefs_year);
