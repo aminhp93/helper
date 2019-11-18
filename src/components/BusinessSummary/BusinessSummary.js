@@ -213,8 +213,8 @@ export default class BusinessSummary extends React.Component {
         );
         this.gridApi.setColumnDefs(
           this.period === durationReportEnums.YEAR
-            ? this.columnDefs_year
-            : getColumnDefs_quarter(countQuarter)
+            ? getColumnDefs_year(this.rootData)
+            : getColumnDefs_quarter(this.rootData)
         );
         this.gridApi.sizeColumnsToFit();
       })

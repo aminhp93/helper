@@ -177,6 +177,9 @@ class Stock extends Component {
           div.innerText = content;
           if (Number(content) > 0) {
             div.className = "green";
+            if (Number(content) > 100) {
+              div.classList.add("alert");
+            }
           } else if (Number(content) < 0) {
             div.className = "red";
           }
@@ -190,9 +193,15 @@ class Stock extends Component {
         filter: "agNumberColumnFilter",
         cellClass: "grid-cell-right",
         cellRenderer: function(params) {
-          return (params.data.today_capitalization / Math.pow(10, 9)).toFixed(
-            0
-          );
+          const div = document.createElement("div");
+
+          div.innerText = (
+            params.data.today_capitalization / Math.pow(10, 9)
+          ).toFixed(0);
+
+          div.className = "todayCapitalization";
+
+          return div;
         }
       }
 

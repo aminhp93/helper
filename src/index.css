@@ -446,3 +446,11 @@ section:not(.dragging) > input[type="file"] {
 .grid-cell-right {
   text-align: right;
 }
+
+.alert {
+  background-color: lightblue;
+}
+
+.todayCapitalization {
+  margin-right: 20px;
+}

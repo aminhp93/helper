@@ -273,6 +273,7 @@ export async function updateAllStocksDatabase(floor, _this, year) {
     _this.setState({
       loading: false
     });
+    _this.canslimFilter();
     console.log(`Updated failed somewhere in ${msToTime(endTime - startTime)}`);
     return "Updated all stocks failed" + floor;
   }
@@ -285,6 +286,7 @@ export async function updateAllStocksDatabase(floor, _this, year) {
   _this.setState({
     loading: false
   });
+  _this.canslimFilter();
   return "Updated all stocks successfully";
 }
 

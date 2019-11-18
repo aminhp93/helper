@@ -431,7 +431,7 @@ export function strcmp(a, b) {
   return a < b ? -1 : a > b ? 1 : 0;
 }
 
-export function getColumnDefs_year() {
+export function getColumnDefs_year(data) {
   let result = [
     {
       headerName: "Name",
@@ -445,11 +445,9 @@ export function getColumnDefs_year() {
       }
     }
   ];
-  let periods = [];
-  for (let i = 0; i < countValueEnums.YEAR; i++) {
-    let item = Number(YEAR) - countValueEnums.YEAR + i;
-    periods.push(String(item));
-  }
+  const periods =
+    (((data || [])[0] || {}).Values || []).map(item => item.Period) || [];
+  console.log(periods);
   for (let i = 0; i < periods.length; i++) {
     let item = {
       headerName: periods[i],
@@ -474,7 +472,7 @@ export function getColumnDefs_year() {
   return result;
 }
 
-export function getColumnDefs_quarter(number_of_period = 5) {
+export function getColumnDefs_quarter(data) {
   let result = [
     {
       headerName: "Name",
@@ -483,26 +481,9 @@ export function getColumnDefs_quarter(number_of_period = 5) {
     }
   ];
 
-  let periods = [
-    "Q2 2015",
-    "Q3 2015",
-    "Q4 2015",
-    "Q1 2016",
-    "Q2 2016",
-    "Q3 2016",
-    "Q4 2016",
-    "Q1 2017",
-    "Q2 2017",
-    "Q3 2017",
-    "Q4 2017",
-    "Q1 2018",
-    "Q2 2018",
-    "Q3 2018",
-    "Q4 2018",
-    "Q1 2019",
-    "Q2 2019"
-  ];
-  periods = periods.slice(periods.length - number_of_period, periods.length);
+  let periods =
+    (((data || [])[0] || {}).Values || []).map(item => item.Period) || [];
+  // periods = periods.slice(periods.length - number_of_period, periods.length);
   console.log(periods);
   for (let i = 0; i < periods.length; i++) {
     let item = {
