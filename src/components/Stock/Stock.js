@@ -4,7 +4,6 @@ import Modal from "@material-ui/core/Modal";
 import StockDetail from "../StockDetail";
 import axios from "axios";
 import moment from "moment";
-// import CustomedPieChart from "./../_customedComponents/CustomedPieChart";
 import Icon from "@material-ui/core/Icon";
 import {
   updateAllStocksDatabase,
@@ -16,15 +15,6 @@ import {
   getWatchingStocksUrl,
   getMarketDataUrl_finbox
 } from "../../helpers/requests";
-// import {
-//   BarChart,
-//   Bar,
-//   XAxis,
-//   YAxis,
-//   CartesianGrid,
-//   Tooltip,
-//   Legend
-// } from "recharts";
 
 import Button from "@material-ui/core/Button";
 import CustomedAgGridReact from "../_customedComponents/CustomedAgGridReact";
@@ -34,17 +24,18 @@ import filterButtonsEnums from "../../constants/filterButtonsEnums";
 import Strategy from "../Strategy";
 import { InputNumber, Button as AntdButton } from "antd";
 import { getDateToFilter } from "../../helpers/functionUtils";
+import StockEvaluation from "../StockEvaluation";
 
 const filterButtonsOptions = [
   {
     value: filterButtonsEnums.CANSLIM_STOCKS,
     display_value: "Canslim Stocks"
   },
-  {
-    value: filterButtonsEnums.QUICK_FILTER_STOCKS,
-    display_value:
-      "Quick filter(EPS > 3000, ROE > 17, VOLUME > 10000, ROI > 60)"
-  },
+  // {
+  //   value: filterButtonsEnums.QUICK_FILTER_STOCKS,
+  //   display_value:
+  //     "Quick filter(EPS > 3000, ROE > 17, VOLUME > 10000, ROI > 60)"
+  // },
   {
     value: filterButtonsEnums.WATCHING_STOCKS,
     display_value: "Watching Stocks"
@@ -52,6 +43,18 @@ const filterButtonsOptions = [
   {
     value: filterButtonsEnums.NEED_STUDY_STOCKS,
     display_value: "Need study"
+  },
+  {
+    value: filterButtonsEnums.CO_PHIEU_DAU_CO,
+    display_value: "Co phieu dau co"
+  },
+  {
+    value: filterButtonsEnums.CO_PHIEU_GIA_TRI,
+    display_value: "Co phieu gia tri"
+  },
+  {
+    value: filterButtonsEnums.ALL,
+    display_value: "All"
   }
 ];
 
@@ -62,7 +65,7 @@ class Stock extends Component {
     this.state = {
       open: false,
       loading: true,
-      viewStrategy: false,
+      viewStrategy: false
     };
     this.today_capitalization_min = 5000000000;
     this.percentage_change_in_price_min = 0.01;
@@ -106,47 +109,102 @@ class Stock extends Component {
         headerName: "Close",
         field: "Close",
         filter: "agNumberColumnFilter",
+        cellClass: "grid-cell-right",
         cellRenderer: function(params) {
           if (params.data.Close) {
-            return params.data.Close.toFixed(0);
+            const Close = params.data.Close;
+            return Close.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
           }
-        }
-      },
-      {
-        headerName: "TodayCapitalization",
-        field: "today_capitalization",
-        filter: "agNumberColumnFilter",
-        cellRenderer: function(params) {
-          return (params.data.today_capitalization / Math.pow(10, 9)).toFixed(
-            0
-          );
         }
       },
       {
         headerName: "% Change in Price",
         field: "percentage_change_in_price",
         filter: "agNumberColumnFilter",
+        cellClass: "grid-cell-right",
         cellRenderer: function(params) {
-          if (params.data.percentage_change_in_price) {
-            return (params.data.percentage_change_in_price * 100).toFixed(2);
+          let content;
+          if (params.data.percentage_change_in_price === 0) {
+            content = 0;
           }
+          if (params.data.percentage_change_in_price) {
+            content = (params.data.percentage_change_in_price * 100).toFixed(0);
+          }
+
+          const div = document.createElement("div");
+
+          div.innerText = content;
+          if (Number(content) > 0) {
+            div.className = "green";
+          } else if (Number(content) < 0) {
+            div.className = "red";
+          }
+
+          return div;
+        }
+      },
+      {
+        headerName: "Volume (1000)",
+        field: "Volume",
+        filter: "agNumberColumnFilter",
+        cellClass: "grid-cell-right",
+        cellRenderer: function(params) {
+          if (params.data.Volume) {
+            const Volume = params.data.Volume / 1000;
+            return Volume.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+          }
+          return "Undefined";
         }
       },
       {
         headerName: "% Change in Volume",
         field: "percentage_change_in_volume",
         filter: "agNumberColumnFilter",
+        cellClass: "grid-cell-right",
         cellRenderer: function(params) {
-          if (params.data.percentage_change_in_volume) {
-            return (params.data.percentage_change_in_volume * 100).toFixed(2);
+          let content;
+          if (params.data.percentage_change_in_volume === 0) {
+            content = 0;
           }
+          if (params.data.percentage_change_in_volume) {
+            content = (params.data.percentage_change_in_volume * 100).toFixed(
+              0
+            );
+          }
+
+          const div = document.createElement("div");
+
+          div.innerText = content;
+          if (Number(content) > 0) {
+            div.className = "green";
+            if (Number(content) > 100) {
+              div.classList.add("alert");
+            }
+          } else if (Number(content) < 0) {
+            div.className = "red";
+          }
+
+          return div;
         }
       },
       {
-        headerName: "Volume",
-        field: "Volume",
-        filter: "agNumberColumnFilter"
-      },
+        headerName: "TodayCapitalization",
+        field: "today_capitalization",
+        filter: "agNumberColumnFilter",
+        cellClass: "grid-cell-right",
+        cellRenderer: function(params) {
+          const div = document.createElement("div");
+
+          div.innerText = (
+            params.data.today_capitalization / Math.pow(10, 9)
+          ).toFixed(0);
+
+          div.className = "todayCapitalization";
+
+          return div;
+        }
+      }
+
       // {
       //   headerName: "ROE",
       //   field: "ROE",
@@ -193,40 +251,9 @@ class Stock extends Component {
   }
 
   canslimFilter() {
-    let today_capitalization_min = 5000000000;
-    let percentage_change_in_price_min = 0.01;
-    let Date;
-    if (moment().format("ddd") === "Sat") {
-      Date = moment().subtract(1, "days");
-    } else if (moment().format("ddd") === "Sun") {
-      Date = moment().subtract(2, "days");
-    } else {
-      Date = moment();
-    }
-    const hour = moment().format("HH");
-    if (hour >= "00" && hour <= "16") {
-      Date = Date.subtract(1, "days");
-    }
-    Date = Date.format("YYYY-MM-DD");
-    axios
-      .post(getFilteredStocksUrl(), {
-        today_capitalization_min,
-        percentage_change_in_price_min,
-        Date
-      })
-      .then(response => {
-        console.log(response);
-        this.gridApi.setRowData(response.data.stocks);
-        this.setState({
-          loading: false
-        })
-      })
-      .catch(error => {
-        console.log(error);
-        this.setState({
-          loading: false
-        })
-      });
+    this.today_capitalization_min = 5000000000;
+    this.percentage_change_in_price_min = 0.01;
+    this.filter();
   }
 
   startRealtimeSocket(dataStocks) {
@@ -343,19 +370,34 @@ class Stock extends Component {
       case filterButtonsEnums.QUICK_FILTER_STOCKS:
         this.setQuickFilter();
         break;
+      case filterButtonsEnums.CANSLIM_STOCKS:
+        this.canslimFilter();
+        break;
       case filterButtonsEnums.WATCHING_STOCKS:
         this.getWatchingStocks(filterButtonsEnums.WATCHING_STOCKS);
         break;
       case filterButtonsEnums.NEED_STUDY_STOCKS:
         this.getWatchingStocks(filterButtonsEnums.NEED_STUDY_STOCKS);
         break;
-      case filterButtonsEnums.CANSLIM_STOCKS:
-        this.canslimFilter();
+      case filterButtonsEnums.CO_PHIEU_DAU_CO:
+        this.getWatchingStocks(filterButtonsEnums.CO_PHIEU_DAU_CO);
+        break;
+      case filterButtonsEnums.CO_PHIEU_GIA_TRI:
+        this.getWatchingStocks(filterButtonsEnums.CO_PHIEU_GIA_TRI);
+        break;
+      case filterButtonsEnums.ALL:
+        this.getAllStocks();
         break;
       default:
         break;
     }
   }
+
+  getAllStocks = () => {
+    this.today_capitalization_min = 0;
+    this.percentage_change_in_price_min = -9999999;
+    this.filter();
+  };
 
   async getWatchingStocks(title) {
     let watchlist_id = "";
@@ -363,6 +405,10 @@ class Stock extends Component {
       watchlist_id = "5cea9628838fae3176909129";
     } else if (title === filterButtonsEnums.NEED_STUDY_STOCKS) {
       watchlist_id = "5d62962df012b10cd1e81bc5";
+    } else if (title === filterButtonsEnums.CO_PHIEU_DAU_CO) {
+      watchlist_id = "5dbed4e782b5472ff6f3d05d";
+    } else if (title === filterButtonsEnums.CO_PHIEU_GIA_TRI) {
+      watchlist_id = "5dbed4f0f32ca876823837b4";
     }
     if (!watchlist_id) return;
     let watching_stocks;
@@ -493,21 +539,30 @@ class Stock extends Component {
       .then(response => {
         console.log(response);
         this.gridApi.setRowData(response.data.stocks);
+        this.setState({
+          loading: false
+        });
       })
       .catch(error => {
         console.log(error);
+        this.setState({
+          loading: false
+        });
       });
   };
 
   toggleView = () => {
-    this.setState({
-      viewStrategy: !this.state.viewStrategy
-    }, () => {
-      if (!this.state.viewStrategy) {
-        this.canslimFilter();
+    this.setState(
+      {
+        viewStrategy: !this.state.viewStrategy
+      },
+      () => {
+        if (!this.state.viewStrategy) {
+          this.canslimFilter();
+        }
       }
-    })
-  }
+    );
+  };
 
   render() {
     const { viewStrategy } = this.state;
@@ -515,54 +570,52 @@ class Stock extends Component {
       <div className="stock">
         Stock
         <AntdButton onClick={this.toggleView}>
-          View { viewStrategy ? 'stock' : 'strategy' }
+          View {viewStrategy ? "stock" : "strategy"}
         </AntdButton>
-        {
-          !viewStrategy
-          ? (
-            <React.Fragment>
-              <div className="stockTable">
+        {!viewStrategy ? (
+          <React.Fragment>
+            <div className="stockTable">
               <div className="ag-theme-balham customedAgGrid">
-            <div className="header">
-              <div>{this.props.symbol}</div>
-              <Input onChange={e => this.searchSymbol(e)} />
-              <CustomedToggleButtonGroup
-                options={filterButtonsOptions}
-                cb={this.handleCbCustomedToggleButtonGroup.bind(this)}
-              />
-              <div onClick={this.handleClickFinboxButton.bind(this)}>
-                FinboxButton
-              </div>
-            </div>
-            <div className="filterContainer">
-              <div className="filterRow">
-                <div>TodayCapitalization</div>
-                <InputNumber
-                  min={0}
-                  max={10}
-                  defaultValue={this.today_capitalization_min / 1000000000}
-                  onChange={this.handleChangeTodayCapitalization}
+                <div className="header">
+                  <div>{this.props.symbol}</div>
+                  <Input onChange={e => this.searchSymbol(e)} />
+                  <CustomedToggleButtonGroup
+                    options={filterButtonsOptions}
+                    cb={this.handleCbCustomedToggleButtonGroup.bind(this)}
+                  />
+                  <div onClick={this.handleClickFinboxButton.bind(this)}>
+                    FinboxButton
+                  </div>
+                </div>
+                <div className="filterContainer">
+                  <div className="filterRow">
+                    <div>TodayCapitalization</div>
+                    <InputNumber
+                      min={0}
+                      max={10}
+                      defaultValue={this.today_capitalization_min / 1000000000}
+                      onChange={this.handleChangeTodayCapitalization}
+                    />
+                  </div>
+                  <div className="filterRow">
+                    <div>Percent Change in Price</div>
+                    <InputNumber
+                      min={-10}
+                      max={10}
+                      defaultValue={this.percentage_change_in_price_min * 100}
+                      onChange={this.handleChangePercentChangeInPrice}
+                    />
+                  </div>
+                </div>
+                <CustomedAgGridReact
+                  title="stock"
+                  columnDefs={this.columnDefs}
+                  onGridReady={this.onGridReadyCb.bind(this)}
                 />
               </div>
-              <div className="filterRow">
-                <div>Percent Change in Price</div>
-                <InputNumber
-                  min={-10}
-                  max={10}
-                  defaultValue={this.percentage_change_in_price_min * 100}
-                  onChange={this.handleChangePercentChangeInPrice}
-                />
-              </div>
             </div>
-            <CustomedAgGridReact
-              title="stock"
-              columnDefs={this.columnDefs}
-              onGridReady={this.onGridReadyCb.bind(this)}
-            />
-          </div>
-            </div>
-              <div className="updateButtons">
-          <Button
+            <div className="updateButtons">
+              {/* <Button
             variant="contained"
             color="secondary"
             disabled={true}
@@ -571,163 +624,152 @@ class Stock extends Component {
             }}
           >
             Delete all stocks
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={this.state.loading}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2020")
-              );
-            }}
-          >
-            2020
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={true}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2019")
-              );
-            }}
-          >
-            2019
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={true}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2018")
-              );
-            }}
-          >
-            2018
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={true}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2017")
-              );
-            }}
-          >
-            2017
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={true}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2016")
-              );
-            }}
-          >
-            2016
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={true}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2015")
-              );
-            }}
-          >
-            2015
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={true}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2014")
-              );
-            }}
-          >
-            2014
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={true}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2013")
-              );
-            }}
-          >
-            2013
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={true}
-            onClick={() => {
-              this.setState(
-                {
-                  loading: true
-                },
-                () => updateAllStocksDatabase("all_stocks", this, "2012")
-              );
-            }}
-          >
-            2012
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={this.state.loading}
-            onClick={this.getAllDatabase.bind(this)}
-          >
-            Get all database
-          </Button>
-        </div>
-            </React.Fragment>
-            
-
-          )
-          : (
-            <div>
-              <div>Strategy Test</div>
-              <Strategy cb={this.handleCbStrategy} />
+          </Button> */}
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2019")
+                  );
+                }}
+              >
+                2019
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
+                // disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2018")
+                  );
+                }}
+              >
+                2018
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
+                // disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2017")
+                  );
+                }}
+              >
+                2017
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
+                // disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2016")
+                  );
+                }}
+              >
+                2016
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
+                // disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2015")
+                  );
+                }}
+              >
+                2015
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
+                // disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2014")
+                  );
+                }}
+              >
+                2014
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
+                // disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2013")
+                  );
+                }}
+              >
+                2013
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
+                // disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2012")
+                  );
+                }}
+              >
+                2012
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
+                // disabled={this.state.loading}
+                onClick={this.getAllDatabase.bind(this)}
+              >
+                Get all database
+              </Button>
             </div>
-          )
-        }
-        
+          </React.Fragment>
+        ) : (
+          <div>
+            <div>Strategy Test</div>
+            <Strategy cb={this.handleCbStrategy} />
+          </div>
+        )}
+        <StockEvaluation stock={"VND"} />
         <Modal
           className="stockModal"
           aria-labelledby="simple-modal-title"
@@ -742,7 +784,6 @@ class Stock extends Component {
             />
           </div>
         </Modal>
-        
       </div>
     );
   }
@@ -765,85 +806,13 @@ class Stock extends Component {
         loading: true
       },
       () => {
-        axios
-          .get(getAllStocksUrl())
-          .then(response => {
-            console.log(response);
-            this.gridApi.setRowData(response.data.stocks);
-            this.setState({
-              loading: false
-            });
-          })
-          .catch(error => {
-            console.log(error);
-            this.setState({
-              loading: false
-            });
-          });
+        this.getAllStocks();
       }
     );
   }
 
-  async componentDidMount() {
-    // this.getExportReport();
-    // await axios
-    //   .post(getFilteredStocksUrl(), {})
-    //   .then(response => {
-    //     this.setState({
-    //       loading: false
-    //     });
-    //     // this.startRealtimeSocket(response.data.stocks);
-    //   })
-    //   .catch(error => {
-    //     this.setState({
-    //       loading: false
-    //     });
-    //     console.log(error);
-    //   });
-    await this.canslimFilter();
-  }
-
-  getExportReport = () => {
-    
-    
-
-    let today_capitalization_min = 5000000000;
-    let percentage_change_in_price_min = 0.01;
-    let Date;
-    if (moment().format("ddd") === "Sat") {
-      Date = moment().subtract(1, "days");
-    } else if (moment().format("ddd") === "Sun") {
-      Date = moment().subtract(2, "days");
-    } else {
-      Date = moment();
-    }
-    const hour = moment().format("HH");
-    if (hour >= "00" && hour <= "16") {
-      Date = Date.subtract(1, "days");
-    }
-    Date = Date.format("YYYY-MM-DD");
-    axios
-      .post(getFilteredStocksUrl(), {
-        today_capitalization_min,
-        percentage_change_in_price_min,
-        Date
-      })
-      .then(response => {
-        console.log(response);
-        if (response.data && response.data.stocks) {
-          // the total number of stocks are positive in the day
-          console.log(response.data.stocks.length)
-          // average of total_capitalization
-          let sum = 0;
-          response.data.stocks.map(item => sum += item.today_capitalization)
-          console.log((sum / response.data.stocks.length / 1000000000).toFixed(0))
-        }
-        
-      })
-      .catch(error => {
-        console.log(error);
-      });
-
+  componentDidMount() {
+    this.canslimFilter();
   }
 }
 
