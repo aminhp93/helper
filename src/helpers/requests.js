@@ -194,6 +194,10 @@ export async function updateAllStocksDatabase(floor, _this, year) {
       break;
     case "2019":
       startDate = "2019-01-01";
+      endDate = "2019-12-31";
+      break;
+    case "2020":
+      startDate = "2020-01-01";
       if (moment().format("ddd") === "Sat") {
         endDate = moment()
           .subtract(1, "days")

@@ -565,7 +565,7 @@ class Stock extends Component {
           <Button
             variant="contained"
             color="secondary"
-            disabled={this.state.loading}
+            disabled={true}
             onClick={() => {
               deleteAllStocks();
             }}
@@ -581,6 +581,21 @@ class Stock extends Component {
                 {
                   loading: true
                 },
+                () => updateAllStocksDatabase("all_stocks", this, "2020")
+              );
+            }}
+          >
+            2020
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={true}
+            onClick={() => {
+              this.setState(
+                {
+                  loading: true
+                },
                 () => updateAllStocksDatabase("all_stocks", this, "2019")
               );
             }}
@@ -590,7 +605,7 @@ class Stock extends Component {
           <Button
             variant="contained"
             color="secondary"
-            disabled={this.state.loading}
+            disabled={true}
             onClick={() => {
               this.setState(
                 {
@@ -605,7 +620,7 @@ class Stock extends Component {
           <Button
             variant="contained"
             color="secondary"
-            disabled={this.state.loading}
+            disabled={true}
             onClick={() => {
               this.setState(
                 {
@@ -620,7 +635,7 @@ class Stock extends Component {
           <Button
             variant="contained"
             color="secondary"
-            disabled={this.state.loading}
+            disabled={true}
             onClick={() => {
               this.setState(
                 {
@@ -635,7 +650,7 @@ class Stock extends Component {
           <Button
             variant="contained"
             color="secondary"
-            disabled={this.state.loading}
+            disabled={true}
             onClick={() => {
               this.setState(
                 {
@@ -650,7 +665,7 @@ class Stock extends Component {
           <Button
             variant="contained"
             color="secondary"
-            disabled={this.state.loading}
+            disabled={true}
             onClick={() => {
               this.setState(
                 {
@@ -665,7 +680,7 @@ class Stock extends Component {
           <Button
             variant="contained"
             color="secondary"
-            disabled={this.state.loading}
+            disabled={true}
             onClick={() => {
               this.setState(
                 {
@@ -680,7 +695,7 @@ class Stock extends Component {
           <Button
             variant="contained"
             color="secondary"
-            disabled={this.state.loading}
+            disabled={true}
             onClick={() => {
               this.setState(
                 {
