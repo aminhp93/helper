@@ -625,10 +625,25 @@ class Stock extends Component {
           >
             Delete all stocks
           </Button> */}
-              <Button
+            <Button
                 variant="contained"
                 color="secondary"
                 disabled={this.state.loading}
+                onClick={() => {
+                  this.setState(
+                    {
+                      loading: true
+                    },
+                    () => updateAllStocksDatabase("all_stocks", this, "2020")
+                  );
+                }}
+              >
+                2020
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={true}
                 onClick={() => {
                   this.setState(
                     {
@@ -755,7 +770,7 @@ class Stock extends Component {
               <Button
                 variant="contained"
                 color="secondary"
-                disabled={true}
+                disabled={this.state.loading}
                 // disabled={this.state.loading}
                 onClick={this.getAllDatabase.bind(this)}
               >

@@ -213,7 +213,7 @@ export async function updateAllStocksDatabase(floor, _this, year) {
     default:
       break;
   }
-  if (year === "2019") {
+  if (year === "2020") {
     await axios
       .get(domain + "core/")
       .then(response => {
@@ -240,7 +240,7 @@ export async function updateAllStocksDatabase(floor, _this, year) {
     startDate,
     endDate
   );
-  if (year === "2019") {
+  if (year === "2020") {
     await updateLastTimeUpdateDatabase({ date: `"${endDate}T00:00:00Z"` });
   }
   console.log(response2, response3, response4);
@@ -298,7 +298,7 @@ export function deleteAllStocks() {
   return axios
     .post(getDeleteAllStocksUrl())
     .then(response =>
-      updateLastTimeUpdateDatabase({ date: '"2019-01-02T00:00:00Z"' })
+      updateLastTimeUpdateDatabase({ date: '"2020-01-02T00:00:00Z"' })
     )
     .catch(error => console.log(error));
 }
