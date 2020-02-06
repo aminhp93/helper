@@ -469,6 +469,7 @@ class Stock extends Component {
 
   onGridReadyCb(params) {
     this.gridApi = params.api;
+    this.canslimFilter();
   }
 
   handleClickFinboxButton() {
@@ -827,7 +828,7 @@ class Stock extends Component {
   }
 
   componentDidMount() {
-    this.canslimFilter();
+    // this.canslimFilter();
   }
 }
 
